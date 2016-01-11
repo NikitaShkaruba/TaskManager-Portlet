@@ -3,7 +3,8 @@
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<!-- Well, there's a problem, can't fix it quick. Remove this later! -->
+	<!-- TODO: Fix strange parent block -->
+	<!-- Well, i cannot build without this parent block :\ But i do not have it logically, haha :D -->
 	<parent>
 		<groupId>com.liferay.faces.demos</groupId>
 		<artifactId>liferay-faces-bridge-demos</artifactId>
@@ -12,11 +13,13 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>jsf2-portlet</artifactId>
+	<artifactId>TaskManager-portlet</artifactId>
 	<packaging>war</packaging>
-	<name>JSF2 Portlet</name>
+	<name>TaskManager-portlet</name>
 
+	<!-- Todo: add deployment descriptor!?! -->
 	<dependencies>
+		<!-- TODO: check what these dependencies for -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -34,6 +37,16 @@
 			<artifactId>javax.faces-api</artifactId>
 			<version>2.1</version>
 		</dependency>
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Portlet dependencies -->
 		<dependency>
 			<groupId>javax.portlet</groupId>
 			<artifactId>portlet-api</artifactId>
@@ -72,7 +85,11 @@
 			<artifactId>javax.ejb-api</artifactId>
 			<version>3.2</version>
 		</dependency>
-
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
 	</dependencies>
 
 </project>
