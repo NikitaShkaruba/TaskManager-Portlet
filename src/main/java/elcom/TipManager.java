@@ -12,7 +12,6 @@ import javax.faces.bean.ManagedBean;
  */
 
 // TODO: 11.01.16 Add class logic
-@ManagedBean(name = "TipManager")
 public class TipManager {
     public TipManager() {
 

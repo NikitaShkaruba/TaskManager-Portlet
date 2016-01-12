@@ -3,7 +3,8 @@
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<!-- TODO: Fix strange parent block -->
+	<!-- TODO: Fix this strange parent block -->
+	<!-- TODO: deal with Primefaces dependency :\ Well, i solved already, i think, idk -->
 	<!-- Well, i cannot build without this parent block :\ But i do not have it logically, haha :D -->
 	<parent>
 		<groupId>com.liferay.faces.demos</groupId>
@@ -17,7 +18,7 @@
 	<packaging>war</packaging>
 	<name>TaskManager-portlet</name>
 
-	<!-- Todo: add deployment descriptor!?! -->
+	<!-- TODO: add deployment descriptor!?! -->
 	<dependencies>
 		<!-- TODO: check what these dependencies for -->
 		<dependency>
@@ -38,7 +39,7 @@
 			<version>2.1</version>
 		</dependency>
 
-		<!-- Test dependencies -->
+		<!-- Junit dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -90,6 +91,14 @@
 			<artifactId>junit</artifactId>
 			<version>4.10</version>
 		</dependency>
+
+		<!-- JSF dependencies -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>5.3</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

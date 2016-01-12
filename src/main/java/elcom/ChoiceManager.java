@@ -1,6 +1,6 @@
 package elcom;
 
-import javax.faces.bean.ManagedBean;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by Nikita Shkaruba on 11.01.16.
@@ -12,23 +12,36 @@ import javax.faces.bean.ManagedBean;
  */
 
 // TODO: 11.01.16 Add class logic
-@ManagedBean(name = "ChoiceManager")
 public class ChoiceManager {
-    private short currentPageNumber = 1;
-    private short itemsOnPage = 15;
-    private TaskFilter taskFilter = TaskFilter.ALL;
+    private short currentPage = 1;
+    private short tasksShowed = 15;
+    private TaskStatus taskFilter = TaskStatus.ALL;
     private EmployeeFilter employeeFilter = EmployeeFilter.MINE;
 
     public ChoiceManager() {
 
     }
 
+    public TaskStatus getTaskStatus() {
+        return taskFilter;
+    }
+    public EmployeeFilter getEmployeeFilter() {
+        return employeeFilter;
+    }
+    public short getTasksShowed() {
+        return tasksShowed;
+    }
     public short getCurrentPage() {
-        return currentPageNumber;
+        return currentPage;
+    }
+    
+    public void setCurrentPage() {
+        //logic
+        throw new NotImplementedException();
     }
 }
 
-enum TaskFilter{
+enum TaskStatus {
     ALL,
     FREE,
     CREATED,
