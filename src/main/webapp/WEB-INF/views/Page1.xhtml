@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+   <!-- TODO: Add some beauty to this page -->
+   <!-- TODO: Add button's logic -->
+</h:head>
+
+<h:body>
+   <h:outputText value="Ваш запрос был успешно выполнен!"/>
+
+   <h:panelGrid columns="2" cellpadding="5">
+      <p:outputLabel value="Фильтр по заявкам:" />
+      <p:selectOneRadio id="TaskFilter" value="#{GeneralManager.taskFilter}">
+         <f:selectItem itemLabel="Все" itemValue="ALL" />
+         <f:selectItem itemLabel="Свободные" itemValue="FREE" />
+         <f:selectItem itemLabel="Созданные" itemValue="CREATED" />
+         <f:selectItem itemLabel="Закрытые" itemValue="CLOSED" />
+      </p:selectOneRadio>
+   </h:panelGrid>
+
+   <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+      <p:outputLabel value="Фильтр по сотрудникам:" />
+      <p:selectOneRadio id="EmployeeFilter" value="#{GeneralManager.employeeFilter}">
+         <f:selectItem itemLabel="Мои" itemValue="MINE" />
+         <f:selectItem itemLabel="Все" itemValue="ALL" />
+      </p:selectOneRadio>
+   </h:panelGrid>
+
+   <h:panelGrid columns="2" cellpadding="5">
+      <p:selectOneMenu id="itemAmount" value="#{GeneralManager.itemAmount}" style="width:250px">
+         <f:selectItem itemLabel="#{GeneralManager.itemAmount} Предметов на странице" itemValue="" noSelectionOption="true" />
+         <f:selectItems value="#{GeneralManager.itemAmountVariants}" />
+      </p:selectOneMenu>
+
+      <p:selectOneMenu id="currentPage" value="#{GeneralManager.currentPage}" style="width:150px">
+         <f:selectItem itemLabel="Страница #{GeneralManager.currentPage} из #{GeneralManager.maxPage}" itemValue="" noSelectionOption="true" />
+         <f:selectItems value="#{GeneralManager.pageVariants}" />
+      </p:selectOneMenu>
+   </h:panelGrid>
+
+   <p:separator />
+
+   <p:button value="Создать новую"/>
+
+   <p:separator />
+
+   <p:button value="в начало"/>
+   <p:button value="назад"/>
+   <p:button value="вперёд"/>
+   <p:button value="в конец"/>
+
+   <p:dataTable var="task" value="#{GeneralManager.tasks}">
+      <p:column headerText="Заявка №">
+         <h:outputText value="#{task.id}" />
+      </p:column>
+
+      <p:column headerText="Описание">
+         <h:outputText value="#{task.description}" />
+      </p:column>
+
+      <p:column headerText="Исполнитель">
+         <h:outputText value="#{task.executor}" />
+      </p:column>
+
+      <p:column headerText="Статус">
+         <h:outputText value="#{task.status}" />
+      </p:column>
+   </p:dataTable>
+</h:body>
+</html>
