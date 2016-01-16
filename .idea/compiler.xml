@@ -34,7 +34,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="jsf2-portlet" target="1.6" />
-      <module name="TaskManager" target="1.6" />
+      <module name="TaskManager" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
