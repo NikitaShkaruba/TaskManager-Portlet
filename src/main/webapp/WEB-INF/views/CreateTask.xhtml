@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <!-- TODO: Also add beauty to this page -->
+    <!-- TODO: Add bean integration -->
+</h:head>
+
+<h:body>
+    <h:panelGrid columns="2" cellpadding="5">
+        <h:outputLabel value="Описание заявки"/>
+        <p:inputText />
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" cellpadding="5">
+        <h:outputLabel value="Статус"/>
+        <p:selectOneMenu id="selectStatus" value="#{TaskCreator.allStatuses}" style="width:250px">
+            <f:selectItems value="#{TaskCreator.allStatuses}" />
+        </p:selectOneMenu>
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" cellpadding="5">
+        <h:outputLabel value="Группа"/>
+        <p:selectOneMenu id="selectGroup" value="#{TaskCreator.allGroups}" style="width:250px">
+            <f:selectItems value="#{TaskCreator.allGroups}" />
+        </p:selectOneMenu>
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" cellpadding="5">
+        <h:outputLabel value="Исолнитель"/>
+        <p:selectOneMenu id="selectEcecutor" value="#{TaskCreator.allExecutors}" style="width:250px">
+            <f:selectItems value="#{TaskCreator.allExecutors}" />
+        </p:selectOneMenu>
+    </h:panelGrid>
+
+    <h:panelGrid columns="2" cellpadding="5">
+        <h:outputLabel value="Приоритет"/>
+        <p:selectOneMenu id="selectPriority" value="#{TaskCreator.allSPriorities}" style="width:250px">
+            <f:selectItems value="#{TaskCreator.allSPriorities}" />
+        </p:selectOneMenu>
+    </h:panelGrid>
+
+    <!-- TODO: add two calendars for startDate and finishDate -->
+
+    <p:button value="Сохранить"/>
+    <p:button value="Назад"/>
+</h:body>
+</html>

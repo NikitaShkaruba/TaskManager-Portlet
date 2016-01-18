@@ -39,7 +39,7 @@ class DatabaseConnector {
 
         return temp;
     }
-    public List<String> getEmployee() {
+    public List<String> getEmployees() {
         ArrayList temp = new ArrayList<String>();
         temp.add("Anatoly Pribluda");
         temp.add("Evgeny Tsopa");
@@ -47,6 +47,9 @@ class DatabaseConnector {
         return temp;
     }
     public void addTask(Task task) {
+        throw new NotImplementedException();
+    }
+    public void removeTask(Task task) {
         throw new NotImplementedException();
     }
 }

@@ -1,13 +1,12 @@
 package elcom.main;
 
-import elcom.enums.TaskStatus;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import elcom.enums.TaskStatus;
 import java.util.*;
 
-/**2
+/**
  * Created by Nikita Shkaruba on 11.01.16.
  * <p>
  * My Contacts:
@@ -16,15 +15,14 @@ import java.util.*;
  * Vk: vk.com/wavemeaside
  */
 
-// TODO: 12.01.16 Rethink about general manager value, maybe 3 managers could do the job without him :\
 // TODO: 12.01.16 Find a way to return List instead of map in "*Variants" methods
-// TODO: 11.01.16 Read about this annotation deeply
+// TODO: 11.01.16 Read about @SessionScoped
 // TODO: 11.01.16 Add class logic
 
-// Handles all the input\output from user
-@ManagedBean(name = "IOHandler")
+// This bean handles logic from view-tasks page
+@ManagedBean(name = "TaskPresenter")
 @SessionScoped
-class IOHandler {
+class TaskPresenter {
     DatabaseConnector databaseConnector = new DatabaseConnector();
     private TaskStatus currentTaskFilter = TaskStatus.TEMPLATE;
     private boolean isAllTasks = true;
@@ -33,7 +31,7 @@ class IOHandler {
     private String currentUser = "Andrey Pribluda";
     private List<Task> tasks;
 
-    public IOHandler() {
+    public TaskPresenter() {
 
     }
 
@@ -66,9 +64,9 @@ class IOHandler {
         return tasks.size()/tasksShowed + "";
     }
 
-    // TODO: 12.01.16 Refactor this awkward Map initialization
+    // TODO: 12.01.16 Refactor this awkward Map initializations
     public Map<String, String> getItemAmountVariants() {
-        HashMap<String, String> temp = new HashMap<String, String>();
+        HashMap<String, String> temp = new HashMap();
         temp.put("15", "15");
         temp.put("30", "30");
         temp.put("45", "45");
@@ -76,7 +74,7 @@ class IOHandler {
         return temp;
     }
     public Map<String, String> getPageVariants() {
-        HashMap<String, String> temp = new HashMap<String, String>();
+        HashMap<String, String> temp = new HashMap();
         temp.put("1", "1");
         temp.put("5", "5");
         temp.put("10", "10");
@@ -88,4 +86,3 @@ class IOHandler {
 
     }
 }
-
