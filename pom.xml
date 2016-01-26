@@ -31,8 +31,9 @@
 	</build>
 
 	<!-- TODO: add deployment descriptor!?! -->
+
 	<dependencies>
-		<!-- TODO: check what these dependencies for -->
+		<!-- TODO: check what these dependencies are for -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>

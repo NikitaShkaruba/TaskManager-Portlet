@@ -5,6 +5,9 @@ import elcom.enums.TaskStatus;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.faces.bean.ManagedBean;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +24,11 @@ import java.util.List;
 // Handles all the information from the databases
 // @Local
 class DatabaseConnector {
-    public DatabaseConnector() {
+    EntityManager entityManager;
 
+    public DatabaseConnector() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("PERSISTENCE_UNIT_MAPPED_IN_THE_PERSISTENCE_XML");
+        entityManager = emf.createEntityManager();
     }
 
     public List<Task> getTasks(TaskStatus taskFilter) {

@@ -2,6 +2,8 @@ package elcom.main;
 
 import elcom.enums.TaskPriority;
 import elcom.enums.TaskStatus;
+
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -15,7 +17,11 @@ import java.util.Date;
 
 // TODO: 12.01.16 Make this bean an entity and map it to database
 // TODO: 16.01.16 Make use a startDate, finishDate
+    @Entity
+    @Table(name="tasks")
 class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
     private String description;
     private String executor;
@@ -23,6 +29,8 @@ class Task {
     private TaskPriority priority;
     private Date startDate;
     private Date finishDate;
+
+    public Task(){}
 
     public Task(int id, String description, String executor, TaskStatus status, TaskPriority priority) {
         this.id = id;
@@ -59,9 +67,12 @@ class Task {
         return this.finishDate;
     }
 
+    //Subject to remove since id field is immutable outside of JPA.
+    /*
     public void setId(int id) {
         this.id = id;
     }
+    */
     public void setDescription(String description) {
         this.description = description;
     }
