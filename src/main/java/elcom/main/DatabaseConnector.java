@@ -8,16 +8,8 @@ import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Nikita Shkaruba on 11.01.16.
- *
- * My Contacts:
- * Email: sh.nickita@list.ru
- * GitHub: github.com/SigmaOne
- * Vk: vk.com/wavemeaside
- */
-
 // TODO: 11.01.16 Add logic
+
 // Handles all the information from the databases
 // @Local
 class DatabaseConnector {

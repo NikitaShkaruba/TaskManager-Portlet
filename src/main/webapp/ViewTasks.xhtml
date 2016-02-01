@@ -13,7 +13,7 @@
 
    <h:panelGrid columns="2" cellpadding="5">
       <p:outputLabel value="Фильтр по заявкам:" />
-      <p:selectOneRadio id="TaskFilter" value="#{TaskPresenter.taskFilter}">
+      <p:selectOneRadio id="TaskFilter" value="#{TaskPresenter.currentTaskFilter}">
          <f:selectItem itemLabel="Все" itemValue="ALL" />
          <f:selectItem itemLabel="Свободные" itemValue="FREE" />
          <f:selectItem itemLabel="Созданные" itemValue="CREATED" />
@@ -37,7 +37,7 @@
 
       <p:selectOneMenu id="currentPage" value="#{TaskPresenter.currentPage}" style="width:150px">
          <f:selectItem itemLabel="Страница #{TaskPresenter.currentPage} из #{TaskPresenter.maxPageIndex}" itemValue="" noSelectionOption="true" />
-         <f:selectItems value="#{TaskPresenter.pageVariants}" />
+         <f:selectItems value="#{TaskPresenter.pageVariants}" />2
       </p:selectOneMenu>
    </h:panelGrid>
 

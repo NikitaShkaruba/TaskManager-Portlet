@@ -6,15 +6,6 @@ import javax.faces.bean.ManagedBean;
 import elcom.enums.TaskStatus;
 import java.util.*;
 
-/**
- * Created by Nikita Shkaruba on 11.01.16.
- * <p>
- * My Contacts:
- * Email: sh.nickita@list.ru
- * GitHub: github.com/SigmaOne
- * Vk: vk.com/wavemeaside
- */
-
 // TODO: 12.01.16 Find a way to return List instead of map in "*Variants" methods
 // TODO: 11.01.16 Read about @SessionScoped
 // TODO: 11.01.16 Add class logic
@@ -22,14 +13,14 @@ import java.util.*;
 // This bean handles logic from view-tasks page
 @ManagedBean(name = "TaskPresenter")
 @SessionScoped
-class TaskPresenter {
+public class TaskPresenter {
     DatabaseConnector databaseConnector = new DatabaseConnector();
     private TaskStatus currentTaskFilter = TaskStatus.TEMPLATE;
     private boolean isAllTasks = true;
     private short currentPage = 1;
     private short tasksShowed = 15;
     private String currentUser = "Andrey Pribluda";
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
     public TaskPresenter() {
 
@@ -61,7 +52,7 @@ class TaskPresenter {
         return databaseConnector.getTasks(this.currentTaskFilter, username);
     }
     public String getMaxPageIndex() {
-        return tasks.size()/tasksShowed + "";
+        return tasks.size() / tasksShowed + "";
     }
 
     // TODO: 12.01.16 Refactor this awkward Map initializations

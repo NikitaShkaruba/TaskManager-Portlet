@@ -1,6 +1,5 @@
 package elcom.main;
 
-
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.text.SimpleDateFormat;
@@ -10,15 +9,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-/**
- * Created by Nikita Shkaruba on 18.01.16.
- * <p>
- * My Contacts:
- * Email: sh.nickita@list.ru
- * GitHub: github.com/SigmaOne
- * Vk: vk.com/wavemeaside
- */
 
 // TODO: 18.01.16 Add page interaction
 

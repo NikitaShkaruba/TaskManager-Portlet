@@ -4,18 +4,10 @@ import elcom.enums.TaskPriority;
 import elcom.enums.TaskStatus;
 import java.util.Date;
 
-/**
- * Created by Nikita Shkaruba on 12.01.16.
- * <p>
- * My Contacts:
- * Email: sh.nickita@list.ru
- * GitHub: github.com/SigmaOne
- * Vk: vk.com/wavemeaside
- */
-
 // TODO: 12.01.16 Make this bean an entity and map it to database
-// TODO: 16.01.16 Make use a startDate, finishDate
-class Task {
+// TODO: 16.01.16 Make use of startDate, finishDate
+
+public class Task {
     private int id;
     private String description;
     private String executor;
@@ -31,7 +23,7 @@ class Task {
         this.status = status;
         this.priority = priority;
     }
-    public Task(String description, String executor, TaskStatus status, TaskPriority priority, Date startDate, Date finishDate) {
+         public Task(String description, String executor, TaskStatus status, TaskPriority priority, Date startDate, Date finishDate) {
         this.description = description;
         this.executor = executor;
         this.status = status;

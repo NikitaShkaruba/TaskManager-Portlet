@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
-
 /**
  * Created by Nikita Shkaruba on 16.01.16.
  * <p>
@@ -37,7 +36,7 @@ public class DatabaseConnectorTest {
     public void testGetAllTasks() {
         // Retrieve all the tasks from db and try to find every verified task
         List<Task> tasks = databaseConnector.getTasks(TaskStatus.OPEN);
-        assertTrue("No tasks retrieved", tasks.size() == 0);
+        assertTrue("No tasks retrieved", tasks.size() != 0);
 
         for(Task task: tasks)
             verifiedTasks.removeIf(p -> p.equals(task));
