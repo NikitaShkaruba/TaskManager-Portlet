@@ -1,33 +1,32 @@
 package elcom.main;
 
-import elcom.enums.TaskPriority;
-import elcom.enums.TaskStatus;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO: 11.01.16 Add logic
 
-// Handles all the information from the databases
+// Handles all the information retrieving from Elcom databases
 // @Local
 class DatabaseConnector {
     public DatabaseConnector() {
 
     }
 
-    public List<Task> getTasks(TaskStatus taskFilter) {
+    public List<Task> getTasks(String taskFilter, String userFilter) {
         ArrayList temp = new ArrayList<Task>();
-        temp.add(new Task(1, "Give us some water", "Daneeil", TaskStatus.OPEN, TaskPriority.NORMAL));
-        temp.add(new Task(2, "Give us food", "Daneeil", TaskStatus.OPEN, TaskPriority.NORMAL));
-        temp.add(new Task(3, "Give us place to sleep", "Daneeil", TaskStatus.OPEN, TaskPriority.NORMAL));
 
-        return temp;
-    }
-    public List<Task> getTasks(TaskStatus taskFilter, String UserName) {
-        ArrayList temp = new ArrayList<Task>();
-        temp.add(new Task(1, "Give us some water", UserName, TaskStatus.OPEN, TaskPriority.NORMAL));
+        // TODO: 03.02.16 add taskFilter logic
+        if (userFilter.equals("Все")) {
+            temp.add(new Task(1, "Give us some water", "Daneeil", "Открыта", "Обычный"));
+            temp.add(new Task(2, "Give us food", "Daneeil", "Открыта", "Обычный"));
+            temp.add(new Task(3, "Give us place to sleep", "Daneeil", "Открыта", "Обычный"));
+        } else
+            temp.add(new Task(1, "Give us some water", userFilter, "Открыта", "Обычный"));
+
+        for (int i = 0; i < 200; i++)
+            temp.add(new Task(i, "Plug", "Plug", "Plug", "Plug"));
 
         return temp;
     }
