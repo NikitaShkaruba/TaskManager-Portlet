@@ -28,8 +28,8 @@
     </h:panelGrid>
 
     <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Исолнитель"/>
-        <p:selectOneMenu id="selectEcecutor" value="#{TaskCreator.allExecutors}" style="width:250px">
+        <h:outputLabel value="Исполнитель"/>
+        <p:selectOneMenu id="selectExecutor" value="#{TaskCreator.allExecutors}" style="width:250px">
             <f:selectItems value="#{TaskCreator.allExecutors}" />
         </p:selectOneMenu>
     </h:panelGrid>
@@ -44,6 +44,6 @@
     <!-- TODO: add two calendars for startDate and finishDate -->
 
     <p:button value="Сохранить"/>
-    <p:button value="Назад"/>
+    <p:button outcome="ViewTasks" value="Назад"/>
 </h:body>
 </html>
