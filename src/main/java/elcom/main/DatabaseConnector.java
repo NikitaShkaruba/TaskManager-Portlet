@@ -24,12 +24,24 @@ import java.util.List;
 // Handles all the information from the databases
 // @Local
 class DatabaseConnector {
-    EntityManager entityManager;
+    private EntityManagerFactory emf;
+    private EntityManager em;
 
-    public DatabaseConnector() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("PERSISTENCE_UNIT_MAPPED_IN_THE_PERSISTENCE_XML");
-        entityManager = emf.createEntityManager();
+    public DatabaseConnector() {}
+
+    private void startConnection(){
+        emf = Persistence.createEntityManagerFactory("MainPersistenceUnit");
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
     }
+    private void closeConnection(){
+        em.getTransaction().commit();
+        emf.close();
+    }
+    public EntityManager getEntityManager(){
+        return em;
+    }
+
 
     public List<Task> getTasks(TaskStatus taskFilter) {
         ArrayList temp = new ArrayList<Task>();

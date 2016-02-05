@@ -4,6 +4,7 @@ import elcom.enums.TaskPriority;
 import elcom.enums.TaskStatus;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,22 +16,33 @@ import java.util.Date;
  * Vk: vk.com/wavemeaside
  */
 
-// TODO: 12.01.16 Make this bean an entity and map it to database
-// TODO: 16.01.16 Make use a startDate, finishDate
-    @Entity
-    @Table(name="tasks")
-class Task {
+// TODO: 05.02.2016 Annotate remaining fields. Look for other required annotations
+@Entity
+@Table(name="task")
+class Task implements Serializable, Cloneable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(name = "name", length = 100)
     private String description;
+
     private String executor;
+
     private TaskStatus status;
+
     private TaskPriority priority;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "beg_date")
     private Date startDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_date")
     private Date finishDate;
 
-    public Task(){}
+    public Task() {
+    }
 
     public Task(int id, String description, String executor, TaskStatus status, TaskPriority priority) {
         this.id = id;
@@ -39,6 +51,7 @@ class Task {
         this.status = status;
         this.priority = priority;
     }
+
     public Task(String description, String executor, TaskStatus status, TaskPriority priority, Date startDate, Date finishDate) {
         this.description = description;
         this.executor = executor;
@@ -51,18 +64,23 @@ class Task {
     public String getId() {
         return id + "";
     }
+
     public String getDescription() {
         return description;
     }
+
     public String getExecutor() {
         return executor;
     }
+
     public String getStatus() {
         return status.name().toLowerCase();
     }
+
     public Date getStartDate() {
         return this.startDate;
     }
+
     public Date getFinishDate() {
         return this.finishDate;
     }
@@ -76,23 +94,60 @@ class Task {
     public void setDescription(String description) {
         this.description = description;
     }
+
     public void setExecutor(String executorName) {
         this.executor = executorName;
     }
+
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+
     public void setPriority(TaskPriority priority) {
         this.priority = priority;
     }
+
     public void setStartDate(Date date) {
         this.startDate = date;
     }
+
     public void setFinishDate(Date date) {
         this.finishDate = date;
     }
 
-    public boolean equals(Task task) {
-        return (this.description == task.description && this.executor == task.executor && this.status == task.status);
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id * 51) / 17 + 322;
+        hash += description.hashCode();
+        hash += executor.hashCode();
+        hash += status.hashCode();
+        hash += priority.hashCode();
+        hash += startDate.hashCode();
+        hash += finishDate.hashCode();
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Task)) {
+            return false;
+        }
+        Task other = (Task) object;
+        return (this.id == other.id);
+    }
+    @Override
+    public String toString() {
+        return getClass().getCanonicalName().concat("[id = ").concat(id + "").concat(", desc = ").concat(description != null ? description : "null").concat("]");
+    }
+
+    @Override
+    public Task clone() {
+        try {
+            return (Task) super.clone();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
