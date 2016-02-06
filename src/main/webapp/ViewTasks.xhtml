@@ -5,7 +5,6 @@
 
 <h:head>
    <!-- TODO: Add some beauty to this page -->
-   <!-- TODO: Add button's logic -->
 </h:head>
 
 <h:body>
@@ -17,8 +16,9 @@
          <h:panelGrid columns="3" cellpadding="5">
             <p:outputLabel value="Фильтр по заявкам:" />
             <p:selectOneMenu id="TaskFilter" value="#{TaskPresenter.selectedTaskFilter}">
-               <p:ajax event="change" listener="#{TaskPresenter.selectNewTaskFilter}" update="taskTable" />
+               <f:selectItem itemLabel="Любой" itemValue="Любой" />
                <f:selectItems value="#{TaskPresenter.taskStatusesOptions}" />
+               <p:ajax event="change" listener="#{TaskPresenter.selectNewTaskFilter}" update="taskTable" />
             </p:selectOneMenu>
          </h:panelGrid>
 
@@ -45,16 +45,14 @@
           <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок"/>
       </h:panelGrid>
 
-      <p:separator />
-
       <p:button value="Создать новую" outcome="CreateTask" />
 
       <p:separator />
 
-      <p:button value="в начало"/>
-      <p:button value="назад"/>
-      <p:button value="вперёд"/>
-      <p:button value="в конец"/>
+      <p:commandButton value="В начало" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" />
+      <p:commandButton value="Назад" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" />
+      <p:commandButton value="вперёд" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" />
+      <p:commandButton value="В конец" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" />
 
       <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}">
          <p:column headerText="Заявка №">

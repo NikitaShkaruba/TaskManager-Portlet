@@ -3,47 +3,57 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <!-- TODO: Also add beauty to this page -->
-    <!-- TODO: Add bean integration -->
+    <!-- TODO: Also add some beauty to this page -->
 </h:head>
 
 <h:body>
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Описание заявки"/>
-        <p:inputText/>
-    </h:panelGrid>
+    <h:form>
+        <h:outputLabel value="Заявка номер #{TaskCreator.id}"/>
+        <br/>
 
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Статус"/>
-        <p:selectOneMenu id="selectStatus" value="#{TaskCreator.allStatuses}" style="width:250px">
-            <f:selectItems value="#{TaskCreator.allStatuses}" />
-        </p:selectOneMenu>
-    </h:panelGrid>
+        <h:outputLabel value="Описание заявки:" escape="true"/>
+        <br/>
+        <p:inputText value="#{TaskCreator.description}" style="width: 700px; height: 80px;" />
 
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Группа"/>
-        <p:selectOneMenu id="selectGroup" value="#{TaskCreator.allGroups}" style="width:250px">
-            <f:selectItems value="#{TaskCreator.allGroups}" />
-        </p:selectOneMenu>
-    </h:panelGrid>
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Статус"/>
+            <p:selectOneMenu id="selectStatus" value="#{TaskCreator.status}" style="width:250px">
+                <f:selectItems value="#{TaskCreator.taskStatusOptions}"/>
+            </p:selectOneMenu>
+        </h:panelGrid>
 
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Исполнитель"/>
-        <p:selectOneMenu id="selectExecutor" value="#{TaskCreator.allExecutors}" style="width:250px">
-            <f:selectItems value="#{TaskCreator.allExecutors}" />
-        </p:selectOneMenu>
-    </h:panelGrid>
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Группа:"/>
+            <p:selectOneMenu id="selectGroup" value="#{TaskCreator.group}" style="width:250px">
+                <f:selectItems value="#{TaskCreator.groupOptions}" />
+            </p:selectOneMenu>
+        </h:panelGrid>
 
-    <h:panelGrid columns="2" cellpadding="5">
-        <h:outputLabel value="Приоритет"/>
-        <p:selectOneMenu id="selectPriority" value="#{TaskCreator.allSPriorities}" style="width:250px">
-            <f:selectItems value="#{TaskCreator.allSPriorities}" />
-        </p:selectOneMenu>
-    </h:panelGrid>
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Исполнитель:"/>
+            <p:selectOneMenu value="#{TaskCreator.executor}" style="width:250px">
+                <f:selectItems value="#{TaskCreator.executorOptions}" />
+            </p:selectOneMenu>
+        </h:panelGrid>
 
-    <!-- TODO: add two calendars for startDate and finishDate -->
+        <h:panelGrid columns="2" cellpadding="5">
+            <h:outputLabel value="Приоритет:"/>
+            <p:selectOneMenu id="selectPriority" value="#{TaskCreator.priority}" style="width:250px">
+                <f:selectItems value="#{TaskCreator.priorityOptions}" />
+            </p:selectOneMenu>
+        </h:panelGrid>
 
-    <p:button value="Сохранить"/>
-    <p:button outcome="ViewTasks" value="Назад"/>
+        <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="startTime" value="Начать выполнение:" />
+            <p:outputLabel for="endTime" value="Завершить работу:" />
+
+            <p:calendar id="startTime" value="#{TaskCreator.startDate}" pattern="dd-MM-yyyy" mask="true" />
+            <p:calendar id="endTime" value="#{TaskCreator.finishDate}" pattern="dd-MM-yyyy" mask="true" />
+        </h:panelGrid>
+
+        <!-- TODO: enhance statuses logic -->
+        <p:commandButton value="Сохранить заявку" action="#{TaskCreator.create}" />
+        <p:commandButton value="Отмена" action="ViewTasks" />
+    </h:form>
 </h:body>
 </html>

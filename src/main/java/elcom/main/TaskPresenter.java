@@ -2,15 +2,16 @@ package elcom.main;
 
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
+// TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
 // TODO: 04.02.16 Consider assigning some responsibilities to a bunch of support classes 
 
 // This bean handles logic from ViewTasks page
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
-    DatabaseConnector databaseConnector = new DatabaseConnector(); // ejb
     private List<Task> tasks;
     private String selectedTaskFilter;
     private String selectedEmployeeFilter;
@@ -25,7 +26,7 @@ public class TaskPresenter {
         currentPage = 1;
         displayedAmount = 15;
         
-        tasks = databaseConnector.getTasks(this.selectedTaskFilter, currentUser);
+        tasks = DatabaseConnector.getTasks(this.selectedTaskFilter, currentUser);
     }
 
     // Main Logic
@@ -69,10 +70,10 @@ public class TaskPresenter {
 
     // Setters
     public void setSelectedTaskFilter(String filter) {
-        selectedTaskFilter = filter;
+        this.selectedTaskFilter = filter;
     }
     public void setSelectedEmployeeFilter(String filter) {
-        selectedEmployeeFilter = filter;
+        this.selectedEmployeeFilter = filter;
     }
     public void setCurrentUser(String username) {
         this.currentUser = username;
@@ -87,7 +88,7 @@ public class TaskPresenter {
         this.tasks = tasks;
     }
 
-    // ListsFor GUI MenuOptions
+    // Lists for GUI MenuOptions
     public List<String> getEmployeeFilterOptions() {
         List<String> options = new ArrayList<>();
 
@@ -97,18 +98,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        List<String> options = new ArrayList<>();
-
-        options.add("Любой");
-        options.add("Выполнена");
-        options.add("Выполняется");
-        options.add("Открыта");
-        options.add("Закрыта");
-        options.add("Отложена");
-        options.add("Шаблон");
-        options.add("Отменена");
-
-        return options;
+        return DatabaseConnector.getTaskStatusOptions();
     }
     public List<Integer> getItemAmountOptions() {
         List<Integer> variants = new ArrayList<>();
@@ -129,9 +119,23 @@ public class TaskPresenter {
 
     // AJAX Listeners
     public void selectNewTaskFilter() {
-        tasks = databaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void selectNewEmployeeFilter() {
-        tasks = databaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+    }
+    public void setNextPage() {
+        if (currentPage != getPagesCount())
+            currentPage++;
+    }
+    public void setPreviousPage() {
+        if (currentPage != 1)
+            currentPage--;
+    }
+    public void setLastPage() {
+        currentPage = getPagesCount();
+    }
+    public void setFirstPage() {
+        currentPage = 1;
     }
 }
