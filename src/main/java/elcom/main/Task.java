@@ -8,8 +8,9 @@ import java.util.Date;
 public class Task {
     private int id;
     private String description;
-    private String executor;
     private String status;
+    private String group;
+    private String executor;
     private String priority;
     private Date startDate;
     private Date finishDate;
@@ -17,30 +18,40 @@ public class Task {
     public Task(int id, String description, String executor, String status, String priority) {
         this.id = id;
         this.description = description;
-        this.executor = executor;
         this.status = status;
+        this.executor = executor;
         this.priority = priority;
+
+        // TODO: 05.02.16 Work it out
+        this.group = "None";
+        this.startDate = new Date();
+        this.startDate = new Date();
     }
-         public Task(String description, String executor, String status, String priority, Date startDate, Date finishDate) {
+    public Task(int id, String description, String status, String group, String executor, String priority, Date startDate, Date finishDate) {
+        this.id = id;
         this.description = description;
-        this.executor = executor;
         this.status = status;
+        this.group = group;
+        this.executor = executor;
         this.priority = priority;
         this.startDate = startDate;
         this.finishDate = finishDate;
     }
 
-    public String getId() {
-        return id + "";
+    public int getId() {
+        return id;
     }
     public String getDescription() {
         return description;
     }
-    public String getExecutor() {
-        return executor;
-    }
     public String getStatus() {
         return status;
+    }
+    public String getGroup() {
+        return group;
+    }
+    public String getExecutor() {
+        return executor;
     }
     public String getPriority() {
         return priority;
@@ -58,11 +69,14 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-    public void setExecutor(String executorName) {
-        this.executor = executorName;
-    }
     public void setStatus(String status) {
         this.status = status;
+    }
+    public void setGroup(String group) {
+        this.group = group;
+    }
+    public void setExecutor(String executorName) {
+        this.executor = executorName;
     }
     public void setPriority(String priority) {
         this.priority = priority;

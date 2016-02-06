@@ -2,51 +2,87 @@ package elcom.main;
 
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.text.SimpleDateFormat;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-// TODO: 18.01.16 Add page interaction
 
 // This bean handles logic from CreateTask page
 @ManagedBean(name = "TaskCreator", eager=false)
 @SessionScoped
 public class TaskCreator {
-    Task newborn = new Task("", "None", "Открыта", "Стандартный", new Date(), new Date());
+    Task newborn;
 
-    public List<String> getAllStatuses() {
-        ArrayList<String> statuses = new ArrayList();
-        statuses.add("Любой");
-        statuses.add("Открыта");
-
-        return statuses;
+    public TaskCreator() {
+        newborn = new Task(DatabaseConnector.getNextFreeId(), "", "None", "None", "Открыта", "Стандартный", new Date(), new Date());
     }
-    public List<String> getAllGroups() {
-        // no orders for logic for now, just as it is.
-        ArrayList<String> groups = new ArrayList();
-        groups.add("все сотрудники");
 
-        return groups;
+    // Getters
+    public int getId() {
+        return newborn.getId();
     }
-    public List<String> getAllExecutors() {
+    public String getDescription() {
+        return newborn.getDescription();
+    }
+    public String getStatus() {
+        return newborn.getStatus();
+    }
+    public String getGroup() {
+        return newborn.getGroup();
+    }
+    public String getExecutor() {
+        return newborn.getExecutor();
+    }
+    public String getPriority() {
+        return newborn.getPriority();
+    }
+    public Date getStartDate() {
+        return newborn.getStartDate();
+    }
+    public Date getFinishDate() {
+        return newborn.getFinishDate();
+    }
+
+    // Setters
+    public void setDescription(String description) {
+        newborn.setDescription(description);
+    }
+    public void setStatus(String status) {
+        newborn.setStatus(status);
+    }
+    public void setGroup(String group) {
+        newborn.setGroup(group);
+    }
+    public void setExecutor(String executor) {
+        newborn.setExecutor(executor);
+    }
+    public void setPriority(String priority) {
+        newborn.setPriority(priority);
+    }
+    public void setStartDate(Date date) {
+        newborn.setStartDate(date);
+    }
+    public void setFinishDate(Date date) {
+        newborn.setFinishDate(date);
+    }
+
+    // logic
+    public List<String> getTaskStatusOptions() {
+        return DatabaseConnector.getTaskStatusOptions();
+    }
+    public List<String> getGroupOptions() {
+        return DatabaseConnector.getGroupOptions();
+    }
+    public List<String> getExecutorOptions() {
         return new DatabaseConnector().getEmployees();
     }
-    public String getStartDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        return dateFormat.format(newborn.getStartDate());
-    }
-    public String getFinishDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        return dateFormat.format(newborn.getFinishDate());
+    public List<String> getPriorityOptions() {
+        return DatabaseConnector.getPriorityOptions();
     }
 
-    public void create() {
+    // Ajax listeners
+    public String create() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         databaseConnector.addTask(newborn);
+
+        return "ViewTasks";
     }
 }

@@ -1,7 +1,6 @@
 package elcom.main;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +9,49 @@ import java.util.List;
 // Handles all the information retrieving from Elcom databases
 // @Local
 class DatabaseConnector {
-    public DatabaseConnector() {
+    // Get options
+    public static List<String> getTaskStatusOptions() {
+        List<String> options = new ArrayList<>();
 
+        options.add("Выполнена");
+        options.add("Выполняется");
+        options.add("Открыта");
+        options.add("Закрыта");
+        options.add("Отложена");
+        options.add("Шаблон");
+        options.add("Отменена");
+
+        return options;
+    }
+    public static List<String> getEmployees() {
+        ArrayList temp = new ArrayList<String>();
+        temp.add("Анатолий Приблуда");
+        temp.add("Евгений Цопа");
+
+        return temp;
+    }
+    public static List<String> getPriorityOptions() {
+        ArrayList temp = new ArrayList<String>();
+        temp.add("Критический");
+        temp.add("Очень высокий");
+        temp.add("Высокий");
+        temp.add("Средний");
+        temp.add("Низкий");
+        temp.add("Очень низкий");
+        temp.add("В рабочем порядке");
+
+        return temp;
+    }
+    public static List<String> getGroupOptions() {
+        // no orders for logic for now, just as it is.
+        ArrayList<String> groups = new ArrayList();
+        groups.add("все сотрудники");
+
+        return groups;
     }
 
-    public List<Task> getTasks(String taskFilter, String userFilter) {
+    // Tasks interaction
+    public static List<Task> getTasks(String taskFilter, String userFilter) {
         ArrayList temp = new ArrayList<Task>();
 
         // TODO: 03.02.16 add taskFilter logic
@@ -30,17 +67,15 @@ class DatabaseConnector {
 
         return temp;
     }
-    public List<String> getEmployees() {
-        ArrayList temp = new ArrayList<String>();
-        temp.add("Anatoly Pribluda");
-        temp.add("Evgeny Tsopa");
+    public static void addTask(Task task) {
+        // logic
+    }
+    public static void removeTask(Task task) {
+        throw new NotImplementedException();
+    }
 
-        return temp;
-    }
-    public void addTask(Task task) {
-        throw new NotImplementedException();
-    }
-    public void removeTask(Task task) {
-        throw new NotImplementedException();
+    // TODO: 06.02.16 Enhance this method
+    public static int getNextFreeId() {
+        return 100500;
     }
 }
