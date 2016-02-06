@@ -72,7 +72,7 @@ public class TaskCreator {
         return DatabaseConnector.getGroupOptions();
     }
     public List<String> getExecutorOptions() {
-        return new DatabaseConnector().getEmployees();
+        return DatabaseConnector.getEmployees();
     }
     public List<String> getPriorityOptions() {
         return DatabaseConnector.getPriorityOptions();
@@ -80,8 +80,7 @@ public class TaskCreator {
 
     // Ajax listeners
     public String create() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        databaseConnector.addTask(newborn);
+        DatabaseConnector.addTask(newborn);
 
         return "ViewTasks";
     }

@@ -1,8 +1,6 @@
 package elcom.main;
 
 import java.util.Date;
-import elcom.enums.TaskPriority;
-import elcom.enums.TaskStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;

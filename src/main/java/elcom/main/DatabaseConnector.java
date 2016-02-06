@@ -27,10 +27,10 @@ class DatabaseConnector {
         em.getTransaction().commit();
         emf.close();
     }
+
     public EntityManager getEntityManager(){
         return em;
     }
-
     // Get options
     public static List<String> getTaskStatusOptions() {
         List<String> options = new ArrayList<>();
