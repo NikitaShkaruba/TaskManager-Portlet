@@ -1,6 +1,10 @@
 package elcom.main;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import javax.faces.bean.ManagedBean;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +13,24 @@ import java.util.List;
 // Handles all the information retrieving from Elcom databases
 // @Local
 class DatabaseConnector {
+    private EntityManagerFactory emf;
+    private EntityManager em;
+
+    private DatabaseConnector() {}
+
+    private void startConnection(){
+        emf = Persistence.createEntityManagerFactory("MainPersistenceUnit");
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+    }
+    private void closeConnection(){
+        em.getTransaction().commit();
+        emf.close();
+    }
+    public EntityManager getEntityManager(){
+        return em;
+    }
+
     // Get options
     public static List<String> getTaskStatusOptions() {
         List<String> options = new ArrayList<>();
