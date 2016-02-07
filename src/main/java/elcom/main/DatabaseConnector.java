@@ -1,7 +1,7 @@
 package elcom.main;
 
+import elcom.Entities.Task;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -12,26 +12,24 @@ import java.util.List;
 
 // Handles all the information retrieving from Elcom databases
 // @Local
-class DatabaseConnector {
-    private EntityManagerFactory emf;
-    private EntityManager em;
+public class DatabaseConnector {
+    private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+    private static EntityManagerFactory emf;
+    private static EntityManager em;
 
     private DatabaseConnector() {}
 
-    private void startConnection(){
-        emf = Persistence.createEntityManagerFactory("MainPersistenceUnit");
+    private static void startConnection(){
+        if (emf == null)
+            emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         em = emf.createEntityManager();
         em.getTransaction().begin();
     }
-    private void closeConnection(){
+    private static void closeConnection(){
         em.getTransaction().commit();
-        emf.close();
+        em.close();
     }
 
-    public EntityManager getEntityManager(){
-        return em;
-    }
-    // Get options
     public static List<String> getTaskStatusOptions() {
         List<String> options = new ArrayList<>();
 
@@ -74,20 +72,19 @@ class DatabaseConnector {
 
     // Tasks interaction
     public static List<Task> getTasks(String taskFilter, String userFilter) {
-        ArrayList temp = new ArrayList<Task>();
+        startConnection();
+        List<Task> tasks = em.createQuery("select t from Task t").getResultList();
+        System.out.println("id = ".concat(new Integer(tasks.get(0).getId()).toString())
+                .concat("; desc = ").concat(tasks.get(0).getDescription() == null ? "null" : tasks.get(0).getDescription())
+                .concat("; exec = ").concat(tasks.get(0).getExecutor() == null ? "null" : tasks.get(0).getExecutor().toString())
+                .concat("; group = ").concat(tasks.get(0).getGroup() == null ? "null" : tasks.get(0).getGroup())
+                .concat("; status = ").concat(tasks.get(0).getStatus() == null ? "null" : tasks.get(0).getStatus().toString())
+                .concat("; prio = ").concat(tasks.get(0).getPriority() == null ? "null" : tasks.get(0).getPriority().toString())
+                .concat("; BegDate = ").concat(tasks.get(0).getStartDate() == null ? "null" : tasks.get(0).getStartDate().toString())
+                .concat("; FinDate = ").concat(tasks.get(0).getFinishDate() == null ? "null" : tasks.get(0).getFinishDate().toString()));
+        closeConnection();
 
-        // TODO: 03.02.16 add taskFilter logic
-        if (userFilter.equals("Все")) {
-            temp.add(new Task(1, "Give us some water", "Daneeil", "Открыта", "Обычный"));
-            temp.add(new Task(2, "Give us food", "Daneeil", "Открыта", "Обычный"));
-            temp.add(new Task(3, "Give us place to sleep", "Daneeil", "Открыта", "Обычный"));
-        } else
-            temp.add(new Task(1, "Give us some water", userFilter, "Открыта", "Обычный"));
-
-        for (int i = 0; i < 200; i++)
-            temp.add(new Task(i, "Plug", "Plug", "Plug", "Plug"));
-
-        return temp;
+        return tasks;
     }
     public static void addTask(Task task) {
         // logic

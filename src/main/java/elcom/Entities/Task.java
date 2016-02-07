@@ -1,9 +1,8 @@
-package elcom.main;
+package elcom.Entities;
 
 import java.util.Date;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 
 // TODO: 12.01.16 Make this bean an entity and map it to database
 // TODO: 16.01.16 Make use of startDate, finishDate
@@ -11,85 +10,94 @@ import java.util.Date;
 
 @Entity
 @Table(name="task")
-class Task implements Serializable, Cloneable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class Task implements Serializable, Cloneable {
+
     private int id;
-    @Column(name = "name", length = 100)
     private String description;
-    private String status;
-    private String group;
-    private String executor;
-    private String priority;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "beg_date")
     private Date startDate;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_date")
     private Date finishDate;
+    private Employee executor;
+    private Status status;
+    private Priority priority;
+
+    //TODO: Implement this feature
+    private String group;
 
     public Task() {}
+    //TODO: Fix (or delete) these Task constructors.
     public Task(int id, String description, String executor, String status, String priority) {
         this.id = id;
         this.description = description;
-        this.status = status;
-        this.executor = executor;
-        this.priority = priority;
+        this.status = new Status();
+        this.executor = new Employee();
+        this.priority = new Priority();
 
-        // TODO: 05.02.16 Work it out
         this.group = "None";
         this.startDate = new Date();
         this.finishDate = new Date();
     }
     public Task(int id, String description, String status, String group, String executor, String priority, Date startDate, Date finishDate) {
-        this.id = id;
-        this.description = description;
-        this.status = status;
-        this.group = group;
-        this.executor = executor;
-        this.priority = priority;
+        new Task(id, description, status, group, priority);
         this.startDate = startDate;
         this.finishDate = finishDate;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public int getId() {
         return id;
     }
+    @Basic
+    @Column(name = "name")
     public String getDescription() {
         return description;
     }
-    public String getStatus() {
+    @OneToOne
+    @JoinColumn(name="status_id")
+    public Status getStatus() {
         return status;
     }
+    @Transient
     public String getGroup() {
         return group;
     }
-    public String getExecutor() {
+    @OneToOne
+    @JoinColumn(name="performer_id")
+    public Employee getExecutor() {
         return executor;
     }
-    public String getPriority() {
+    @OneToOne
+    @JoinColumn(name="priority_id")
+    public Priority getPriority() {
         return priority;
     }
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "beg_date")
     public Date getStartDate() {
-        return this.startDate;
+        return startDate;
     }
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_date")
     public Date getFinishDate() {
-        return this.finishDate;
+        return finishDate;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
     public void setDescription(String description) {
         this.description = description;
     }
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
     public void setGroup(String group) {
         this.group = group;
     }
-    public void setExecutor(String executorName) {
-        this.executor = executorName;
+    public void setExecutor(Employee executor) {
+        this.executor = executor;
     }
-    public void setPriority(String priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
     public void setStartDate(Date date) {
@@ -121,6 +129,7 @@ class Task implements Serializable, Cloneable {
     }
     @Override
     public String toString() {
-        return getClass().getCanonicalName().concat("[id = ").concat(id + "").concat(", desc = ").concat(description != null ? description : "null").concat("]");
+        return getClass().getCanonicalName()
+                .concat("[id = ").concat(id + "").concat(", desc = ").concat(description != null ? description : "null").concat("]");
     }
 }

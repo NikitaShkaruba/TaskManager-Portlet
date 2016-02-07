@@ -2,6 +2,9 @@ package elcom.main;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
+
+import elcom.Entities.Task;
+import elcom.MBeans.TaskPresenter;
 import org.junit.Before;
 import java.util.List;
 import org.junit.Test;

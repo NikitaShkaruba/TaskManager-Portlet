@@ -1,4 +1,10 @@
-package elcom.main;
+package elcom.MBeans;
+
+import elcom.Entities.Employee;
+import elcom.Entities.Status;
+import elcom.Entities.Task;
+import elcom.main.DatabaseConnector;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -23,16 +29,16 @@ public class TaskCreator {
         return newborn.getDescription();
     }
     public String getStatus() {
-        return newborn.getStatus();
+        return newborn.getStatus().getName();
     }
     public String getGroup() {
         return newborn.getGroup();
     }
     public String getExecutor() {
-        return newborn.getExecutor();
+        return newborn.getExecutor().getName();
     }
     public String getPriority() {
-        return newborn.getPriority();
+        return newborn.getPriority().getName();
     }
     public Date getStartDate() {
         return newborn.getStartDate();
@@ -42,20 +48,21 @@ public class TaskCreator {
     }
 
     // Setters
+    //TODO: Fix broken setters when adding new task.
     public void setDescription(String description) {
         newborn.setDescription(description);
     }
     public void setStatus(String status) {
-        newborn.setStatus(status);
+        newborn.setStatus(new Status());
     }
     public void setGroup(String group) {
         newborn.setGroup(group);
     }
     public void setExecutor(String executor) {
-        newborn.setExecutor(executor);
+        newborn.setExecutor(new Employee());
     }
     public void setPriority(String priority) {
-        newborn.setPriority(priority);
+        throw new NotImplementedException();
     }
     public void setStartDate(Date date) {
         newborn.setStartDate(date);

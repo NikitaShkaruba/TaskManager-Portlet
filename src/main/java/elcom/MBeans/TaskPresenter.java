@@ -1,4 +1,7 @@
-package elcom.main;
+package elcom.MBeans;
+
+import elcom.Entities.Task;
+import elcom.main.DatabaseConnector;
 
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
