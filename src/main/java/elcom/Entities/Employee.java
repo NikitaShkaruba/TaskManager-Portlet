@@ -10,7 +10,6 @@ public class Employee implements Serializable{
     private String fullName;
     private Boolean active;
 
-
     public Employee(){}
 
 

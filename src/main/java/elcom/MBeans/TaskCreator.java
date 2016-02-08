@@ -3,7 +3,8 @@ package elcom.MBeans;
 import elcom.Entities.Employee;
 import elcom.Entities.Status;
 import elcom.Entities.Task;
-import elcom.main.DatabaseConnector;
+import elcom.ejbs.DatabaseConnector;
+import elcom.enums.TaskData;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.faces.bean.SessionScoped;
@@ -16,9 +17,13 @@ import java.util.List;
 @SessionScoped
 public class TaskCreator {
     Task newborn;
+    DatabaseConnector dbc;
 
     public TaskCreator() {
-        newborn = new Task(DatabaseConnector.getNextFreeId(), "", "None", "None", "Открыта", "Стандартный", new Date(), new Date());
+        //TODO: remove dbc constructor for injection
+        dbc = new DatabaseConnector();
+
+        newborn = new Task();
     }
 
     // Getters
@@ -26,19 +31,19 @@ public class TaskCreator {
         return newborn.getId();
     }
     public String getDescription() {
-        return newborn.getDescription();
+        return newborn.getDescription() == null ? "???" : newborn.getDescription();
     }
     public String getStatus() {
-        return newborn.getStatus().getName();
+        return newborn.getStatus() == null ? "???" : newborn.getStatus().getName();
     }
     public String getGroup() {
-        return newborn.getGroup();
+        return newborn.getGroup() == null ? "???" : newborn.getGroup();
     }
     public String getExecutor() {
-        return newborn.getExecutor().getName();
+        return newborn.getExecutor() == null ? "???" : newborn.getExecutor().getName();
     }
     public String getPriority() {
-        return newborn.getPriority().getName();
+        return newborn.getPriority() == null ? "???" : newborn.getPriority().getName();
     }
     public Date getStartDate() {
         return newborn.getStartDate();
@@ -73,21 +78,21 @@ public class TaskCreator {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return DatabaseConnector.getTaskStatusOptions();
+        return dbc.retrieveData(TaskData.STATUS);
     }
     public List<String> getGroupOptions() {
-        return DatabaseConnector.getGroupOptions();
+        return dbc.retrieveData(TaskData.GROUP);
     }
     public List<String> getExecutorOptions() {
-        return DatabaseConnector.getEmployees();
+        return dbc.retrieveData(TaskData.EMPLOYEE);
     }
     public List<String> getPriorityOptions() {
-        return DatabaseConnector.getPriorityOptions();
+        return dbc.retrieveData(TaskData.PRIORITY);
     }
 
     // Ajax listeners
     public String create() {
-        DatabaseConnector.addTask(newborn);
+        dbc.addTask(newborn);
 
         return "ViewTasks";
     }

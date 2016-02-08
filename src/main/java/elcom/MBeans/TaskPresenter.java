@@ -1,7 +1,8 @@
 package elcom.MBeans;
 
 import elcom.Entities.Task;
-import elcom.main.DatabaseConnector;
+import elcom.ejbs.DatabaseConnector;
+import elcom.enums.TaskData;
 
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -21,15 +22,20 @@ public class TaskPresenter {
     private String currentUser;
     private int currentPage;
     private int displayedAmount;
+    
+    DatabaseConnector dbc;
 
     public TaskPresenter() {
+        //TODO: remove dbc constructor for injection
+        dbc = new DatabaseConnector();
+        
         currentUser = "Andrey Pribluda";
         selectedTaskFilter = "Любой";
         selectedEmployeeFilter = "Мои";
         currentPage = 1;
         displayedAmount = 15;
         
-        tasks = DatabaseConnector.getTasks(this.selectedTaskFilter, currentUser);
+        tasks = dbc.retrieveTasks(this.selectedTaskFilter, currentUser);
     }
 
     // Main Logic
@@ -101,7 +107,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return DatabaseConnector.getTaskStatusOptions();
+        return dbc.retrieveData(TaskData.STATUS);
     }
     public List<Integer> getItemAmountOptions() {
         List<Integer> variants = new ArrayList<>();
@@ -122,10 +128,10 @@ public class TaskPresenter {
 
     // AJAX Listeners
     public void selectNewTaskFilter() {
-        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.retrieveTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void selectNewEmployeeFilter() {
-        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.retrieveTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void setNextPage() {
         if (currentPage != getPagesCount())

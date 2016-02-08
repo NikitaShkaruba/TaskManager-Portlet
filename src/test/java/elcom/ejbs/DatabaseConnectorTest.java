@@ -1,4 +1,4 @@
-package elcom.main;
+package elcom.ejbs;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,7 +9,7 @@ import java.util.List;
 public class DatabaseConnectorTest {
     @Test
     public void GetAtLeastOneTaskTest() {
-        List<Task> tasks = DatabaseConnector.getTasks("Любой", "Все");
+        List<Task> tasks = new DatabaseConnector().retrieveTasks("Любой", "Все");
         assertTrue("Zero tasks retrieved", !tasks.isEmpty());
     }
 }

@@ -1,4 +1,4 @@
-package elcom.main;
+package elcom.ejbs;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
