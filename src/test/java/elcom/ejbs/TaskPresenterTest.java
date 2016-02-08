@@ -18,7 +18,7 @@ public class TaskPresenterTest {
         List<Task> taskPlug = new ArrayList<>();
 
         for(int i = 0; i < tasksTotalSize; i++)
-            taskPlug.add(new Task(i, "plug", "plug", "plug", "plug"));
+            taskPlug.add(new Task());
 
         taskPresenter.setTasks(taskPlug);
     }

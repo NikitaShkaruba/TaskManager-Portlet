@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="statuses")
+@NamedQuery(query = "select s from Status s", name = "select all statuses")
 public class Status implements Serializable {
     int id;
     String name;
@@ -54,8 +55,6 @@ public class Status implements Serializable {
 
     @Override
     public String toString() {
-        return this.getClass().getCanonicalName()
-                .concat(": id = ").concat(id + "")
-                .concat("; name = ").concat(name == null ? "null" : name);
+        return name;
     }
 }

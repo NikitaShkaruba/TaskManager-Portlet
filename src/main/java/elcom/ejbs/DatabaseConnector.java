@@ -19,7 +19,7 @@ import java.util.List;
 // Handles all the information retrieving from Elcom databases
 // @Local
 public class DatabaseConnector {
-    private final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+    private static final String STATUS_ANY = "Любой";
 
     private final List<Status> statuses;
     private final List<Priority> priorities;
@@ -47,18 +47,18 @@ public class DatabaseConnector {
 
     private List<Object> fetchData(TaskData type) {
         List<Object> result = null;
-        String query;
+        String query = "select all ";
 
-        switch(type){
-            case PRIORITY: query = "select p from Priority p";  break;
-            case EMPLOYEE: query = "select e from Employee e";  break;
-            case STATUS:   query = "select s from Status s";    break;
+        switch(type) {
+            case PRIORITY: query = query.concat("priorities"); break;
+            case EMPLOYEE: query = query.concat("employees");  break;
+            case STATUS:   query = query.concat("statuses");   break;
             case GROUP: throw new NotImplementedException();
             default:    throw new NotImplementedException();
         }
 
         try(DBConnection connection = new DBConnection()){
-            result = connection.getEntityManager().createQuery(query).getResultList();
+            result = connection.getEntityManager().createNamedQuery(query).getResultList();
         }
         catch(Exception e){
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class DatabaseConnector {
         return result;
     }
 
-    public List<String> retrieveData(TaskData type) {
+    public List<String> readData(TaskData type) {
         List<String> result = new ArrayList<String>();
 
         switch (type){
@@ -80,8 +80,7 @@ public class DatabaseConnector {
 
         return result;
     }
-
-    public List<Task> retrieveTasks(String taskFilter, String userFilter) {
+    public List<Task> readTasks(String taskFilter, String userFilter) {
         List<Task> tasks = null;
 
         try(DBConnection connection = new DBConnection()) {
@@ -94,15 +93,16 @@ public class DatabaseConnector {
         return tasks;
     }
 
-    // unsorted staff
-    public void addTask(Task task) {
-        // logic
-    }
-    public void removeTask(Task task) {
-        throw new NotImplementedException();
-    }
-    public int getNextFreeId() {
-        return 100500;
+    public Boolean addTask(Task task){
+        try (DBConnection dbc = new DBConnection()) {
+            dbc.getEntityManager().persist(task);
+        }
+        catch (Exception e ) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 }
 

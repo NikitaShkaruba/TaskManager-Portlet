@@ -78,16 +78,16 @@ public class TaskCreator {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return dbc.retrieveData(TaskData.STATUS);
+        return dbc.readData(TaskData.STATUS);
     }
     public List<String> getGroupOptions() {
-        return dbc.retrieveData(TaskData.GROUP);
+        return dbc.readData(TaskData.GROUP);
     }
     public List<String> getExecutorOptions() {
-        return dbc.retrieveData(TaskData.EMPLOYEE);
+        return dbc.readData(TaskData.EMPLOYEE);
     }
     public List<String> getPriorityOptions() {
-        return dbc.retrieveData(TaskData.PRIORITY);
+        return dbc.readData(TaskData.PRIORITY);
     }
 
     // Ajax listeners

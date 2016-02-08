@@ -35,7 +35,7 @@ public class TaskPresenter {
         currentPage = 1;
         displayedAmount = 15;
         
-        tasks = dbc.retrieveTasks(this.selectedTaskFilter, currentUser);
+        tasks = dbc.readTasks(this.selectedTaskFilter, currentUser);
     }
 
     // Main Logic
@@ -107,7 +107,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return dbc.retrieveData(TaskData.STATUS);
+        return dbc.readData(TaskData.STATUS);
     }
     public List<Integer> getItemAmountOptions() {
         List<Integer> variants = new ArrayList<>();
@@ -128,10 +128,10 @@ public class TaskPresenter {
 
     // AJAX Listeners
     public void selectNewTaskFilter() {
-        tasks = dbc.retrieveTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void selectNewEmployeeFilter() {
-        tasks = dbc.retrieveTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void setNextPage() {
         if (currentPage != getPagesCount())

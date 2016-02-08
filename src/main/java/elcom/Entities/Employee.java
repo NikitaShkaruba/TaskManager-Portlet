@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 @Entity
 @Table(name="wfuser")
+@NamedQuery(query = "select e from Employee e", name = "select all employees")
 public class Employee implements Serializable{
     private int id;
     private String name;
@@ -72,9 +73,6 @@ public class Employee implements Serializable{
     }
     @Override
     public String toString() {
-        return getClass().getCanonicalName()
-                .concat(": id = ").concat(id + "")
-                .concat("; name = ").concat(name != null ? name : "null")
-                .concat("; Active = ").concat(active + ";");
+        return fullName.concat(" (").concat(name).concat(")");
     }
 }

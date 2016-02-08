@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="priorities")
+@NamedQuery(query = "select p from Priority p", name = "select all priorities")
 public class Priority implements Serializable{
     private int id;
     private String name;
@@ -67,9 +68,6 @@ public class Priority implements Serializable{
 
     @Override
     public String toString() {
-        return this.getClass().getCanonicalName()
-                .concat(": id = ").concat(id + "")
-                .concat("; name = ").concat(name == null ? "null" : name)
-                .concat("; coef = ").concat(coefficient + ";");
+        return name;
     }
 }

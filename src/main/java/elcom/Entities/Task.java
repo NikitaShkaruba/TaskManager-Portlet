@@ -10,6 +10,16 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="task")
+@NamedQueries({
+        @NamedQuery(name = "find tasks by status",
+                    query = "select t from Task t where t.status = :status"),
+
+        @NamedQuery(name = "find tasks by employee",
+                    query = "select t from Task t where t.executor = :employee"),
+
+        @NamedQuery(name = "find tasks by employee and status",
+                    query = "select t from Task t where t.executor = :employee and t.status = :status")
+})
 public class Task implements Serializable, Cloneable {
 
     private int id;
@@ -24,23 +34,6 @@ public class Task implements Serializable, Cloneable {
     private String group;
 
     public Task() {}
-    //TODO: Fix (or delete) these Task constructors.
-    public Task(int id, String description, String executor, String status, String priority) {
-        this.id = id;
-        this.description = description;
-        this.status = new Status();
-        this.executor = new Employee();
-        this.priority = new Priority();
-
-        this.group = "None";
-        this.startDate = new Date();
-        this.finishDate = new Date();
-    }
-    public Task(int id, String description, String status, String group, String executor, String priority, Date startDate, Date finishDate) {
-        new Task(id, description, status, group, priority);
-        this.startDate = startDate;
-        this.finishDate = finishDate;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

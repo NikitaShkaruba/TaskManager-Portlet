@@ -9,7 +9,7 @@ import java.util.List;
 public class DatabaseConnectorTest {
     @Test
     public void GetAtLeastOneTaskTest() {
-        List<Task> tasks = new DatabaseConnector().retrieveTasks("Любой", "Все");
+        List<Task> tasks = new DatabaseConnector().readTasks("Любой", "Все");
         assertTrue("Zero tasks retrieved", !tasks.isEmpty());
     }
 }
