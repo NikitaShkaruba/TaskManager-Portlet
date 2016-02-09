@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
-// TODO: 04.02.16 Consider assigning some responsibilities to a bunch of support classes 
 
 // This bean handles logic from ViewTasks page
 @ManagedBean(name = "TaskPresenter", eager=true)
@@ -21,7 +20,7 @@ public class TaskPresenter {
     private int currentPage;
     private int displayedAmount;
     
-    DatabaseConnector dbc;
+    private DatabaseConnector dbc;
 
     public TaskPresenter() {
         //TODO: remove dbc constructor for injection
@@ -46,9 +45,6 @@ public class TaskPresenter {
             endIndex = tasks.size();
 
         return tasks.subList(beginIndex, endIndex);
-    }
-    public String getTip() {
-        return "Ваш запрос был успешно выполнен.";
     }
     public int getPagesCount() {
         return (int)Math.ceil((double)tasks.size() / displayedAmount);

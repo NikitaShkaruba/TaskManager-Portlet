@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Priority implements Serializable{
     private int id;
     private String name;
-    private int coefficient;
+    private int coefficient; //seems to be unused at the moment
 
     public Priority() {}
 

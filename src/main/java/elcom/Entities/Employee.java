@@ -2,13 +2,15 @@ package elcom.Entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+
+
 @Entity
 @Table(name="wfuser")
 @NamedQuery(query = "select e from Employee e", name = "select all employees")
 public class Employee implements Serializable{
     private int id;
-    private String name;
-    private String fullName;
+    private String name; //aka login aka nickname
+    private String fullName; //First name + middle Name + Last name (all cyrillic)
     private Boolean active;
 
     public Employee(){}

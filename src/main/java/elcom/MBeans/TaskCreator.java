@@ -15,7 +15,7 @@ import java.util.List;
 @RequestScoped
 public class TaskCreator {
     Task newborn;
-    DatabaseConnector dbc;
+    private DatabaseConnector dbc;
 
     public TaskCreator() {
         //TODO: remove dbc constructor for injection
@@ -25,9 +25,6 @@ public class TaskCreator {
     }
 
     // Getters
-    public int getId() {
-        return newborn.getId();
-    }
     public String getDescription() {
         return newborn.getDescription() == null ? "???" : newborn.getDescription();
     }
@@ -51,7 +48,6 @@ public class TaskCreator {
     }
 
     // Setters
-    //TODO: Fix broken setters when adding new task.
     public void setDescription(String description) {
         newborn.setDescription(description);
     }
@@ -90,9 +86,10 @@ public class TaskCreator {
 
     // Ajax listeners
     public void create() {
+        //Display appropriate popup depending if insert was successful.
         if (dbc.tryCreateTask(newborn))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Task was created"));
         else
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Cannot connect to database"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Could not connect to database"));
     }
 }

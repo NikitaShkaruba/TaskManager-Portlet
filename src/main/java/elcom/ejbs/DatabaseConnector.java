@@ -15,15 +15,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: 11.01.16 Add logic
-
-// Handles all the information retrieving from Elcom databases
-// @Local
+// Handles retrieveing data from database
 public class DatabaseConnector {
-    //Constants
+    // Constants
     private static final String STATUS_ANY = "Любой";
     private static final String EMPLOYEE_ANY = "Все";
-
     private final List<Status> statuses;
     private final List<Priority> priorities;
     private final List<Employee> employees;
@@ -48,8 +44,8 @@ public class DatabaseConnector {
             employees.add((Employee)employee);
     }
 
-    //Helper Methods
-    public List<Object> fetchData(TaskData type) {
+    // Methods used inside class to make code more readable
+    private List<Object> fetchData(TaskData type) {
         List<Object> result = null;
         String query;
 
@@ -70,7 +66,7 @@ public class DatabaseConnector {
 
         return result;
     }
-    public String createReadTaskQuery(String statusFilter, String employeeFilter) {
+    private String createReadTaskQuery(String statusFilter, String employeeFilter) {
 
         String queryName;
 
@@ -87,6 +83,7 @@ public class DatabaseConnector {
 
         return queryName;
     }
+    // Methods used to get full entity instance (id-name-etc) having just name.
     public Status findStatusByName(String name) {
         for (Status s : statuses)
             if (s.getName().toLowerCase().equals(name.toLowerCase()))
@@ -107,7 +104,7 @@ public class DatabaseConnector {
         return null;
     }
 
-    //CREATE Methods
+    // CREATE Methods
     public Boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection()) {
             dbc.getEntityManager().persist(task);
@@ -120,7 +117,7 @@ public class DatabaseConnector {
         return true;
     }
 
-    //READ Methods
+    // READ Methods
     public List<String> readData(TaskData type) {
         List<String> result = new ArrayList<String>();
 
@@ -156,14 +153,15 @@ public class DatabaseConnector {
         return tasks;
     }
 
-    //UPDATE Methods
+    // UPDATE Methods
 
-    //DELETE Methods
+    // DELETE Methods
 }
 
+//Incapsulated single Database connection. Used by DatabaseConnector during transactions.
+//Implements Closeable to become able to be used with try-catch.
 class DBConnection implements Closeable{
     private static final String DEFAULT_PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
-
     private EntityManagerFactory emf;
     private EntityManager em;
 
@@ -181,6 +179,7 @@ class DBConnection implements Closeable{
         this(DEFAULT_PERSISTENCE_UNIT_NAME);
     }
 
+    //Used during queries to make calls to database
     public EntityManager getEntityManager() {
         return em;
     }
