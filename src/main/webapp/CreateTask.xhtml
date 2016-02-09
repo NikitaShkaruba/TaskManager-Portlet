@@ -7,7 +7,9 @@
 </h:head>
 
 <h:body>
+    <p:tooltip />
     <h:form>
+        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
         <h:outputLabel value="Заявка номер #{TaskCreator.id}"/>
         <br/>
 
@@ -47,13 +49,12 @@
             <p:outputLabel for="startTime" value="Начать выполнение:" />
             <p:outputLabel for="endTime" value="Завершить работу:" />
 
-            <p:calendar id="startTime" value="#{TaskCreator.startDate}" pattern="dd-MM-yyyy" mask="true" />
+            <p:calendar id="startTime" value="#{TaskCreator.startDate}"  pattern="dd-MM-yyyy" mask="true" />
             <p:calendar id="endTime" value="#{TaskCreator.finishDate}" pattern="dd-MM-yyyy" mask="true" />
         </h:panelGrid>
 
-        <!-- TODO: enhance statuses logic -->
-        <p:commandButton value="Сохранить заявку" action="#{TaskCreator.create}" />
-        <p:commandButton value="Отмена" action="ViewTasks" />
+        <p:commandButton value="Сохранить заявку" actionListener="#{TaskCreator.create}" />
+        <p:button value="Вернуться к просмотру Заявок" outcome="ViewTasks.xhtml" />
     </h:form>
 </h:body>
 </html>

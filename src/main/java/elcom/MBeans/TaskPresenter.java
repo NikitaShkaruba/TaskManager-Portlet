@@ -1,5 +1,8 @@
-package elcom.main;
+package elcom.MBeans;
 
+import elcom.Entities.Task;
+import elcom.ejbs.DatabaseConnector;
+import elcom.enums.TaskData;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
@@ -15,18 +18,21 @@ public class TaskPresenter {
     private List<Task> tasks;
     private String selectedTaskFilter;
     private String selectedEmployeeFilter;
-    private String currentUser;
     private int currentPage;
     private int displayedAmount;
+    
+    DatabaseConnector dbc;
 
     public TaskPresenter() {
-        currentUser = "Andrey Pribluda";
+        //TODO: remove dbc constructor for injection
+        dbc = new DatabaseConnector();
+        
         selectedTaskFilter = "Любой";
-        selectedEmployeeFilter = "Мои";
+        selectedEmployeeFilter = "Все";
         currentPage = 1;
         displayedAmount = 15;
         
-        tasks = DatabaseConnector.getTasks(this.selectedTaskFilter, currentUser);
+        tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
     }
 
     // Main Logic
@@ -58,9 +64,6 @@ public class TaskPresenter {
     public String getSelectedEmployeeFilter() {
         return selectedEmployeeFilter;
     }
-    public String getCurrentUser() {
-        return currentUser;
-    }
     public int getCurrentPage() {
         return currentPage;
     }
@@ -74,9 +77,6 @@ public class TaskPresenter {
     }
     public void setSelectedEmployeeFilter(String filter) {
         this.selectedEmployeeFilter = filter;
-    }
-    public void setCurrentUser(String username) {
-        this.currentUser = username;
     }
     public void setCurrentPage(int pageNumber) {
         this.currentPage = pageNumber;
@@ -98,7 +98,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return DatabaseConnector.getTaskStatusOptions();
+        return dbc.readData(TaskData.STATUS);
     }
     public List<Integer> getItemAmountOptions() {
         List<Integer> variants = new ArrayList<>();
@@ -119,10 +119,10 @@ public class TaskPresenter {
 
     // AJAX Listeners
     public void selectNewTaskFilter() {
-        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void selectNewEmployeeFilter() {
-        tasks = DatabaseConnector.getTasks(selectedTaskFilter, selectedEmployeeFilter);
+        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
     }
     public void setNextPage() {
         if (currentPage != getPagesCount())

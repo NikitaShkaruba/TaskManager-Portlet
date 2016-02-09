@@ -1,7 +1,10 @@
-package elcom.main;
+package elcom.ejbs;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
+
+import elcom.Entities.Task;
+import elcom.MBeans.TaskPresenter;
 import org.junit.Before;
 import java.util.List;
 import org.junit.Test;
@@ -15,7 +18,7 @@ public class TaskPresenterTest {
         List<Task> taskPlug = new ArrayList<>();
 
         for(int i = 0; i < tasksTotalSize; i++)
-            taskPlug.add(new Task(i, "plug", "plug", "plug", "plug"));
+            taskPlug.add(new Task());
 
         taskPresenter.setTasks(taskPlug);
     }
