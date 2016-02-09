@@ -11,13 +11,16 @@ import java.io.Serializable;
 @Entity
 @Table(name="task")
 @NamedQueries({
-        @NamedQuery(name = "find tasks by status",
+        @NamedQuery(name = "select all tasks",
+                    query = "select t from Task t"),
+
+        @NamedQuery(name = "select tasks by status",
                     query = "select t from Task t where t.status = :status"),
 
-        @NamedQuery(name = "find tasks by employee",
+        @NamedQuery(name = "select tasks by employee",
                     query = "select t from Task t where t.executor = :employee"),
 
-        @NamedQuery(name = "find tasks by employee and status",
+        @NamedQuery(name = "select tasks by employee and status",
                     query = "select t from Task t where t.executor = :employee and t.status = :status")
 })
 public class Task implements Serializable, Cloneable {
