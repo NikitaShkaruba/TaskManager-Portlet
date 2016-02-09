@@ -154,6 +154,17 @@ public class DatabaseConnector {
     }
 
     // UPDATE Methods
+    public Boolean tryUpdateTask(Task task) {
+        try (DBConnection dbc = new DBConnection()) {
+            dbc.getEntityManager().merge(task);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     // DELETE Methods
 }
