@@ -25,4 +25,6 @@ public interface IDatabaseConnectorLocal {
     // UPDATE Methods
     Boolean tryUpdateTask(Task task);
     // DELETE Methods
+
+    Boolean tryDeleteTask(Task task);
 }
