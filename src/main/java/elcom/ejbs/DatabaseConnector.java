@@ -6,6 +6,7 @@ import elcom.Entities.Status;
 import elcom.Entities.Task;
 import elcom.enums.TaskData;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -15,8 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-// Handles retrieveing data from database
-public class DatabaseConnector {
+// Handles retrieving data from database
+@Singleton
+public class DatabaseConnector implements IDatabaseConnectorLocal {
     // Constants
     private static final String STATUS_ANY = "Любой";
     private static final String EMPLOYEE_ANY = "Все";
@@ -167,37 +169,38 @@ public class DatabaseConnector {
     }
 
     // DELETE Methods
+
+    //Encapsulated single Database connection. Used by DatabaseConnector during transactions.
+    //Implements Closeable to become able to be used with try-catch.
+    private class DBConnection implements Closeable {
+        private static final String DEFAULT_PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+        private EntityManagerFactory emf;
+        private EntityManager em;
+
+        public DBConnection(String PersistenceUnitName) {
+            if (emf == null)
+                if (PersistenceUnitName == null)
+                    throw new IllegalArgumentException("PersistenceUnitName is null");
+                else
+                    emf = Persistence.createEntityManagerFactory(PersistenceUnitName);
+
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+        }
+        public DBConnection() {
+            this(DEFAULT_PERSISTENCE_UNIT_NAME);
+        }
+
+        //Used during queries to make calls to database
+        public EntityManager getEntityManager() {
+                                                      return em;
+                                                                }
+
+        @Override
+        public void close() throws IOException {
+            em.getTransaction().commit();
+            em.close();
+        }
+    }
 }
 
-//Incapsulated single Database connection. Used by DatabaseConnector during transactions.
-//Implements Closeable to become able to be used with try-catch.
-class DBConnection implements Closeable{
-    private static final String DEFAULT_PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
-    private EntityManagerFactory emf;
-    private EntityManager em;
-
-    public DBConnection(String PersistenceUnitName) {
-        if (emf == null)
-            if (PersistenceUnitName == null)
-                throw new IllegalArgumentException("PersistenceUnitName is null");
-            else
-                emf = Persistence.createEntityManagerFactory(PersistenceUnitName);
-
-        em = emf.createEntityManager();
-        em.getTransaction().begin();
-    }
-    public DBConnection() {
-        this(DEFAULT_PERSISTENCE_UNIT_NAME);
-    }
-
-    //Used during queries to make calls to database
-    public EntityManager getEntityManager() {
-        return em;
-    }
-
-    @Override
-    public void close() throws IOException {
-        em.getTransaction().commit();
-        em.close();
-    }
-}

@@ -1,8 +1,10 @@
 package elcom.MBeans;
 
 import elcom.Entities.Task;
-import elcom.ejbs.DatabaseConnector;
+import elcom.ejbs.IDatabaseConnectorLocal;
 import elcom.enums.TaskData;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
@@ -19,18 +21,17 @@ public class TaskPresenter {
     private String selectedEmployeeFilter;
     private int currentPage;
     private int displayedAmount;
-    
-    private DatabaseConnector dbc;
+    @EJB
+    private IDatabaseConnectorLocal dbc;
 
     public TaskPresenter() {
-        //TODO: remove dbc constructor for injection
-        dbc = new DatabaseConnector();
-        
         selectedTaskFilter = "Любой";
         selectedEmployeeFilter = "Все";
         currentPage = 1;
         displayedAmount = 15;
-        
+    }
+    @PostConstruct
+    public void init() {
         tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
     }
 
