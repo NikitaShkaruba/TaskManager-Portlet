@@ -4,8 +4,6 @@ import elcom.Entities.Employee;
 import elcom.Entities.Priority;
 import elcom.Entities.Status;
 import elcom.Entities.Task;
-import elcom.enums.TaskData;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,46 +25,47 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     private final List<Employee> employees;
 
     public DatabaseConnector() {
-        List<Object> data;
-
-        statuses = new ArrayList<>();
-        priorities = new ArrayList<>();
-        employees = new ArrayList<>();
-
-        data = fetchData(TaskData.STATUS);
-        for (Object status : data)
-            statuses.add((Status)status);
-
-        data = fetchData(TaskData.PRIORITY);
-        for (Object priority : data)
-            priorities.add((Priority)priority);
-
-        data = fetchData(TaskData.EMPLOYEE);
-        for (Object employee : data)
-            employees.add((Employee)employee);
-    }
-
-    // Methods used inside class to make code more readable
-    private List<Object> fetchData(TaskData type) {
-        List<Object> result = null;
-        String query;
-
-        switch(type) {
-            case PRIORITY: query = "select all priorities"; break;
-            case EMPLOYEE: query = "select all employees";  break;
-            case STATUS:   query = "select all statuses";   break;
-            case GROUP: throw new NotImplementedException();
-            default:    throw new NotImplementedException();
+        employees = fetchEmployees();
+        priorities = fetchPriorities();
+        statuses = fetchStatuses();
         }
 
-        try(DBConnection connection = new DBConnection()){
-            result = connection.getEntityManager().createNamedQuery(query).getResultList();
+    // Methods used inside class to make code more readable
+    private List<Employee> fetchEmployees() {
+        List<Employee> employees = null;
+
+        try(DBConnection dbc = new DBConnection()){
+            employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
         }
         catch(Exception e){
             e.printStackTrace();
         }
 
-        return result;
+        return employees;
+    }
+    private List<Priority> fetchPriorities() {
+        List<Priority> priorities = null;
+
+        try(DBConnection dbc = new DBConnection()){
+            priorities = dbc.getEntityManager().createNamedQuery("select all priorities").getResultList();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return priorities;
+    }
+    private List<Status> fetchStatuses() {
+        List<Status> statuses = null;
+
+        try(DBConnection dbc = new DBConnection()){
+            statuses = dbc.getEntityManager().createNamedQuery("select all statuses").getResultList();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return statuses;
     }
     private String createReadTaskQuery(String statusFilter, String employeeFilter) {
 
@@ -120,16 +119,34 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // READ Methods
-    public List<String> readData(TaskData type) {
-        List<String> result = new ArrayList<String>();
+    public List<String> readEmployees() {
+        List<String> result = new ArrayList<>();
 
-        switch (type){
-            case EMPLOYEE: for (Employee e : employees)  result.add(e.getFullName()); break;
-            case PRIORITY: for (Priority p : priorities) result.add(p.getName());     break;
-            case STATUS:   for (Status s : statuses)     result.add(s.getName());     break;
-            case GROUP:    result.add("все сотрудники");                              break;
-            default:       throw new NotImplementedException();
-        }
+        for (Employee e : employees)
+            result.add(e.getFullName().concat(" (").concat(e.getName()).concat(")"));
+
+        return result;
+    }
+    public List<String> readPriorities() {
+        List<String> result = new ArrayList<>();
+
+        for (Priority p : priorities)
+            result.add(p.getName());
+
+        return result;
+    }
+    public List<String> readStatuses() {
+        List<String> result = new ArrayList<>();
+
+        for (Status s : statuses)
+            result.add(s.getName());
+
+        return result;
+    }
+    public List<String> readGroups() {
+        List<String> result = new ArrayList<>();
+
+        result.add("Все сотрудники");
 
         return result;
     }

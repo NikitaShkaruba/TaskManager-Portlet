@@ -4,7 +4,6 @@ import elcom.Entities.Employee;
 import elcom.Entities.Priority;
 import elcom.Entities.Status;
 import elcom.Entities.Task;
-import elcom.enums.TaskData;
 import javax.ejb.Local;
 import java.util.List;
 
@@ -19,7 +18,10 @@ public interface IDatabaseConnectorLocal {
     Boolean tryCreateTask(Task task);
 
     // READ Methods
-    List<String> readData(TaskData type);
+    List<String> readEmployees();
+    List<String> readPriorities();
+    List<String> readStatuses();
+    List<String> readGroups();
     List<Task> readTasks(String statusFilter, String employeeFilter);
 
     // UPDATE Methods

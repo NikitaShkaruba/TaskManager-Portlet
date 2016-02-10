@@ -2,7 +2,6 @@ package elcom.MBeans;
 
 import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
-import elcom.enums.TaskData;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.RequestScoped;
@@ -71,16 +70,16 @@ public class TaskCreator {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return dbc.readData(TaskData.STATUS);
+        return dbc.readStatuses();
     }
     public List<String> getGroupOptions() {
-        return dbc.readData(TaskData.GROUP);
+        return dbc.readGroups();
     }
     public List<String> getExecutorOptions() {
-        return dbc.readData(TaskData.EMPLOYEE);
+        return dbc.readEmployees();
     }
     public List<String> getPriorityOptions() {
-        return dbc.readData(TaskData.PRIORITY);
+        return dbc.readPriorities();
     }
 
     // Ajax listeners

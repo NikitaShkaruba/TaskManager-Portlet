@@ -2,7 +2,6 @@ package elcom.MBeans;
 
 import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
-import elcom.enums.TaskData;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
@@ -20,6 +19,12 @@ public class TaskPresenter {
     private String selectedEmployeeFilter;
     private int currentPage;
     private int displayedAmount;
+
+    private boolean firstPageDisabled;
+    private boolean lastPageDisabled;
+    private boolean prevPageDisabled;
+    private boolean nextPageDisabled;
+
     @EJB
     private IDatabaseConnectorLocal dbc;
 
@@ -28,6 +33,11 @@ public class TaskPresenter {
         selectedEmployeeFilter = "Все";
         currentPage = 1;
         displayedAmount = 15;
+
+        firstPageDisabled = true;
+        lastPageDisabled = false;
+        prevPageDisabled = true;
+        nextPageDisabled = false;
     }
     @PostConstruct
     public void init() {
@@ -66,6 +76,18 @@ public class TaskPresenter {
     public int getDisplayedAmount() {
         return displayedAmount;
     }
+    public boolean isFirstPageDisabled() {
+        return firstPageDisabled;
+    }
+    public boolean isLastPageDisabled() {
+        return lastPageDisabled;
+    }
+    public boolean isPrevPageDisabled() {
+        return prevPageDisabled;
+    }
+    public boolean isNextPageDisabled() {
+        return nextPageDisabled;
+    }
 
     // Setters
     public void setSelectedTaskFilter(String filter) {
@@ -76,9 +98,11 @@ public class TaskPresenter {
     }
     public void setCurrentPage(int pageNumber) {
         this.currentPage = pageNumber;
+        updateButtonsStatuses();
     }
     public void setDisplayedAmount(int amount) {
         this.displayedAmount = amount;
+        setCurrentPage(1);
     }
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
@@ -94,7 +118,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return dbc.readData(TaskData.STATUS);
+        return dbc.readStatuses();
     }
     public List<Integer> getItemAmountOptions() {
         Set<Integer> options = new TreeSet<Integer>();
@@ -131,23 +155,51 @@ public class TaskPresenter {
     // AJAX Listeners
     public void selectNewTaskFilter() {
         tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
-        currentPage = 1;
+        setCurrentPage(1);
     }
     public void selectNewEmployeeFilter() {
         tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
+        setCurrentPage(1);
     }
     public void setNextPage() {
         if (currentPage != getPagesCount())
-            currentPage++;
+            setCurrentPage(currentPage + 1);
     }
     public void setPreviousPage() {
         if (currentPage != 1)
-            currentPage--;
+            setCurrentPage(currentPage - 1);
     }
     public void setLastPage() {
-        currentPage = getPagesCount();
+        setCurrentPage(getPagesCount());
     }
     public void setFirstPage() {
-        currentPage = 1;
+        setCurrentPage(1);
+    }
+
+    public void updateButtonsStatuses() {
+        if (currentPage == 1) {
+            firstPageDisabled = true;
+            prevPageDisabled = true;
+        }
+        else {
+            firstPageDisabled = false;
+            prevPageDisabled = false;
+        }
+
+        if (currentPage == getPagesCount()) {
+            lastPageDisabled = true;
+            nextPageDisabled = true;
+        }
+        else {
+            lastPageDisabled = false;
+            nextPageDisabled = false;
+        }
+
+        if (tasks.size() == 0) {
+            firstPageDisabled = true;
+            prevPageDisabled = true;
+            lastPageDisabled = true;
+            nextPageDisabled = true;
+        }
     }
 }
