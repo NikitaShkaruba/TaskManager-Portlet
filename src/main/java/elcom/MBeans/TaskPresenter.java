@@ -7,8 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 // TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
 
@@ -98,12 +97,27 @@ public class TaskPresenter {
         return dbc.readData(TaskData.STATUS);
     }
     public List<Integer> getItemAmountOptions() {
-        List<Integer> variants = new ArrayList<>();
+        Set<Integer> options = new TreeSet<Integer>();
 
-        for(int i = 5; i <= 30; i += 5)
-            variants.add(i);
+        int lowerBound = tasks.size() < 5 ? tasks.size() : 5;
+        int upperBound = tasks.size() < 30 ? tasks.size() : 30;
+        int cursor = lowerBound;
 
-        return variants;
+        options.add(lowerBound);
+
+        while ((cursor % 5) != 0)
+            cursor += 1;
+        while (cursor < upperBound) {
+            options.add(cursor);
+            cursor += 5;
+        }
+
+        options.add(upperBound);
+
+        if (!(options.contains(displayedAmount)))
+            displayedAmount = upperBound;
+
+        return new ArrayList<Integer>(options);
     }
     public List<Integer> getPagesOptions() {
         List<Integer> variants = new ArrayList<>();
@@ -117,6 +131,7 @@ public class TaskPresenter {
     // AJAX Listeners
     public void selectNewTaskFilter() {
         tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
+        currentPage = 1;
     }
     public void selectNewEmployeeFilter() {
         tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
