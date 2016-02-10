@@ -44,8 +44,11 @@
           <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок"/>
       </h:panelGrid>
 
-      <p:button value="Создать новую" outcome="CreateTask" />
-
+      <p:panel header="Действия" style="margin-bottom:10px;">
+          <p:button value="Создать новую" outcome="CreateTask" />
+          <p:button value="Корректировать" outcome="CorrectTask?id=#{TaskPresenter.selectedTaskId}" />
+          <p:commandButton value="Удалить" actionListener="#{TaskPresenter.delete}" />
+      </p:panel>
       <p:separator />
 
       <p:commandButton value="В начало" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" />

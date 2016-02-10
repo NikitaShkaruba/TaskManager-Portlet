@@ -14,7 +14,7 @@ public interface IDatabaseConnectorLocal {
     Status findStatusByName(String name);
     Employee findEmployeeByName(String name);
     Priority findPriorityByName(String name);
-
+    Task findTaskById(int id);
     // CREATE Methods
     Boolean tryCreateTask(Task task);
 

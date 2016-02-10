@@ -7,21 +7,27 @@
 </h:head>
 
 <h:body>
+    <f:event type="preRenderView" listener="#{TaskEditor.initialize(param[id])}"/>
     <p:tooltip />
     <h:form>
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-        <h:outputLabel value="Новая заявка"/>
+        <h:outputLabel value="Корректировка существующей заявки" style="font-size: '30px'" />
+        <br/>
+
+        <h:outputLabel value="Заявка с номером #{param['id']}"/>
         <br/>
 
         <h:outputLabel value="Описание заявки:" escape="true"/>
         <br/>
-        <p:inputText value="#{TaskEditor.description}" style="width: 700px; height: 80px;" />
+        <p:inputText value="#{TaskEditor.description}"  />
+        <p:outputLabel value="#{TaskEditor.description}" />
 
         <h:panelGrid columns="2" cellpadding="5">
             <h:outputLabel value="Статус"/>
             <p:selectOneMenu id="selectStatus" value="#{TaskEditor.status}" style="width:250px">
                 <f:selectItems value="#{TaskEditor.taskStatusOptions}"/>
             </p:selectOneMenu>
+            <p:outputLabel value="#{TaskEditor.status}" />
         </h:panelGrid>
 
         <h:panelGrid columns="2" cellpadding="5">
@@ -29,6 +35,7 @@
             <p:selectOneMenu id="selectGroup" value="#{TaskEditor.group}" style="width:250px">
                 <f:selectItems value="#{TaskEditor.groupOptions}" />
             </p:selectOneMenu>
+            <p:outputLabel value="#{TaskEditor.group}" />
         </h:panelGrid>
 
         <h:panelGrid columns="2" cellpadding="5">
@@ -36,6 +43,7 @@
             <p:selectOneMenu value="#{TaskEditor.executor}" style="width:250px">
                 <f:selectItems value="#{TaskEditor.executorOptions}" />
             </p:selectOneMenu>
+            <p:outputLabel value="#{TaskEditor.executor}" />
         </h:panelGrid>
 
         <h:panelGrid columns="2" cellpadding="5">
@@ -43,6 +51,7 @@
             <p:selectOneMenu id="selectPriority" value="#{TaskEditor.priority}" style="width:250px">
                 <f:selectItems value="#{TaskEditor.priorityOptions}" />
             </p:selectOneMenu>
+           <p:outputLabel value="#{TaskEditor.priority}"  />
         </h:panelGrid>
 
         <h:panelGrid columns="2" cellpadding="5">
@@ -50,7 +59,9 @@
             <p:outputLabel for="endTime" value="Завершить работу:" />
 
             <p:calendar id="startTime" value="#{TaskEditor.startDate}"  pattern="dd-MM-yyyy" mask="true" />
+            <p:outputLabel value="#{TaskEditor.startDate}"  />
             <p:calendar id="endTime" value="#{TaskEditor.finishDate}" pattern="dd-MM-yyyy" mask="true" />
+            <p:outputLabel value="#{TaskEditor.finishDate}"  />
         </h:panelGrid>
 
         <p:commandButton value="Сохранить заявку" actionListener="#{TaskEditor.create}" />

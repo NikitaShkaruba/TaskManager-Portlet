@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 // Handles retrieving data from database
@@ -105,7 +106,25 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
                 return p;
         return null;
     }
+    public Task findTaskById(int id) {
+        Task t = new Task();
 
+        t.setDescription("sht");
+        Status s = new Status();
+        s.setName("plug");
+        t.setStatus(new Status());
+        Priority p = new Priority();
+        p.setName("Plug");
+        t.setPriority(p);
+        Employee e = new Employee();
+        e.setName("Plug");
+        t.setExecutor(e);
+        t.setGroup("plug");
+        t.setFinishDate(new Date());
+        t.setStartDate(new Date());
+
+        return t;
+    }
     // CREATE Methods
     public Boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection()) {

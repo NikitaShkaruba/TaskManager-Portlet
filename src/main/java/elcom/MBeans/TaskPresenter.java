@@ -3,6 +3,8 @@ package elcom.MBeans;
 import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
 import elcom.enums.TaskData;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
@@ -53,7 +55,9 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
-
+    public int getSelectedTaskId() {
+        return 100500;
+    }
     // Getters
     public String getSelectedTaskFilter() {
         return selectedTaskFilter;
@@ -134,5 +138,8 @@ public class TaskPresenter {
     }
     public void setFirstPage() {
         currentPage = 1;
+    }
+    public void delete() {
+        throw new NotImplementedException();
     }
 }

@@ -3,73 +3,79 @@ package elcom.MBeans;
 import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
 import elcom.enums.TaskData;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import java.util.Date;
 import java.util.List;
 
 // This bean handles logic from CreateTask page
-@ManagedBean(name = "TaskCreator", eager=false)
-@RequestScoped
-public class TaskCreator {
-    Task newborn;
+@ManagedBean(name = "TaskEditor", eager=false)
+@ViewScoped
+public class TaskEditor {
+    Task task;
     @EJB
     private IDatabaseConnectorLocal dbc;
 
-    public TaskCreator() {
-        newborn = new Task();
+    public TaskEditor() {
+        task = new Task();
     }
 
     // Getters
     public String getDescription() {
-        return newborn.getDescription() == null ? "???" : newborn.getDescription();
+        return task.getDescription();
     }
     public String getStatus() {
-        return newborn.getStatus() == null ? "???" : newborn.getStatus().getName();
+        return task.getStatus().getName();
     }
     public String getGroup() {
-        return newborn.getGroup() == null ? "???" : newborn.getGroup();
+        return task.getGroup();
     }
     public String getExecutor() {
-        return newborn.getExecutor() == null ? "???" : newborn.getExecutor().getName();
+        return task.getExecutor().getName();
     }
     public String getPriority() {
-        return newborn.getPriority() == null ? "???" : newborn.getPriority().getName();
+        return task.getPriority().getName();
     }
     public Date getStartDate() {
-        return newborn.getStartDate();
+        return task.getStartDate();
     }
     public Date getFinishDate() {
-        return newborn.getFinishDate();
+        return task.getFinishDate();
     }
 
     // Setters
     public void setDescription(String description) {
-        newborn.setDescription(description);
+        task.setDescription(description);
     }
     public void setStatus(String status) {
-        newborn.setStatus(dbc.findStatusByName(status));
+        task.setStatus(dbc.findStatusByName(status));
     }
     public void setGroup(String group) {
-        newborn.setGroup(group);
+        task.setGroup(group);
     }
     public void setExecutor(String executor) {
-        newborn.setExecutor(dbc.findEmployeeByName(executor));
+        task.setExecutor(dbc.findEmployeeByName(executor));
     }
     public void setPriority(String priority) {
-        newborn.setPriority(dbc.findPriorityByName(priority));
+        task.setPriority(dbc.findPriorityByName(priority));
     }
     public void setStartDate(Date date) {
-        newborn.setStartDate(date);
+        task.setStartDate(date);
     }
     public void setFinishDate(Date date) {
-        newborn.setFinishDate(date);
+        task.setFinishDate(date);
     }
 
     // logic
+    public void initialize(int id) {
+        this.task = dbc.findTaskById(id);
+    }
     public List<String> getTaskStatusOptions() {
         return dbc.readData(TaskData.STATUS);
     }
@@ -86,9 +92,10 @@ public class TaskCreator {
     // Ajax listeners
     public void create() {
         //Display appropriate popup depending if insert was successful.
-        if (dbc.tryCreateTask(newborn))
+        if (dbc.tryCreateTask(task))
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Task was created"));
         else
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Could not connect to database"));
     }
+
 }
