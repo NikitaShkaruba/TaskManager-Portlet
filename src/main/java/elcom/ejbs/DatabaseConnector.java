@@ -86,14 +86,12 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
         return queryName;
     }
     // Methods used to get full entity instance (id-name-etc) having just name.
-    @Override
     public Status findStatusByName(String name) {
         for (Status s : statuses)
             if (s.getName().toLowerCase().equals(name.toLowerCase()))
                 return s;
         return null;
     }
-    @Override
     public Employee findEmployeeByName(String name) {
         for (Employee e : employees)
             if (    e.getFullName().toLowerCase().equals(name.toLowerCase())
@@ -101,7 +99,6 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
                 return e;
         return null;
     }
-    @Override
     public Priority findPriorityByName(String name) {
         for (Priority p: priorities)
             if (p.getName().toLowerCase().equals(name.toLowerCase()))
@@ -110,7 +107,6 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // CREATE Methods
-    @Override
     public Boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection()) {
             dbc.getEntityManager().persist(task);
@@ -124,7 +120,6 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // READ Methods
-    @Override
     public List<String> readData(TaskData type) {
         List<String> result = new ArrayList<String>();
 
@@ -138,7 +133,6 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return result;
     }
-    @Override
     public List<Task> readTasks(String statusFilter, String employeeFilter) {
         List<Task> tasks = null;
 
@@ -162,10 +156,9 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // UPDATE Methods
-    @Override
     public Boolean tryUpdateTask(Task task) {
         try (DBConnection dbc = new DBConnection()) {
-            dbc.getEntityManager().remove(task);
+            dbc.getEntityManager().merge(task);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -176,10 +169,9 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // DELETE Methods
-    @Override
     public Boolean tryDeleteTask(Task task) {
         try (DBConnection dbc = new DBConnection()) {
-            dbc.getEntityManager().
+            dbc.getEntityManager().remove(task);
         }
         catch (Exception e) {
             e.printStackTrace();
