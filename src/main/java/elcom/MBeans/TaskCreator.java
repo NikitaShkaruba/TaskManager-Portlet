@@ -1,8 +1,9 @@
 package elcom.MBeans;
 
 import elcom.Entities.Task;
-import elcom.ejbs.DatabaseConnector;
+import elcom.ejbs.IDatabaseConnectorLocal;
 import elcom.enums.TaskData;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ManagedBean;
@@ -15,12 +16,10 @@ import java.util.List;
 @RequestScoped
 public class TaskCreator {
     Task newborn;
-    private DatabaseConnector dbc;
+    @EJB
+    private IDatabaseConnectorLocal dbc;
 
     public TaskCreator() {
-        //TODO: remove dbc constructor for injection
-        dbc = new DatabaseConnector();
-
         newborn = new Task();
     }
 
