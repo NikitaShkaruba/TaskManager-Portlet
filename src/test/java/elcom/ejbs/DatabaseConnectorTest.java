@@ -3,6 +3,7 @@ package elcom.ejbs;
 import static org.junit.Assert.assertTrue;
 
 import elcom.Entities.Description;
+import elcom.Entities.Status;
 import elcom.Entities.Task;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,17 @@ public class DatabaseConnectorTest {
         Task task = dbc.readTasks("Любой", "Все").get(0);
         List<Description> descriptions = dbc.readDescriptions(task);
         assertTrue(!descriptions.isEmpty());
+    }
+
+    @Test
+    public void StatusTest() {
+        List<String> statuses = dbc.readStatuses();
+
+        assertTrue("Status Test failed at reading statuses", !statuses.isEmpty());
+
+        Status status = dbc.findStatusByName(statuses.get(0));
+
+        assertTrue("Status color is not working", status.getColor() != null);
     }
 
 }
