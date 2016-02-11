@@ -35,37 +35,43 @@
             <p:ajax event="change" update="gotoFirst gotoPrev gotoNext gotoLast currentPage amountShowed taskTable" />
             <f:selectItems value="#{TaskPresenter.itemAmountOptions}" var="showedAmount" itemLabel="#{showedAmount} предметов на странице" itemValue="#{showedAmount}" />
          </p:selectOneMenu>
+      </h:panelGrid>
 
-         <p:selectOneMenu id="currentPage" value="#{TaskPresenter.currentPage}" style="width:100%">
+         <p:selectOneMenu id="currentPage" value="#{TaskPresenter.currentPage}" >
             <p:ajax event="change" update="gotoFirst gotoPrev gotoNext gotoLast amountShowed taskTable" />
             <f:selectItems value="#{TaskPresenter.pagesOptions}" var="pageNumber" itemLabel="Страница #{pageNumber} из #{TaskPresenter.pagesCount}" itemValue="#{pageNumber}" />
          </p:selectOneMenu>
 
-          <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок" style="padding-left: 100px"/>
+       <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок"/>
+
+      <h:panelGrid columns="3" cellpadding="5">
+         <p:button value="Создать новую" outcome="CreateTask" />
       </h:panelGrid>
 
-      <p:button value="Создать новую" outcome="CreateTask" />
-
-      <p:separator />
+      <h:panelGrid columns="4" cellpadding="5">
+         <p:commandButton value="В начало" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" />
+         <p:commandButton value="Назад" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" />
+         <p:commandButton value="вперёд" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" />
+         <p:commandButton value="В конец" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" />
+      </h:panelGrid>
 
       <p:commandButton id="gotoFirst" value="В начало" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" disabled="#{TaskPresenter.firstPageDisabled}"/>
       <p:commandButton id="gotoPrev" value="Назад" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" disabled="#{TaskPresenter.prevPageDisabled}"/>
       <p:commandButton id="gotoNext" value="вперёд" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" disabled="#{TaskPresenter.nextPageDisabled}"/>
       <p:commandButton id="gotoLast" value="В конец" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" disabled="#{TaskPresenter.lastPageDisabled}"/>
 
-      <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}">
-         <p:column headerText="ID">
+      <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}" selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}">
+         <p:ajax event="rowSelect" listener="#{TaskPresenter.onRowSelect}" />
+
+         <p:column headerText="Заявка №">
             <h:outputText value="#{task.id}" />
          </p:column>
-
          <p:column headerText="Описание">
             <h:outputText value="#{task.description}" />
          </p:column>
-
          <p:column headerText="Исполнитель">
             <h:outputText value="#{task.executor}" />
          </p:column>
-
          <p:column headerText="Статус">
             <h:outputText value="#{task.status}" />
          </p:column>

@@ -1,16 +1,20 @@
 package elcom.MBeans;
 
-import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
+import javax.faces.context.FacesContext;
+import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.util.*;
+import elcom.Entities.Task;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.TreeSet;
+import java.util.List;
+import java.util.Set;
+import javax.ejb.EJB;
 
-// TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
-
-// This bean handles logic from ViewTasks page
+// This MBean handles logic from ViewTasks page
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
@@ -27,6 +31,7 @@ public class TaskPresenter {
 
     @EJB
     private IDatabaseConnectorLocal dbc;
+    private Task selectedTask;
 
     public TaskPresenter() {
         selectedTaskFilter = "Любой";
@@ -39,6 +44,7 @@ public class TaskPresenter {
         prevPageDisabled = true;
         nextPageDisabled = false;
     }
+    // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
         tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
@@ -62,10 +68,16 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
+    private int getSelectedTaskId() {
+        return selectedTask.getId();
+    }
 
     // Getters
     public String getSelectedTaskFilter() {
         return selectedTaskFilter;
+    }
+    public Task getSelectedTask() {
+        return selectedTask;
     }
     public String getSelectedEmployeeFilter() {
         return selectedEmployeeFilter;
@@ -106,6 +118,9 @@ public class TaskPresenter {
     }
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
     }
 
     // Lists for GUI MenuOptions
@@ -200,6 +215,13 @@ public class TaskPresenter {
             prevPageDisabled = true;
             lastPageDisabled = true;
             nextPageDisabled = true;
+        }
+    }
+    public void onRowSelect(SelectEvent event) {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + getSelectedTaskId());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

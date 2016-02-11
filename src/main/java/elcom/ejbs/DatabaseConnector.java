@@ -1,28 +1,25 @@
 package elcom.ejbs;
 
-import elcom.Entities.Employee;
-import elcom.Entities.Priority;
-import elcom.Entities.Status;
-import elcom.Entities.Task;
-import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
+import javax.ejb.Singleton;
 import javax.persistence.Query;
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.Closeable;
+import elcom.Entities.*;
 import java.util.List;
 
-// Handles retrieving data from database
+// Handles database data retrieving
 @Singleton
 public class DatabaseConnector implements IDatabaseConnectorLocal {
-    // Constants
-    private static final String STATUS_ANY = "Любой";
-    private static final String EMPLOYEE_ANY = "Все";
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-
+    // Query constants
+    private static final String STATUS_ANY = "Любой";
+    private static final String EMPLOYEE_ANY = "Все";
+    // Caches
     private final List<Status> statuses;
     private final List<Priority> priorities;
 
@@ -174,8 +171,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
                 query.setParameter("employee", findEmployeeByName(employeeFilter));
 
             tasks = query.getResultList();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 

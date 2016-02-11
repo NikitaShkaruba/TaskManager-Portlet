@@ -3,7 +3,6 @@ package elcom.Entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
-
 @Entity
 @Table(name="wfuser")
 @NamedQuery(query = "select e from Employee e", name = "select all employees")
@@ -65,9 +64,12 @@ public class Employee implements Serializable{
 
         Employee other = (Employee) obj;
 
-        if (this.id != other.id)             return false;
-        if (!(this.name.equals(other.name))) return false;
-        if (this.active != other.active)     return false;
+        if (this.id != other.id)
+            return false;
+        if (!(this.name.equals(other.name)))
+            return false;
+        if (this.active != other.active)
+            return false;
 
         return true;
     }

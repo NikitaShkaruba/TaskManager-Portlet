@@ -1,8 +1,8 @@
 package elcom.Entities;
 
-import java.util.Date;
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="task")
@@ -48,7 +48,7 @@ public class Task implements Serializable, Cloneable {
     }
     @Transient
     public String getGroup() {
-        return group;
+        return "Все";
     }
     @OneToOne
     @JoinColumn(name="performer_id")
@@ -99,6 +99,7 @@ public class Task implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         int hash = 0;
+
         hash += (id * 51) / 17 + 322;
         hash += description.hashCode();
         hash += executor.hashCode();
@@ -106,6 +107,7 @@ public class Task implements Serializable, Cloneable {
         hash += priority.hashCode();
         hash += startDate.hashCode();
         hash += finishDate.hashCode();
+
         return hash;
     }
     @Override

@@ -13,7 +13,7 @@ public interface IDatabaseConnectorLocal {
     Status findStatusByName(String name);
     Employee findEmployeeByName(String name);
     Priority findPriorityByName(String name);
-
+    Task findTaskById(int id);
     // CREATE Methods
     Boolean tryCreateTask(Task task);
 
@@ -26,7 +26,7 @@ public interface IDatabaseConnectorLocal {
 
     // UPDATE Methods
     Boolean tryUpdateTask(Task task);
-    // DELETE Methods
 
+    // DELETE Methodjj
     Boolean tryDeleteTask(Task task);
 }
