@@ -57,7 +57,7 @@
 
       <p:commandButton id="gotoFirst" value="В начало" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" disabled="#{TaskPresenter.firstPageDisabled}"/>
       <p:commandButton id="gotoPrev" value="Назад" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" disabled="#{TaskPresenter.prevPageDisabled}"/>
-      <p:commandButton id="gotoNext" value="вперёд" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" disabled="#{TaskPresenter.nextPageDisabled}"/>
+      <p:commandButton id="gotoNext" value="Вперёд" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" disabled="#{TaskPresenter.nextPageDisabled}"/>
       <p:commandButton id="gotoLast" value="В конец" update="gotoFirst gotoPrev gotoNext gotoLast currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" disabled="#{TaskPresenter.lastPageDisabled}"/>
 
       <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}" selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}">

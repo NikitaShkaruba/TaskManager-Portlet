@@ -1,14 +1,14 @@
 package elcom.ejbs;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import elcom.Entities.*;
 import javax.ejb.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.Closeable;
-import elcom.Entities.*;
 import java.util.List;
 
 // Handles database data retrieving
@@ -70,7 +70,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return queryName;
     }
-    // Methods used to get full entity instance (id-name-etc) having just name.
+    // Methods used to get full entity instance (id-name-etc) having just one field.
     public Status findStatusByName(String name) {
         for (Status s : statuses)
             if (s.getName().toLowerCase().equals(name.toLowerCase()))
@@ -106,11 +106,30 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return result;
     }
+    public Description findDescriptionByContent(String content) {
+        List<Description> descriptions = readDescriptions(null);
+
+        for (Description d : descriptions)
+            if (d.getContent().equals(content))
+                return d;
+
+        return null;
+    }
 
     // CREATE Methods
-    public Boolean tryCreateTask(Task task){
+    public boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().persist(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+    public boolean tryCreateDescription(Description desc) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().persist(desc);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -157,8 +176,25 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return result;
     }
+    public List<Description> readDescriptions(Task task) {
+        List<Description> descriptions = null;
+
+        try(DBConnection dbc = new DBConnection(emf)) {
+            //If no task provided, assume all descriptions are needed.
+            if (task == null)
+                return dbc.getEntityManager().createNamedQuery("select all descriptions").getResultList();
+
+            Query query = dbc.getEntityManager().createNamedQuery("select descriptions by task");
+            query.setParameter("task", task);
+            descriptions = query.getResultList();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return descriptions;
+    }
     public List<Task> readTasks(String statusFilter, String employeeFilter) {
-        List<Task> tasks = null;
+        List<Task> tasks = new ArrayList<>();
 
         String queryName = createReadTaskQuery(statusFilter, employeeFilter);
 
@@ -179,7 +215,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     }
 
     // UPDATE Methods
-    public Boolean tryUpdateTask(Task task) {
+    public boolean tryUpdateTask(Task task) {
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().merge(task);
         } catch (Exception e) {
@@ -189,11 +225,37 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return true;
     }
+    public boolean tryUpdateDescription(Description desc) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().merge(desc);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     // DELETE Methods
-    public Boolean tryDeleteTask(Task task) {
+    public boolean tryDeleteTask(Task task) {
+        //Delete task descriptions and domments first
+        List<Description> descriptions = readDescriptions(task);
+        for(Description d : descriptions)
+            if (!tryDeleteDescription(d))
+                return false;
+
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().remove(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+    public boolean tryDeleteDescription(Description desc) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().remove(desc);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
