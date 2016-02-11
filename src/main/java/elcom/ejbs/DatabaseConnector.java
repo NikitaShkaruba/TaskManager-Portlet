@@ -20,33 +20,22 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     // Constants
     private static final String STATUS_ANY = "Любой";
     private static final String EMPLOYEE_ANY = "Все";
+    private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
+
     private final List<Status> statuses;
     private final List<Priority> priorities;
-    private final List<Employee> employees;
 
     public DatabaseConnector() {
-        employees = fetchEmployees();
         priorities = fetchPriorities();
         statuses = fetchStatuses();
         }
 
     // Methods used inside class to make code more readable
-    private List<Employee> fetchEmployees() {
-        List<Employee> employees = null;
-
-        try(DBConnection dbc = new DBConnection()){
-            employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return employees;
-    }
     private List<Priority> fetchPriorities() {
         List<Priority> priorities = null;
 
-        try(DBConnection dbc = new DBConnection()){
+        try(DBConnection dbc = new DBConnection(emf)){
             priorities = dbc.getEntityManager().createNamedQuery("select all priorities").getResultList();
         }
         catch(Exception e){
@@ -58,7 +47,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     private List<Status> fetchStatuses() {
         List<Status> statuses = null;
 
-        try(DBConnection dbc = new DBConnection()){
+        try(DBConnection dbc = new DBConnection(emf)){
             statuses = dbc.getEntityManager().createNamedQuery("select all statuses").getResultList();
         }
         catch(Exception e){
@@ -92,10 +81,15 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
         return null;
     }
     public Employee findEmployeeByName(String name) {
-        for (Employee e : employees)
-            if (    e.getFullName().toLowerCase().equals(name.toLowerCase())
-                    || e.getName().toLowerCase().equals(name.toLowerCase()))
-                return e;
+        try (DBConnection dbc = new DBConnection(emf)) {
+            List<Employee> employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
+            for (Employee e : employees)
+                if (e.getFullName().toLowerCase().equals(name.toLowerCase()) || e.getName().toLowerCase().equals(name.toLowerCase()))
+                    return e;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
     public Priority findPriorityByName(String name) {
@@ -104,13 +98,23 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
                 return p;
         return null;
     }
+    public Task findTaskById(int id) {
+        Task result = null;
+
+        try (DBConnection dbc = new DBConnection(emf)) {
+            result = dbc.getEntityManager().find(Task.class, id);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 
     // CREATE Methods
     public Boolean tryCreateTask(Task task){
-        try (DBConnection dbc = new DBConnection()) {
+        try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().persist(task);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -120,10 +124,16 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
     // READ Methods
     public List<String> readEmployees() {
-        List<String> result = new ArrayList<>();
+        List<String> result = null;
 
-        for (Employee e : employees)
-            result.add(e.getFullName().concat(" (").concat(e.getName()).concat(")"));
+        try (DBConnection dbc = new DBConnection(emf)) {
+            List<Employee> employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
+            result = new ArrayList<String>();
+            for (Employee e : employees)
+                result.add(e.getFullName().concat(" (").concat(e.getName()).concat(")"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return result;
     }
@@ -155,7 +165,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         String queryName = createReadTaskQuery(statusFilter, employeeFilter);
 
-        try(DBConnection dbc = new DBConnection()) {
+        try(DBConnection dbc = new DBConnection(emf)) {
             Query query = dbc.getEntityManager().createNamedQuery(queryName);
 
             if (queryName.contains("status"))
@@ -174,10 +184,9 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
     // UPDATE Methods
     public Boolean tryUpdateTask(Task task) {
-        try (DBConnection dbc = new DBConnection()) {
+        try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().merge(task);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -187,10 +196,9 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
     // DELETE Methods
     public Boolean tryDeleteTask(Task task) {
-        try (DBConnection dbc = new DBConnection()) {
+        try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().remove(task);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -198,31 +206,20 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
         return true;
     }
 
-    //Encapsulated single Database connection. Used by DatabaseConnector during transactions.
-    //Implements Closeable to become able to be used with try-with-resources.
+    //Encapsulated single Database connection. Used by DatabaseConnector during transactions
+    //Implements Closeable to become able to be used with try-with-resources
     private class DBConnection implements Closeable {
-        private static final String DEFAULT_PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
-        private EntityManagerFactory emf;
         private EntityManager em;
 
-        public DBConnection(String PersistenceUnitName) {
-            if (emf == null)
-                if (PersistenceUnitName == null)
-                    throw new IllegalArgumentException("PersistenceUnitName is null");
-                else
-                    emf = Persistence.createEntityManagerFactory(PersistenceUnitName);
-
+        public DBConnection(EntityManagerFactory emf) {
             em = emf.createEntityManager();
             em.getTransaction().begin();
-        }
-        public DBConnection() {
-            this(DEFAULT_PERSISTENCE_UNIT_NAME);
         }
 
         //Used during queries to make calls to database
         public EntityManager getEntityManager() {
-                                                      return em;
-                                                                }
+            return em;
+        }
 
         @Override
         public void close() throws IOException {
