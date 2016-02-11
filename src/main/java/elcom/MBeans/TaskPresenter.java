@@ -6,9 +6,13 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import elcom.enums.TaskData;
 import elcom.Entities.Task;
+import org.primefaces.event.SelectEvent;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 
 // TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
 
@@ -23,6 +27,7 @@ public class TaskPresenter {
     private int displayedAmount;
     @EJB
     private IDatabaseConnectorLocal dbc;
+    private Task selectedTask;
 
     public TaskPresenter() {
         selectedTaskFilter = "Любой";
@@ -54,9 +59,10 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
-    public int getSelectedTaskId() {
-        return 100500;
+    private int getSelectedTaskId() {
+        return selectedTask.getId();
     }
+
     // Getters
     public String getSelectedTaskFilter() {
         return selectedTaskFilter;
@@ -69,6 +75,9 @@ public class TaskPresenter {
     }
     public int getDisplayedAmount() {
         return displayedAmount;
+    }
+    public Task getSelectedTask() {
+        return selectedTask;
     }
 
     // Setters
@@ -86,6 +95,9 @@ public class TaskPresenter {
     }
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
     }
 
     // Lists for GUI MenuOptions
@@ -137,5 +149,12 @@ public class TaskPresenter {
     }
     public void setFirstPage() {
         currentPage = 1;
+    }
+    public void onRowSelect(SelectEvent event) {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + getSelectedTaskId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

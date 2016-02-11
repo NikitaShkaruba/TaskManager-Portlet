@@ -44,7 +44,6 @@
 
       <h:panelGrid columns="3" cellpadding="5">
          <p:button value="Создать новую" outcome="CreateTask" />
-         <p:button value="Корректировать" outcome="CorrectTask?id=#{TaskPresenter.selectedTaskId}" />
       </h:panelGrid>
 
       <h:panelGrid columns="4" cellpadding="5">
@@ -54,19 +53,18 @@
          <p:commandButton value="В конец" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" />
       </h:panelGrid>
 
-      <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}">
+      <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}" selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}">
+         <p:ajax event="rowSelect" listener="#{TaskPresenter.onRowSelect}" />
+
          <p:column headerText="Заявка №">
             <h:outputText value="#{task.id}" />
          </p:column>
-
          <p:column headerText="Описание">
             <h:outputText value="#{task.description}" />
          </p:column>
-
          <p:column headerText="Исполнитель">
             <h:outputText value="#{task.executor}" />
          </p:column>
-
          <p:column headerText="Статус">
             <h:outputText value="#{task.status}" />
          </p:column>

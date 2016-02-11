@@ -7,7 +7,7 @@
 </h:head>
 
 <h:body>
-    <f:event type="preRenderView" listener="#{TaskEditor.initializeSelectedForEditTask(param[id])}"/>
+    <f:event type="preRenderView" listener="#{TaskEditor.initializeSelectedForEditTask(param['id'])}"/>
 
     <p:tooltip />
 
