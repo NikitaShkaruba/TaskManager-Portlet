@@ -11,50 +11,48 @@
    <h:form>
       <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
-      <p:panel header="Фильтры" style="margin-bottom:10px;">
-         <h:panelGrid columns="3" cellpadding="5">
-            <p:outputLabel value="Фильтр по заявкам:" />
-            <p:selectOneMenu id="TaskFilter" value="#{TaskPresenter.selectedTaskFilter}">
-               <f:selectItem itemLabel="Любой" itemValue="Любой" />
-               <f:selectItems value="#{TaskPresenter.taskStatusesOptions}" />
-               <p:ajax event="change" listener="#{TaskPresenter.selectNewTaskFilter}" update="taskTable" />
-            </p:selectOneMenu>
-         </h:panelGrid>
-
-         <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-            <p:outputLabel value="Фильтр по сотрудникам:" />
-            <p:selectOneMenu id="EmployeeFilter" value="#{TaskPresenter.selectedEmployeeFilter}">
-               <p:ajax event="change" listener="#{TaskPresenter.selectNewEmployeeFilter}" update="taskTable" />
-               <f:selectItems value="#{TaskPresenter.employeeFilterOptions}" />
-            </p:selectOneMenu>
-         </h:panelGrid>
-      </p:panel>
-
       <h:panelGrid columns="3" cellpadding="5">
-         <p:selectOneMenu id="maxTaskShowedOption" value="#{TaskPresenter.displayedAmount}" style="width:250px">
-            <p:ajax event="change" update="currentPage amountShowed taskTable" />
-            <f:selectItems value="#{TaskPresenter.itemAmountOptions}" var="showedAmount" itemLabel="#{showedAmount} предметов на странице" itemValue="#{showedAmount}" />
+         <p:outputLabel value="Фильтр по заявкам:" />
+         <p:selectOneMenu id="TaskFilter" value="#{TaskPresenter.selectedTaskFilter}">
+            <f:selectItem itemLabel="Любой" itemValue="Любой" />
+            <f:selectItems value="#{TaskPresenter.taskStatusesOptions}" />
+            <p:ajax event="change" listener="#{TaskPresenter.selectNewTaskFilter}" update="taskTable" />
          </p:selectOneMenu>
-
-         <p:selectOneMenu id="currentPage" value="#{TaskPresenter.currentPage}" style="width:150px">
-            <p:ajax event="change" update="amountShowed taskTable" />
-            <f:selectItems value="#{TaskPresenter.pagesOptions}" var="pageNumber" itemLabel="Страница #{pageNumber} из #{TaskPresenter.pagesCount}" itemValue="#{pageNumber}" />
-         </p:selectOneMenu>
-
-          <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок"/>
       </h:panelGrid>
 
-      <p:panel header="Действия" style="margin-bottom:10px;">
-          <p:button value="Создать новую" outcome="CreateTask" />
-          <p:button value="Корректировать" outcome="CorrectTask?id=#{TaskPresenter.selectedTaskId}" />
-          <p:commandButton value="Удалить" actionListener="#{TaskPresenter.delete}" />
-      </p:panel>
-      <p:separator />
+      <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+         <p:outputLabel value="Фильтр по сотрудникам:" />
+         <p:selectOneMenu id="EmployeeFilter" value="#{TaskPresenter.selectedEmployeeFilter}">
+            <p:ajax event="change" listener="#{TaskPresenter.selectNewEmployeeFilter}" update="taskTable" />
+            <f:selectItems value="#{TaskPresenter.employeeFilterOptions}" />
+         </p:selectOneMenu>
+      </h:panelGrid>
 
-      <p:commandButton value="В начало" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" />
-      <p:commandButton value="Назад" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" />
-      <p:commandButton value="вперёд" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" />
-      <p:commandButton value="В конец" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" />
+      <h:panelGrid columns="3" cellpadding="5">
+        <p:selectOneMenu id="maxTaskShowedOption" value="#{TaskPresenter.displayedAmount}" style="width:250px">
+           <p:ajax event="change" update="currentPage amountShowed taskTable" />
+           <f:selectItems value="#{TaskPresenter.itemAmountOptions}" var="showedAmount" itemLabel="#{showedAmount} предметов на странице" itemValue="#{showedAmount}" />
+        </p:selectOneMenu>
+
+        <p:selectOneMenu id="currentPage" value="#{TaskPresenter.currentPage}" style="width:150px">
+           <p:ajax event="change" update="amountShowed taskTable" />
+           <f:selectItems value="#{TaskPresenter.pagesOptions}" var="pageNumber" itemLabel="Страница #{pageNumber} из #{TaskPresenter.pagesCount}" itemValue="#{pageNumber}" />
+        </p:selectOneMenu>
+
+         <p:outputLabel id="amountShowed" value="Отображается #{TaskPresenter.showedTasks.size()} из #{TaskPresenter.tasksAmount} заявок"/>
+      </h:panelGrid>
+
+      <h:panelGrid columns="3" cellpadding="5">
+         <p:button value="Создать новую" outcome="CreateTask" />
+         <p:button value="Корректировать" outcome="CorrectTask?id=#{TaskPresenter.selectedTaskId}" />
+      </h:panelGrid>
+
+      <h:panelGrid columns="4" cellpadding="5">
+         <p:commandButton value="В начало" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setFirstPage}" />
+         <p:commandButton value="Назад" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setPreviousPage}" />
+         <p:commandButton value="вперёд" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setNextPage}" />
+         <p:commandButton value="В конец" update="currentPage taskTable amountShowed" actionListener="#{TaskPresenter.setLastPage}" />
+      </h:panelGrid>
 
       <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.showedTasks}">
          <p:column headerText="Заявка №">

@@ -3,8 +3,8 @@ package elcom.ejbs;
 import elcom.Entities.Employee;
 import elcom.Entities.Priority;
 import elcom.Entities.Status;
-import elcom.Entities.Task;
 import elcom.enums.TaskData;
+import elcom.Entities.Task;
 import javax.ejb.Local;
 import java.util.List;
 
@@ -24,5 +24,4 @@ public interface IDatabaseConnectorLocal {
 
     // UPDATE Methods
     Boolean tryUpdateTask(Task task);
-    // DELETE Methods
 }

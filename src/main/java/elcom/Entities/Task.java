@@ -1,8 +1,8 @@
 package elcom.Entities;
 
-import java.util.Date;
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="task")

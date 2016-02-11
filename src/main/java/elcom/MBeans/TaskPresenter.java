@@ -1,20 +1,18 @@
 package elcom.MBeans;
 
-import elcom.Entities.Task;
 import elcom.ejbs.IDatabaseConnectorLocal;
-import elcom.enums.TaskData;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import elcom.enums.TaskData;
+import elcom.Entities.Task;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 
 // TODO: 06.02.16 Make nextPage/PrevPage buttons hidden when necessary
 
-// This bean handles logic from ViewTasks page
+// This MBean handles logic from ViewTasks page
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
@@ -32,6 +30,7 @@ public class TaskPresenter {
         currentPage = 1;
         displayedAmount = 15;
     }
+    // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
         tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
@@ -138,8 +137,5 @@ public class TaskPresenter {
     }
     public void setFirstPage() {
         currentPage = 1;
-    }
-    public void delete() {
-        throw new NotImplementedException();
     }
 }

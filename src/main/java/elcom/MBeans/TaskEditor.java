@@ -1,18 +1,15 @@
 package elcom.MBeans;
 
-import elcom.Entities.Task;
-import elcom.ejbs.IDatabaseConnectorLocal;
-import elcom.enums.TaskData;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.RequestScoped;
+import elcom.ejbs.IDatabaseConnectorLocal;
+import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
+import elcom.enums.TaskData;
+import elcom.Entities.Task;
 import java.util.Date;
 import java.util.List;
+import javax.ejb.EJB;
 
 // This bean handles logic from CreateTask page
 @ManagedBean(name = "TaskEditor", eager=false)
@@ -24,6 +21,15 @@ public class TaskEditor {
 
     public TaskEditor() {
         task = new Task();
+    }
+    // These methods get called before the page rendering
+    public void initializeSelectedForEditTask(int id) {
+        task = dbc.findTaskById(id);
+    }
+    public void initializeTaskForCreation() {
+        task.setStatus(dbc.findStatusByName("Открыта"));
+        task.setPriority(dbc.findPriorityByName("Низкий"));
+        task.setExecutor(dbc.findEmployeeByName("Jek"));
     }
 
     // Getters
@@ -73,9 +79,6 @@ public class TaskEditor {
     }
 
     // logic
-    public void initialize(int id) {
-        this.task = dbc.findTaskById(id);
-    }
     public List<String> getTaskStatusOptions() {
         return dbc.readData(TaskData.STATUS);
     }
@@ -97,5 +100,11 @@ public class TaskEditor {
         else
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Could not connect to database"));
     }
-
+    public void correct() {
+        //Display appropriate popup depending if insert was successful.
+        if (dbc.tryUpdateTask(task))
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Task was updated"));
+        else
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Error", "Could not connect to database"));
+    }
 }

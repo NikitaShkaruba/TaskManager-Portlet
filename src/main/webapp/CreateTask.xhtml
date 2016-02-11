@@ -7,10 +7,14 @@
 </h:head>
 
 <h:body>
+    <f:event type="preRenderView" listener="#{TaskEditor.initializeTaskForCreation}"/>
+
     <p:tooltip />
+
     <h:form>
+        <h:outputLabel value="Создание новой заявки"/>
+
         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
-        <h:outputLabel value="Новая заявка"/>
         <br/>
 
         <h:outputLabel value="Описание заявки:" escape="true"/>
@@ -53,8 +57,8 @@
             <p:calendar id="endTime" value="#{TaskEditor.finishDate}" pattern="dd-MM-yyyy" mask="true" />
         </h:panelGrid>
 
-        <p:commandButton value="Сохранить заявку" actionListener="#{TaskEditor.create}" />
-        <p:button value="Вернуться к просмотру Заявок" outcome="ViewTasks.xhtml" />
+        <p:commandButton value="Создать заявку" actionListener="#{TaskEditor.create}" />
+        <p:button value="Отменa" outcome="ViewTasks.xhtml" />
     </h:form>
 </h:body>
 </html>

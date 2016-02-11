@@ -1,28 +1,26 @@
 package elcom.ejbs;
 
-import elcom.Entities.Employee;
-import elcom.Entities.Priority;
-import elcom.Entities.Status;
-import elcom.Entities.Task;
-import elcom.enums.TaskData;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import java.io.Closeable;
+import elcom.enums.TaskData;
+import javax.ejb.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.Closeable;
+import elcom.Entities.*;
 import java.util.Date;
 import java.util.List;
 
-// Handles retrieving data from database
+// Handles database data retrieving
 @Singleton
 public class DatabaseConnector implements IDatabaseConnectorLocal {
-    // Constants
+    // Query constants
     private static final String STATUS_ANY = "Любой";
     private static final String EMPLOYEE_ANY = "Все";
+    // Caches
     private final List<Status> statuses;
     private final List<Priority> priorities;
     private final List<Employee> employees;
@@ -109,16 +107,10 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     public Task findTaskById(int id) {
         Task t = new Task();
 
+        t.setStatus(findStatusByName("Открыта"));
+        t.setPriority(findPriorityByName("Низкий"));
+        t.setExecutor(findEmployeeByName("Jek"));
         t.setDescription("sht");
-        Status s = new Status();
-        s.setName("plug");
-        t.setStatus(new Status());
-        Priority p = new Priority();
-        p.setName("Plug");
-        t.setPriority(p);
-        Employee e = new Employee();
-        e.setName("Plug");
-        t.setExecutor(e);
         t.setGroup("plug");
         t.setFinishDate(new Date());
         t.setStartDate(new Date());
@@ -129,8 +121,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     public Boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection()) {
             dbc.getEntityManager().persist(task);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -166,8 +157,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
                 query.setParameter("employee", findEmployeeByName(employeeFilter));
 
             tasks = query.getResultList();
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 
@@ -178,8 +168,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     public Boolean tryUpdateTask(Task task) {
         try (DBConnection dbc = new DBConnection()) {
             dbc.getEntityManager().merge(task);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -187,10 +176,8 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
         return true;
     }
 
-    // DELETE Methods
-
-    //Encapsulated single Database connection. Used by DatabaseConnector during transactions.
-    //Implements Closeable to become able to be used with try-catch.
+    // Encapsulated single Database connection. Used by DatabaseConnector during transactions
+    // Implements Closeable to become able to be used with try-with-resources
     private class DBConnection implements Closeable {
         private static final String DEFAULT_PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
         private EntityManagerFactory emf;
