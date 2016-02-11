@@ -6,14 +6,20 @@ import java.util.Date;
 
 @Entity
 @Table(name="descriptions")
+@NamedQueries({
+        @NamedQuery(name = "select descriptions by task",
+                query = "select d from Description d where d.task = :task"),
+
+        @NamedQuery(name = "select all descriptions",
+                    query = "select d from Description d")
+})
 public class Description implements Serializable{
     private int id;
     private Task task;
     private Employee author;
-    private Employee addressee;
     private String content;
     private Date writeDate;
-    private boolean isPublicComment;
+    private Boolean publicComment;
 
     @Id
     @GeneratedValue
@@ -30,11 +36,6 @@ public class Description implements Serializable{
     public Employee getAuthor() {
         return author;
     }
-    @OneToOne
-    @JoinColumn(name="contact_id")
-    public Employee getAddressee() {
-        return addressee;
-    }
     @Basic
     @Column(name="name")
     public String getContent() {
@@ -46,9 +47,9 @@ public class Description implements Serializable{
         return writeDate;
     }
     @Basic
-    @Column(name="public comment")
-    public boolean isPublicComment() {
-        return isPublicComment;
+    @Column(name="public_comment")
+    public Boolean isPublicComment() {
+        return publicComment;
     }
 
     public void setId(int id) {
@@ -60,25 +61,21 @@ public class Description implements Serializable{
     public void setAuthor(Employee author) {
         this.author = author;
     }
-    public void setAddressee(Employee addressee) {
-        this.addressee = addressee;
-    }
     public void setContent(String content) {
         this.content = content;
     }
     public void setWriteDate(Date writeDate) {
         this.writeDate = writeDate;
     }
-    public void setPublicComment(boolean publicComment) {
-        isPublicComment = publicComment;
+    public void setPublicComment(Boolean publicComment) {
+        this.publicComment = publicComment;
     }
 
     @Override
     public int hashCode() {
-        int hash = id * 83 + (isPublicComment ? 1 : 0);
+        int hash = id * 83 + (publicComment ? 1 : 0);
         hash += 31 * task.hashCode() + 18;
         hash += 31 * author.hashCode() + 18;
-        hash += 31 * addressee.hashCode() + 18;
         hash += 31 * content.hashCode() + 18;
 
         return hash;
@@ -94,9 +91,8 @@ public class Description implements Serializable{
         if (this.id != other.id) return false;
         if (this.task != other.task) return false;
         if (this.author != other.author) return false;
-        if (this.addressee != other.addressee) return false;
         if (!(this.content.equals(other.content))) return false;
-        if (this.isPublicComment != other.isPublicComment) return false;
+        if (this.publicComment != other.publicComment) return false;
 
         return true;
     }

@@ -1,9 +1,7 @@
 package elcom.ejbs;
 
-import elcom.Entities.Employee;
-import elcom.Entities.Priority;
-import elcom.Entities.Status;
-import elcom.Entities.Task;
+import elcom.Entities.*;
+
 import javax.ejb.Local;
 import java.util.List;
 
@@ -13,20 +11,26 @@ public interface IDatabaseConnectorLocal {
     Status findStatusByName(String name);
     Employee findEmployeeByName(String name);
     Priority findPriorityByName(String name);
+    Task findTaskById(int id);
+    Description findDescriptionByContent(String content);
 
     // CREATE Methods
-    Boolean tryCreateTask(Task task);
+    boolean tryCreateTask(Task task);
+    boolean tryCreateDescription(Description desc);
 
     // READ Methods
     List<String> readEmployees();
     List<String> readPriorities();
     List<String> readStatuses();
     List<String> readGroups();
+    List<Description> readDescriptions(Task task);
     List<Task> readTasks(String statusFilter, String employeeFilter);
 
     // UPDATE Methods
-    Boolean tryUpdateTask(Task task);
-    // DELETE Methods
+    boolean tryUpdateTask(Task task);
+    boolean tryUpdateDescription(Description desc);
 
-    Boolean tryDeleteTask(Task task);
+    // DELETE Methods
+    boolean tryDeleteTask(Task task);
+    boolean tryDeleteDescription(Description desc);
 }
