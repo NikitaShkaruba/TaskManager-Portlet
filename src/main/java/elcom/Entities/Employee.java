@@ -64,12 +64,10 @@ public class Employee implements Serializable{
 
         Employee other = (Employee) obj;
 
-        if (this.id != other.id)
-            return false;
-        if (!(this.name.equals(other.name)))
-            return false;
-        if (this.active != other.active)
-            return false;
+        if (this.id != other.id) return false;
+        if (!(this.name.equals(other.name))) return false;
+        if (!(this.fullName.equals(other.fullName))) return false;
+        if (!(this.active.equals(other.active))) return false;
 
         return true;
     }

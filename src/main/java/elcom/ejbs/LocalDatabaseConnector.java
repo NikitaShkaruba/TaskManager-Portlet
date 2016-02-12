@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.io.Closeable;
+import java.util.Date;
 import java.util.List;
 
 // Handles database data retrieving
@@ -65,6 +66,16 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return statuses;
     }
+    private boolean tryCopyComments(Task from, Task to) {
+        List<Comment> comments = readTaskComments(from);
+        for (Comment c : comments) {
+            c.setTask(to);
+            if (tryCreateComment(c))
+                return false;
+        }
+
+        return true;
+    }
     private String createQueryForReadTasks(String statusFilter, String employeeFilter) {
 
         String queryName;
@@ -83,7 +94,40 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         return queryName;
     }
 
+    public Task InstantiateTaskByTemplate(TaskTemplate tt) {
+        Task newborn = new Task();
+
+        if (tt.getCopyName().booleanValue())
+            newborn.setDescription(tt.getTask().getDescription());
+        if (tt.getCopyFinishDate().booleanValue())
+            newborn.setFinishDate(tt.getTask().getFinishDate());
+        if (tt.getCopyPriority().booleanValue())
+            newborn.setPriority(tt.getTask().getPriority());
+        if (tt.getCopyExecutor().booleanValue())
+            newborn.setExecutor(tt.getTask().getExecutor());
+        if (tt.getCopyExecutorGroup().booleanValue())
+            newborn.setExecutorGroup(tt.getTask().getExecutorGroup());
+
+        if (tt.getCopyComments().booleanValue())
+            if (tryCopyComments(tt.getTask(), newborn))
+                return null;
+
+        newborn.setStartDate(new Date());
+
+        return newborn;
+    }
+
     // CREATE Methods
+    public boolean tryCreateComment(Comment comment) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().persist(comment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
     public boolean tryCreateTask(Task task){
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().persist(task);
@@ -94,9 +138,9 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return true;
     }
-    public boolean tryCreateComment(Comment comment) {
+    public boolean tryCreateTaskTemplate(TaskTemplate tt) {
         try (DBConnection dbc = new DBConnection(emf)) {
-            dbc.getEntityManager().persist(comment);
+            dbc.getEntityManager().persist(tt);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -159,6 +203,7 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return result;
     }
+
 
     public List<String> readGroupsAsStrings() {
         List<String> result = new ArrayList<>();
@@ -246,18 +291,19 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return tasks;
     }
+    public List<TaskTemplate> readAllTaskTemplates() {
+        List<TaskTemplate> taskTemplates = null;
 
-    // UPDATE Methods
-    public boolean tryUpdateTask(Task task) {
         try (DBConnection dbc = new DBConnection(emf)) {
-            dbc.getEntityManager().merge(task);
-        } catch (Exception e) {
+            taskTemplates = dbc.getEntityManager().createNamedQuery("select all task templates").getResultList();
+        } catch(Exception e) {
             e.printStackTrace();
-            return false;
         }
 
-        return true;
+        return taskTemplates;
     }
+
+    // UPDATE Methods
     public boolean tryUpdateComment(Comment comment) {
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().merge(comment);
@@ -268,8 +314,28 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return true;
     }
+    public boolean tryUpdateTask(Task task) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().merge(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     // DELETE Methods
+    public boolean tryDeleteComment(Comment comment) {
+        try (DBConnection dbc = new DBConnection(emf)) {
+            dbc.getEntityManager().remove(comment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
     public boolean tryDeleteTask(Task task) {
         List<Comment> comments = readTaskComments(task);
         for(Comment d : comments)
@@ -278,16 +344,6 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         try (DBConnection dbc = new DBConnection(emf)) {
             dbc.getEntityManager().remove(task);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
-    }
-    public boolean tryDeleteComment(Comment comment) {
-        try (DBConnection dbc = new DBConnection(emf)) {
-            dbc.getEntityManager().remove(comment);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

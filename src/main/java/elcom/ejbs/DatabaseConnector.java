@@ -6,9 +6,12 @@ import javax.ejb.Local;
 import java.util.List;
 
 public interface DatabaseConnector {
+    Task InstantiateTaskByTemplate(TaskTemplate tt);
+
     // CREATE Methods
-    boolean tryCreateTask(Task task);
     boolean tryCreateComment(Comment comment);
+    boolean tryCreateTask(Task task);
+    boolean tryCreateTaskTemplate(TaskTemplate tt);
 
     // READ Methods
     Comment readCommentByContent(String content);
@@ -21,6 +24,7 @@ public interface DatabaseConnector {
     List<Comment> readAllComments();
     List<Comment> readTaskComments(Task task);
     List<Task> readTasks(String statusFilter, String employeeFilter);
+    List<TaskTemplate> readAllTaskTemplates();
 
     List<String> readEmployeesAsStrings();
     List<String> readGroupsAsStrings();
@@ -28,10 +32,10 @@ public interface DatabaseConnector {
     List<String> readStatusesAsStrings();
 
     // UPDATE Methods
-    boolean tryUpdateTask(Task task);
     boolean tryUpdateComment(Comment comment);
+    boolean tryUpdateTask(Task task);
 
     // DELETE Methods
-    boolean tryDeleteTask(Task task);
     boolean tryDeleteComment(Comment comment);
+    boolean tryDeleteTask(Task task);
 }

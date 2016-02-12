@@ -66,6 +66,7 @@ public class Group implements Serializable {
         if (this.id != other.id) return false;
         if (!(this.name.equals(other.name))) return false;
         if (!(this.fullName.equals(other.fullName))) return false;
+        if (!(this.closed.equals(other.closed))) return false;
 
         return true;
     }

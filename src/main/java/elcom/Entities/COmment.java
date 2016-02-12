@@ -89,10 +89,10 @@ public class Comment implements Serializable{
         Comment other = (Comment) obj;
 
         if (this.id != other.id) return false;
-        if (this.task != other.task) return false;
-        if (this.author != other.author) return false;
+        if (!(this.task.equals(other.task))) return false;
+        if (!(this.author.equals(other.author))) return false;
         if (!(this.content.equals(other.content))) return false;
-        if (this.publicComment != other.publicComment) return false;
+        if (!(this.publicComment.equals(other.publicComment))) return false;
 
         return true;
     }
