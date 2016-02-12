@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Employee implements Serializable{
     private long id;
     private String name; //aka login aka nickname
-    private String fullName; //First name + middle Name + Last name (all cyrillic)
+    private String fullName;
     private Boolean active;
 
     public Employee(){}
@@ -73,6 +73,6 @@ public class Employee implements Serializable{
     }
     @Override
     public String toString() {
-        return fullName.concat(" (").concat(name).concat(")");
+        return fullName;
     }
 }

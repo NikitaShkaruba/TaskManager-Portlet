@@ -55,5 +55,16 @@ public class LocalDatabaseConnectorTest {
 
         assertTrue(!tts.isEmpty());
     }
+    @Test
+    public void VendorsTest() {
+        List<String> vendors = dbc.readVendorsAsStrings();
 
+        assertTrue(!vendors.isEmpty());
+    }
+    @Test
+    public void OrganisationsTest() {
+        List<String> organisations = dbc.readOrganisationsAsStrings();
+
+        assertTrue(!organisations.isEmpty());
+    }
 }

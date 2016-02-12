@@ -22,14 +22,17 @@ public class LocalDatabaseConnector implements DatabaseConnector {
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private static final String STATUS_FILTER_ANY = "Любой";
     private static final String EMPLOYEE_FILTER_ANY = "Все";
+
     private final List<Group> groupsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
+    private final List<Vendor> vendorsCache;
 
     public LocalDatabaseConnector() {
         prioritiesCache = cachePriorities();
         statusesCache = cacheStatuses();
         groupsCache = cacheGroups();
+        vendorsCache = cacheVendors();
         }
 
     //Private methods used inside class
@@ -66,6 +69,17 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return statuses;
     }
+    private List<Vendor> cacheVendors() {
+        List<Vendor> vendors = null;
+
+        try(DBConnection dbc = new DBConnection(emf)){
+            vendors = dbc.getEntityManager().createNamedQuery("select all vendors").getResultList();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return vendors;
+    }
     private boolean tryCopyComments(Task from, Task to) {
         List<Comment> comments = readTaskComments(from);
         for (Comment c : comments) {
@@ -94,7 +108,7 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         return queryName;
     }
 
-    public Task InstantiateTaskByTemplate(TaskTemplate tt) {
+    public Task instantiateTaskByTemplate(TaskTemplate tt) {
         Task newborn = new Task();
 
         if (tt.getCopyName().booleanValue())
@@ -204,6 +218,34 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         return result;
     }
 
+    public List<String> readOrganisationsAsStrings() {
+        List<String> organisationNames = new ArrayList<>();
+
+        try(DBConnection dbc = new DBConnection(emf)) {
+            List<Contact> orgs = dbc.getEntityManager().createNamedQuery("select all organisations").getResultList();
+            for (Contact o : orgs)
+                organisationNames.add(o.getContent());
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return organisationNames;
+    }
+    public List<String> readVendorsAsStrings() {
+        List<String> vendorNames = new ArrayList<>();
+
+        try(DBConnection dbc = new DBConnection(emf)) {
+            List<Vendor> vendors = dbc.getEntityManager().createNamedQuery("select all vendors").getResultList();
+            for (Vendor v : vendors)
+                vendorNames.add(v.getName());
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return vendorNames;
+    }
 
     public List<String> readGroupsAsStrings() {
         List<String> result = new ArrayList<>();
