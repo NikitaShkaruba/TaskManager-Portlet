@@ -22,10 +22,12 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     // Caches
     private final List<Status> statuses;
     private final List<Priority> priorities;
+    private final List<Group> groups;
 
     public DatabaseConnector() {
         priorities = fetchPriorities();
         statuses = fetchStatuses();
+        groups = fetchGroups();
         }
 
     // Methods used inside class to make code more readable
@@ -34,8 +36,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         try(DBConnection dbc = new DBConnection(emf)){
             priorities = dbc.getEntityManager().createNamedQuery("select all priorities").getResultList();
-        }
-        catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
         }
 
@@ -46,12 +47,22 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         try(DBConnection dbc = new DBConnection(emf)){
             statuses = dbc.getEntityManager().createNamedQuery("select all statuses").getResultList();
-        }
-        catch(Exception e){
+        } catch(Exception e){
             e.printStackTrace();
         }
 
         return statuses;
+    }
+    private List<Group> fetchGroups() {
+        List<Group> groups = null;
+
+        try(DBConnection dbc = new DBConnection(emf)){
+            groups = dbc.getEntityManager().createNamedQuery("select all groups").getResultList();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return groups;
     }
     private String createReadTaskQuery(String statusFilter, String employeeFilter) {
 
@@ -172,7 +183,8 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
     public List<String> readGroups() {
         List<String> result = new ArrayList<>();
 
-        result.add("Все сотрудники");
+        for (Group g : groups)
+            result.add(g.getFullName());
 
         return result;
     }

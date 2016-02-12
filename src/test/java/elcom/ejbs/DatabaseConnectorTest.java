@@ -47,4 +47,11 @@ public class DatabaseConnectorTest {
         assertTrue("Status color is not working", status.getColor() != null);
     }
 
+    @Test
+    public void GroupTest() {
+        List<String> groups = dbc.readGroups();
+
+        assertTrue(!groups.isEmpty());
+    }
+
 }
