@@ -14,7 +14,7 @@ import java.util.Date;
                     query = "select d from Description d")
 })
 public class Description implements Serializable{
-    private int id;
+    private long id;
     private Task task;
     private Employee author;
     private String content;
@@ -23,7 +23,7 @@ public class Description implements Serializable{
 
     @Id
     @GeneratedValue
-    public int getId() {
+    public long getId() {
         return id;
     }
     @OneToOne
@@ -48,11 +48,11 @@ public class Description implements Serializable{
     }
     @Basic
     @Column(name="public_comment")
-    public Boolean isPublicComment() {
+    public Boolean getPublicComment() {
         return publicComment;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setTask(Task task) {
@@ -73,7 +73,7 @@ public class Description implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = id * 83 + (publicComment ? 1 : 0);
+        int hash = (int)id * 83 + (publicComment ? 1 : 0);
         hash += 31 * task.hashCode() + 18;
         hash += 31 * author.hashCode() + 18;
         hash += 31 * content.hashCode() + 18;

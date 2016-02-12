@@ -7,10 +7,10 @@ import java.io.Serializable;
 @Table(name="wfgroup")
 @NamedQuery(name="select all groups", query="select g from Group g")
 public class Group implements Serializable {
-    long id;
-    String name;
-    String fullName;
-    Boolean closed;
+    private long id;
+    private String name;
+    private String fullName;
+    private Boolean closed;
 
     @Id
     @GeneratedValue

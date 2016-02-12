@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Table(name="wfuser")
 @NamedQuery(query = "select e from Employee e", name = "select all employees")
 public class Employee implements Serializable{
-    private int id;
+    private long id;
     private String name; //aka login aka nickname
     private String fullName; //First name + middle Name + Last name (all cyrillic)
     private Boolean active;
@@ -16,7 +16,7 @@ public class Employee implements Serializable{
 
     @Id
     @GeneratedValue
-    public int getId() {
+    public long getId() {
         return id;
     }
     @Basic
@@ -35,7 +35,7 @@ public class Employee implements Serializable{
         return active;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setName(String name) {
@@ -50,7 +50,7 @@ public class Employee implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = id;
+        int hash = (int)id;
         hash += name.hashCode();
         hash += fullName.hashCode();
         hash += active.hashCode();

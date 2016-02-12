@@ -68,7 +68,7 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
-    private int getSelectedTaskId() {
+    private long getSelectedTaskId() {
         return selectedTask.getId();
     }
 

@@ -8,15 +8,15 @@ import java.io.Serializable;
 @Table(name="statuses")
 @NamedQuery(query = "select s from Status s", name = "select all statuses")
 public class Status implements Serializable {
-    int id;
-    String name;
-    Color color;
+    private long id;
+    private String name;
+    private Color color;
 
     public Status(){}
 
     @Id
     @GeneratedValue
-    public int getId() {
+    public long getId() {
         return id;
     }
     @Basic
@@ -36,7 +36,7 @@ public class Status implements Serializable {
                 .concat(Integer.toHexString(color.getBlue()).toUpperCase());
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setName(String name) {
@@ -53,8 +53,9 @@ public class Status implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = id * 277;
+        int hash = (int)id * 277;
         hash += name.hashCode();
+        hash += color.hashCode();
 
         return hash;
     }
@@ -73,23 +74,5 @@ public class Status implements Serializable {
     @Override
     public String toString() {
         return name;
-    }
-
-    @Converter
-    class ColorConverter implements AttributeConverter<Color, String> {
-        @Override
-        public String convertToDatabaseColumn(Color color) {
-            return Integer.toHexString(color.getRed()).toUpperCase()
-                    .concat(Integer.toHexString(color.getGreen()).toUpperCase())
-                    .concat(Integer.toHexString(color.getBlue()).toUpperCase());
-        }
-        @Override
-        public Color convertToEntityAttribute(String colorString) {
-            int red = Integer.parseInt(colorString.substring(0, 2), 16);
-            int green = Integer.parseInt(colorString.substring(2, 4), 16);
-            int blue = Integer.parseInt(colorString.substring(4, 6), 16);
-
-            return new Color(red, green, blue);
-        }
     }
 }
