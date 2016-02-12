@@ -19,14 +19,11 @@ import java.util.List;
 public class LocalDatabaseConnector implements DatabaseConnector {
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-
     private static final String STATUS_FILTER_ANY = "Любой";
     private static final String EMPLOYEE_FILTER_ANY = "Все";
-
     private final List<Group> groupsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
-
 
     public LocalDatabaseConnector() {
         prioritiesCache = cachePriorities();
@@ -298,8 +295,6 @@ public class LocalDatabaseConnector implements DatabaseConnector {
 
         return true;
     }
-
-
 
     //Encapsulated single Database connection. Used by LocalDatabaseConnector during transactions
     //Implements Closeable to become able to be used with try-with-resources

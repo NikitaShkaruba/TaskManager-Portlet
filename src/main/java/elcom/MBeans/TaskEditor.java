@@ -40,7 +40,7 @@ public class TaskEditor {
         return task.getStatus().getName();
     }
     public String getGroup() {
-        return task.getGroup();
+        return task.getExecutorGroup().getFullName();
     }
     public String getExecutor() {
         return task.getExecutor().getName();
@@ -63,7 +63,7 @@ public class TaskEditor {
         task.setStatus(dbc.readStatusByName(status));
     }
     public void setGroup(String group) {
-        task.setGroup(group);
+        task.setExecutorGroup(dbc.readGroupByName(group));
     }
     public void setExecutor(String executor) {
         task.setExecutor(dbc.readEmployeeByName(executor));
