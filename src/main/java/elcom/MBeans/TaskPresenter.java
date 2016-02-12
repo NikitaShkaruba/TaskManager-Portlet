@@ -1,7 +1,8 @@
 package elcom.MBeans;
 
-import elcom.ejbs.IDatabaseConnectorLocal;
 import javax.faces.context.FacesContext;
+
+import elcom.ejbs.DatabaseConnector;
 import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
@@ -30,7 +31,7 @@ public class TaskPresenter {
     private boolean nextPageDisabled;
 
     @EJB
-    private IDatabaseConnectorLocal dbc;
+    private DatabaseConnector dbc;
     private Task selectedTask;
 
     public TaskPresenter() {
@@ -133,7 +134,7 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return dbc.readStatuses();
+        return dbc.readStatusesAsStrings();
     }
     public List<Integer> getItemAmountOptions() {
         Set<Integer> options = new TreeSet<Integer>();

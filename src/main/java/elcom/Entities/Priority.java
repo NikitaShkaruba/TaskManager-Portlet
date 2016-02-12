@@ -55,8 +55,8 @@ public class Priority implements Serializable{
 
         Priority other = (Priority) obj;
 
-        if (this.id != other.id)                   return false;
-        if (!this.name.equals(other.name))         return false;
+        if (this.id != other.id) return false;
+        if (!this.name.equals(other.name)) return false;
         if (this.coefficient != other.coefficient) return false;
 
         return true;

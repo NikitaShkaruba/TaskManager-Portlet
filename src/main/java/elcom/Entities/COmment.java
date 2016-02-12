@@ -7,13 +7,13 @@ import java.util.Date;
 @Entity
 @Table(name="descriptions")
 @NamedQueries({
-        @NamedQuery(name = "select descriptions by task",
-                query = "select d from Description d where d.task = :task"),
+        @NamedQuery(name = "select comments by task",
+                query = "select c from Comment c where c.task = :task"),
 
-        @NamedQuery(name = "select all descriptions",
-                    query = "select d from Description d")
+        @NamedQuery(name = "select all comments",
+                    query = "select c from Comment c")
 })
-public class Description implements Serializable{
+public class Comment implements Serializable{
     private long id;
     private Task task;
     private Employee author;
@@ -83,10 +83,10 @@ public class Description implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Description))
+        if (!(obj instanceof Comment))
             return false;
 
-        Description other = (Description) obj;
+        Comment other = (Comment) obj;
 
         if (this.id != other.id) return false;
         if (this.task != other.task) return false;

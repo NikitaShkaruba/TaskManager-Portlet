@@ -1,11 +1,12 @@
 package elcom.MBeans;
 
 import javax.faces.application.FacesMessage;
-import elcom.ejbs.IDatabaseConnectorLocal;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import elcom.Entities.Task;
+import elcom.ejbs.DatabaseConnector;
+
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,19 +17,19 @@ import javax.ejb.EJB;
 public class TaskEditor {
     Task task;
     @EJB
-    private IDatabaseConnectorLocal dbc;
+    private DatabaseConnector dbc;
 
     public TaskEditor() {
         task = new Task();
     }
     // These methods get called before the page rendering
     public void initializeSelectedForEditTask(int id) {
-        task = dbc.findTaskById(id);
+        task = dbc.readTaskById(id);
     }
     public void initializeTaskForCreation() {
-        task.setStatus(dbc.findStatusByName("Открыта"));
-        task.setPriority(dbc.findPriorityByName("Низкий"));
-        task.setExecutor(dbc.findEmployeeByName("Jek"));
+        task.setStatus(dbc.readStatusByName("Открыта"));
+        task.setPriority(dbc.readPriorityByName("Низкий"));
+        task.setExecutor(dbc.readEmployeeByName("Jek"));
     }
 
     // Getters
@@ -59,16 +60,16 @@ public class TaskEditor {
         task.setDescription(description);
     }
     public void setStatus(String status) {
-        task.setStatus(dbc.findStatusByName(status));
+        task.setStatus(dbc.readStatusByName(status));
     }
     public void setGroup(String group) {
         task.setGroup(group);
     }
     public void setExecutor(String executor) {
-        task.setExecutor(dbc.findEmployeeByName(executor));
+        task.setExecutor(dbc.readEmployeeByName(executor));
     }
     public void setPriority(String priority) {
-        task.setPriority(dbc.findPriorityByName(priority));
+        task.setPriority(dbc.readPriorityByName(priority));
     }
     public void setStartDate(Date date) {
         task.setStartDate(date);
@@ -79,16 +80,16 @@ public class TaskEditor {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return dbc.readStatuses();
+        return dbc.readStatusesAsStrings();
     }
     public List<String> getGroupOptions() {
-        return dbc.readGroups();
+        return dbc.readGroupsAsStrings();
     }
     public List<String> getExecutorOptions() {
-        return dbc.readEmployees();
+        return dbc.readEmployeesAsStrings();
     }
     public List<String> getPriorityOptions() {
-        return dbc.readPriorities();
+        return dbc.readPrioritiesAsStrings();
     }
 
     // Ajax listeners

@@ -2,19 +2,19 @@ package elcom.ejbs;
 
 import static org.junit.Assert.assertTrue;
 
-import elcom.Entities.Description;
+import elcom.Entities.Comment;
 import elcom.Entities.Status;
 import elcom.Entities.Task;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
 
-public class DatabaseConnectorTest {
-    DatabaseConnector dbc;
+public class LocalDatabaseConnectorTest {
+    LocalDatabaseConnector dbc;
 
     @Before
     public void SetupDatabaseConnector() {
-        dbc = new DatabaseConnector();
+        dbc = new LocalDatabaseConnector();
     }
 
     @Test
@@ -25,31 +25,31 @@ public class DatabaseConnectorTest {
 
     @Test
     public void GetAllDescriptionsTest() {
-        List<Description> descriptions = dbc.readDescriptions(null);
-        assertTrue(!descriptions.isEmpty());
+        List<Comment> comments = dbc.readAllComments();
+        assertTrue(!comments.isEmpty());
     }
 
     @Test
     public void GetDescriptionsForTaskTest() {
         Task task = dbc.readTasks("Любой", "Все").get(0);
-        List<Description> descriptions = dbc.readDescriptions(task);
-        assertTrue(!descriptions.isEmpty());
+        List<Comment> comments = dbc.readTaskComments(task);
+        assertTrue(!comments.isEmpty());
     }
 
     @Test
     public void StatusTest() {
-        List<String> statuses = dbc.readStatuses();
+        List<String> statuses = dbc.readStatusesAsStrings();
 
         assertTrue("Status Test failed at reading statuses", !statuses.isEmpty());
 
-        Status status = dbc.findStatusByName(statuses.get(0));
+        Status status = dbc.readStatusByName(statuses.get(0));
 
         assertTrue("Status color is not working", status.getColor() != null);
     }
 
     @Test
     public void GroupTest() {
-        List<String> groups = dbc.readGroups();
+        List<String> groups = dbc.readGroupsAsStrings();
 
         assertTrue(!groups.isEmpty());
     }
