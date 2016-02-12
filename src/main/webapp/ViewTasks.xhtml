@@ -4,12 +4,15 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-   <!-- TODO: Add some beauty to this page -->
+    <!-- TODO: Add some beauty to this page -->
+   <h:outputStylesheet name="css/TableRows.css" />
 </h:head>
 
 <h:body>
-   <h:form>
-      <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+   <p:tabView scrollable="true">
+       <p:tab title="Список заявок">
+        <h:form>
+          <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
          <h:panelGrid columns="3" cellpadding="5">
             <p:outputLabel value="Фильтр по заявкам:" />
@@ -36,23 +39,37 @@
                    selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}"
                    paginator="true" rows="15"
                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                   rowsPerPageTemplate="15, 30, 45" >
+                   rowsPerPageTemplate="15, 30, 45" rowStyleClass="${TaskPresenter.chooseRowColor(task)}" >
          <p:ajax event="rowSelect" listener="#{TaskPresenter.onRowSelect}" />
 
-         <p:column headerText="Заявка №" style="width:20px">
+          <p:column headerText="Статус" style="width:10%">
+              <h:outputText value="#{task.status}" />
+          </p:column>
+          <p:column headerText="!?" style="width:2%">
+              <p:graphicImage name="images/warning-sign.png" />
+          </p:column>
+         <p:column headerText="id" style="width:10%">
             <h:outputText value="#{task.id}" />
          </p:column>
-         <p:column headerText="Статус" style="width:20px">
-            <h:outputText value="#{task.status}" />
-         </p:column>
-         <p:column headerText="Исполнитель" style="width:50px">
-            <h:outputText value="#{task.executor}" />
-         </p:column>
-         <p:column headerText="Описание" style="width:50px">
+          <p:column headerText="Компания" style="width:10%">
+              <h:outputText value="#{task.company}" />
+          </p:column>
+          <p:column headerText="Создатель" style="width:10%">
+              <h:outputText value="#{task.creator}" />
+          </p:column>
+          <p:column headerText="Исполнитель" style="width:10%">
+              <h:outputText value="#{task.executor}" />
+          </p:column>
+          <p:column headerText="Дата" style="width:10%">
+              <h:outputText value="#{task.startDate}" />
+          </p:column>
+         <p:column headerText="Описание" style="width:38%">
             <h:outputText value="#{task.description}" />
          </p:column>
-      </p:dataTable>
+          </p:dataTable>
 
-   </h:form>
+       </h:form>
+       </p:tab>
+    </p:tabView>
 </h:body>
 </html>

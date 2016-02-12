@@ -37,7 +37,19 @@ public class TaskPresenter {
     public List<Task> getTasks() {
         return tasks;
     }
+    public String chooseRowColor(Task task) {
+       switch (task.getStatus().getName()) {
+           case "открыта": return "Red";
+           case "закрыта": return "Green";
+           case "отменена": return "Green";
+           case "отложена": return "Blue";
+           case "шаблон": return "Black";
+           case "выполнена": return "Green";
+           case "выполняется": return "Brown";
 
+           default: return null;
+       }
+    }
     // Getters
     public String getSelectedTaskFilter() {
         return selectedTaskFilter;
