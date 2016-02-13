@@ -54,21 +54,7 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
         return statuses;
     }
     private String createReadTaskQuery(String statusFilter, String employeeFilter) {
-
-        String queryName;
-
-        if (statusFilter.equals(STATUS_ANY))
-            if (employeeFilter.equals(EMPLOYEE_ANY))
-                queryName = "select all tasks";
-            else
-                queryName = "select tasks by employee";
-        else
-            if (employeeFilter.equals(EMPLOYEE_ANY))
-                queryName = "select tasks by status";
-            else
-                queryName = "select tasks by employee and status";
-
-        return queryName;
+        return "select all tasks";
     }
     // Methods used to get full entity instance (id-name-etc) having just one field.
     public Status findStatusByName(String name) {
@@ -213,6 +199,23 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return tasks;
     }
+    public List<String> readOrganizations() {
+        // TODO: 13.02.16 Remove plug
+        List<String> plug = new ArrayList();
+
+        plug.add("ORACLE");
+        plug.add("GitHub");
+
+        return plug;
+    }
+    public List<String> readVendors() {
+        // TODO: 13.02.16 Remove plug
+        List<String> plug = new ArrayList();
+
+        plug.add("Ашот");
+
+        return plug;
+    }
 
     // UPDATE Methods
     public boolean tryUpdateTask(Task task) {
@@ -263,6 +266,8 @@ public class DatabaseConnector implements IDatabaseConnectorLocal {
 
         return true;
     }
+
+
 
     //Encapsulated single Database connection. Used by DatabaseConnector during transactions
     //Implements Closeable to become able to be used with try-with-resources

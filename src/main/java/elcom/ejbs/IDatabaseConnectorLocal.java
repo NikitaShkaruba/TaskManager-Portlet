@@ -23,6 +23,8 @@ public interface IDatabaseConnectorLocal {
     List<String> readPriorities();
     List<String> readStatuses();
     List<String> readGroups();
+    List<String> readOrganizations();
+    List<String> readVendors();
     List<Description> readDescriptions(Task task);
     List<Task> readTasks(String statusFilter, String employeeFilter);
 

@@ -1,5 +1,6 @@
 package elcom.MBeans;
 
+import elcom.Entities.Employee;
 import elcom.ejbs.IDatabaseConnectorLocal;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.SelectEvent;
@@ -17,20 +18,31 @@ import javax.ejb.EJB;
 @SessionScoped
 public class TaskPresenter {
     private List<Task> tasks;
-    private String selectedTaskFilter;
-    private String selectedEmployeeFilter;
     private Task selectedTask;
+    private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
     private IDatabaseConnectorLocal dbc;
 
+    private String statusFilter;
+    private String organizationFilter;
+    private String vendorFilter;
+    private String groupFilter;
+    private String executorFilter;
+    private String creatorFilter;
+    private String descriptionFilter;
+
     public TaskPresenter() {
-        selectedTaskFilter = "Любой";
-        selectedEmployeeFilter = "Все";
+        statusFilter = "-- все --";
+        organizationFilter = "-- все --";
+        vendorFilter = "-- все --";
+        groupFilter = "-- все --";
+        executorFilter = "-- все --";
+        creatorFilter = "-- все --";
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
+        tasks = dbc.readTasks(this.statusFilter, "Все");
     }
 
     // Main Logic
@@ -50,47 +62,104 @@ public class TaskPresenter {
            default: return null;
        }
     }
-    // Getters
-    public String getSelectedTaskFilter() {
-        return selectedTaskFilter;
-    }
-    public Task getSelectedTask() {
-        return selectedTask;
-    }
-    public String getSelectedEmployeeFilter() {
-        return selectedEmployeeFilter;
-    }
-
-    // Setters
-    public void setSelectedTaskFilter(String filter) {
-        this.selectedTaskFilter = filter;
-    }
-    public void setSelectedEmployeeFilter(String filter) {
-        this.selectedEmployeeFilter = filter;
+    public boolean isNewToUser(Task task) {
+        // TODO: 13.02.16 add liferay-bounded logic
+        return true;
     }
     public void setSelectedTask(Task selectedTask) {
         this.selectedTask = selectedTask;
     }
 
-    // Lists for GUI MenuOptions
-    public List<String> getEmployeeFilterOptions() {
-        List<String> options = new ArrayList<>();
 
-        options.add("Мои");
-        options.add("Все");
-
-        return options;
+    // Getters
+    public String getStatusFilter() {
+        return statusFilter;
     }
-    public List<String> getTaskStatusesOptions() {
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+    public String getOrganizationFilter() {
+        return organizationFilter;
+    }
+    public String getVendorFilter() {
+        return vendorFilter;
+    }
+    public String getGroupFilter() {
+        return groupFilter;
+    }
+    public String getExecutorFilter() {
+        return executorFilter;
+    }
+    public String getCreatorFilter() {
+        return creatorFilter;
+    }
+    public String getDescriptionFilter() {
+        return descriptionFilter;
+    }
+
+    // Setters
+    public void setStatusFilter(String filter) {
+        this.statusFilter = filter;
+    }
+    public void setOrganizationFilter(String organizationFilter) {
+        this.organizationFilter = organizationFilter;
+    }
+    public void setVendorFilter(String vendorFilter) {
+        this.vendorFilter = vendorFilter;
+    }
+    public void setGroupFilter(String groupFilter) {
+        this.groupFilter = groupFilter;
+    }
+    public void setExecutorFilter(String executorFilter) {
+        this.executorFilter = executorFilter;
+    }
+    public void setCreatorFilter(String creatorFilter) {
+        this.creatorFilter = creatorFilter;
+    }
+    public void setDescriptionFilter(String descriptionFilter) {
+        this.descriptionFilter = descriptionFilter;
+    }
+
+    // Lists for GUI MenuOptions
+    public List<String> getEmployeeOptions() {
+        return dbc.readEmployees();
+    }
+    public List<String> getStatusesOptions() {
         return dbc.readStatuses();
+    }
+    public List<String> getOrganizationOptions() {
+        return dbc.readOrganizations();
+    }
+    public List<String> getVendorOptions() {
+        return dbc.readVendors();
+    }
+    public List<String> getGroupOptions() {
+        return dbc.readGroups();
     }
 
     // AJAX Listeners
-    public void selectNewTaskFilter() {
-        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
+
+    public void selectNewStatusFilter() {
+        // TODO: 13.02.16 Remove plug
+        tasks = dbc.readTasks(statusFilter, "Все");
     }
-    public void selectNewEmployeeFilter() {
-        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
+    public void selectNewCreatorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewExecutorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewVendorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewOrganizationFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewGroupFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewDescriptionFilter() {
+        // TODO: 13.02.16 Fill with logic
     }
     public void onRowSelect(SelectEvent event) {
         try {
@@ -98,5 +167,42 @@ public class TaskPresenter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // TODO: 13.02.16 Add logic
+    public void selectMyTasksPattern() {
+
+    }
+    public void selectFreeTasksPattern() {
+
+    }
+    public void selectClosedTasksPattern() {
+
+    }
+    public void selectTrackedTasksPattern() {
+
+    }
+    public void selectChangedTasksPattern() {
+
+    }
+    public void selectContractsTaskPattern() {
+
+    }public int getMyCount() {
+        return 2;
+    }
+    public int getOpenCount() {
+        return 45;
+    }
+    public int getClosedCount() {
+        return 78;
+    }
+    public int getTrackedCount() {
+        return 32;
+    }
+    public int getChangedCount() {
+        return 333;
+    }
+    public int getContractsCount() {
+        return 1;
     }
 }

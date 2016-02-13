@@ -9,67 +9,116 @@
 </h:head>
 
 <h:body>
-   <p:tabView scrollable="true">
-       <p:tab title="Список заявок">
-        <h:form>
-          <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+    <h:form>
+       <p:panel header="Фильтры" >
+           <p:toolbar>
+               <f:facet name="left">
+                   <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.applyMyFilter}" />
+                   <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}" />
+                   <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}" />
+                   <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}" />
+                   <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}" />
+                   <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}" />
+               </f:facet>
+           </p:toolbar>
 
-         <h:panelGrid columns="3" cellpadding="5">
-            <p:outputLabel value="Фильтр по заявкам:" />
-            <p:selectOneMenu id="TaskFilter" value="#{TaskPresenter.selectedTaskFilter}">
-               <f:selectItem itemLabel="Любой" itemValue="Любой" />
-               <f:selectItems value="#{TaskPresenter.taskStatusesOptions}" />
-               <p:ajax event="change" listener="#{TaskPresenter.selectNewTaskFilter}" update="taskTable" />
-            </p:selectOneMenu>
-         </h:panelGrid>
+           <p:panelGrid columns="2">
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Краткое описание" />
+                   <p:inputText value="#{TaskPresenter.descriptionFilter}" valueChangeListener="#{TaskPresenter.selectNewDescriptionFilter}" />
+               </h:panelGrid>
 
-         <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-            <p:outputLabel value="Фильтр по сотрудникам:" />
-            <p:selectOneMenu id="EmployeeFilter" value="#{TaskPresenter.selectedEmployeeFilter}">
-               <p:ajax event="change" listener="#{TaskPresenter.selectNewEmployeeFilter}" update="taskTable" />
-               <f:selectItems value="#{TaskPresenter.employeeFilterOptions}" />
-            </p:selectOneMenu>
-         </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Продавец" />
+                   <p:selectOneMenu id="vendors" value="#{TaskPresenter.vendorFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.vendorOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewVendorFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Создатель" />
+                   <p:selectOneMenu id="creators" value="#{TaskPresenter.creatorFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.employeeOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewCreatorFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Организация" />
+                   <p:selectOneMenu id="organizations" value="#{TaskPresenter.organizationFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.organizationOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewOrganizationFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Исполнитель" />
+                   <p:selectOneMenu id="executors" value="#{TaskPresenter.executorFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.employeeOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewExecutorFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Группа" />
+                   <p:selectOneMenu id="groups" value="#{TaskPresenter.groupFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.groupOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewGroupFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+               <h:panelGrid columns="2" >
+                   <p:outputLabel value="Статус" />
+                   <p:selectOneMenu id="statuses" value="#{TaskPresenter.statusFilter}">
+                       <f:selectItem itemLabel="-- Все --" itemValue="-- Все --" />
+                       <f:selectItems value="#{TaskPresenter.statusesOptions}" />
+                       <p:ajax event="change" listener="#{TaskPresenter.selectNewStatusFilter}" update=":tabView:taskTable" />
+                   </p:selectOneMenu>
+               </h:panelGrid>
+           </p:panelGrid>
+           <p:button value="Создать новую" outcome="CreateTask" />
+       </p:panel>
+    </h:form>
 
-      <h:panelGrid columns="3" cellpadding="5">
-         <p:button value="Создать новую" outcome="CreateTask" />
-      </h:panelGrid>
+   <p:tabView id="tabView" scrollable="true">
+       <p:tab id="tasksTab" title="Список заявок">
+          <p:messages id="messages" showDadftail="true" autoUpdate="true" closable="true" />
 
-      <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.tasks}" resizableColumns="true"
-                   selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}"
-                   paginator="true" rows="15"
-                   paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                   rowsPerPageTemplate="15, 30, 45" rowStyleClass="${TaskPresenter.chooseRowColor(task)}" >
-         <p:ajax event="rowSelect" listener="#{TaskPresenter.onRowSelect}" />
+          <p:dataTable id="taskTable" var="task" value="#{TaskPresenter.tasks}" resizableColumns="true"
+                       selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}"
+                       paginator="true" rows="20"
+                       paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                       rowsPerPageTemplate="20, 40, 60" rowStyleClass="${TaskPresenter.chooseRowColor(task)}"  >
+             <p:ajax event="rowSelect" listener="#{TaskPresenter.onRowSelect}" />
 
-          <p:column headerText="Статус" style="width:10%">
-              <h:outputText value="#{task.status}" />
-          </p:column>
-          <p:column headerText="!?" style="width:2%">
-              <p:graphicImage name="images/warning-sign.png" />
-          </p:column>
-         <p:column headerText="id" style="width:10%">
-            <h:outputText value="#{task.id}" />
-         </p:column>
-          <p:column headerText="Компания" style="width:10%">
-              <h:outputText value="#{task.company}" />
-          </p:column>
-          <p:column headerText="Создатель" style="width:10%">
-              <h:outputText value="#{task.creator}" />
-          </p:column>
-          <p:column headerText="Исполнитель" style="width:10%">
-              <h:outputText value="#{task.executor}" />
-          </p:column>
-          <p:column headerText="Дата" style="width:10%">
-              <h:outputText value="#{task.startDate}" />
-          </p:column>
-         <p:column headerText="Описание" style="width:38%">
-            <h:outputText value="#{task.description}" />
-         </p:column>
-          </p:dataTable>
+              <p:column headerText="Статус" style="width:10%">
+                  <h:outputText value="#{task.status}" />
+              </p:column>
+              <p:column headerText="!?" style="width:2%">
+                  <p:graphicImage rendered="#{TaskPresenter.isNewToUser(task)}" name="images/warning-sign.png" />
+              </p:column>
+             <p:column headerText="id" style="width:10%">
+                <h:outputText value="#{task.id}" />
+             </p:column>
+              <p:column headerText="Компания" style="width:10%">
+                  <h:outputText value="#{task.company}" />
+              </p:column>
+              <p:column headerText="Создатель" style="width:10%">
+                  <h:outputText value="#{task.creator}" />
+              </p:column>
+              <p:column headerText="Исполнитель" style="width:10%">
+                  <h:outputText value="#{task.executor}" />
+              </p:column>
+              <p:column headerText="Дата" style="width:10%">
+                  <h:outputText value="#{task.startDate}" />
+              </p:column>
+             <p:column headerText="Описание" style="width:37%">
+                <h:outputText value="#{task.description}" />
+             </p:column>
+              </p:dataTable>
 
-       </h:form>
-       </p:tab>
-    </p:tabView>
+           </p:tab>
+        </p:tabView>
 </h:body>
 </html>
