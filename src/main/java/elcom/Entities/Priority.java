@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Table(name="priorities")
 @NamedQuery(query = "select p from Priority p", name = "select all priorities")
 public class Priority implements Serializable{
-    private int id;
+    private long id;
     private String name;
     private int coefficient; //seems to be unused at the moment
 
@@ -15,7 +15,7 @@ public class Priority implements Serializable{
 
     @Id
     @GeneratedValue
-    public int getId() {
+    public long getId() {
         return id;
     }
     @Basic
@@ -29,7 +29,7 @@ public class Priority implements Serializable{
         return coefficient;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setName(String name) {
@@ -41,7 +41,7 @@ public class Priority implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = id * 51 / + 322;
+        int hash = (int)id * 51 / + 322;
         hash += 31 * name.hashCode();
         hash += coefficient * 19;
 
@@ -55,8 +55,8 @@ public class Priority implements Serializable{
 
         Priority other = (Priority) obj;
 
-        if (this.id != other.id)                   return false;
-        if (!this.name.equals(other.name))         return false;
+        if (this.id != other.id) return false;
+        if (!this.name.equals(other.name)) return false;
         if (this.coefficient != other.coefficient) return false;
 
         return true;

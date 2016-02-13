@@ -7,14 +7,14 @@ import java.util.Date;
 @Entity
 @Table(name="descriptions")
 @NamedQueries({
-        @NamedQuery(name = "select descriptions by task",
-                query = "select d from Description d where d.task = :task"),
+        @NamedQuery(name = "select comments by task",
+                query = "select c from Comment c where c.task = :task"),
 
-        @NamedQuery(name = "select all descriptions",
-                    query = "select d from Description d")
+        @NamedQuery(name = "select all comments",
+                    query = "select c from Comment c")
 })
-public class Description implements Serializable{
-    private int id;
+public class Comment implements Serializable{
+    private long id;
     private Task task;
     private Employee author;
     private String content;
@@ -23,7 +23,7 @@ public class Description implements Serializable{
 
     @Id
     @GeneratedValue
-    public int getId() {
+    public long getId() {
         return id;
     }
     @OneToOne
@@ -48,11 +48,11 @@ public class Description implements Serializable{
     }
     @Basic
     @Column(name="public_comment")
-    public Boolean isPublicComment() {
+    public Boolean getPublicComment() {
         return publicComment;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setTask(Task task) {
@@ -73,7 +73,7 @@ public class Description implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = id * 83 + (publicComment ? 1 : 0);
+        int hash = (int)id * 83 + (publicComment ? 1 : 0);
         hash += 31 * task.hashCode() + 18;
         hash += 31 * author.hashCode() + 18;
         hash += 31 * content.hashCode() + 18;
@@ -83,16 +83,16 @@ public class Description implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Description))
+        if (!(obj instanceof Comment))
             return false;
 
-        Description other = (Description) obj;
+        Comment other = (Comment) obj;
 
         if (this.id != other.id) return false;
-        if (this.task != other.task) return false;
-        if (this.author != other.author) return false;
+        if (!(this.task.equals(other.task))) return false;
+        if (!(this.author.equals(other.author))) return false;
         if (!(this.content.equals(other.content))) return false;
-        if (this.publicComment != other.publicComment) return false;
+        if (!(this.publicComment.equals(other.publicComment))) return false;
 
         return true;
     }

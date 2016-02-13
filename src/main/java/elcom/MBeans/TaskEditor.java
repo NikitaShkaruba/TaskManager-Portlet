@@ -1,11 +1,14 @@
 package elcom.MBeans;
 
 import javax.faces.application.FacesMessage;
-import elcom.ejbs.IDatabaseConnectorLocal;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import elcom.Entities.Task;
+
+import elcom.Entities.*;
+import elcom.ejbs.DatabaseConnector;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -16,19 +19,19 @@ import javax.ejb.EJB;
 public class TaskEditor {
     Task task;
     @EJB
-    private IDatabaseConnectorLocal dbc;
+    private DatabaseConnector dbc;
 
     public TaskEditor() {
         task = new Task();
     }
     // These methods get called before the page rendering
     public void initializeSelectedForEditTask(int id) {
-        task = dbc.findTaskById(id);
+        task = dbc.readTaskById(id);
     }
     public void initializeTaskForCreation() {
-        task.setStatus(dbc.findStatusByName("Открыта"));
-        task.setPriority(dbc.findPriorityByName("Низкий"));
-        task.setExecutor(dbc.findEmployeeByName("Jek"));
+        task.setStatus(dbc.readStatusByName("Открыта"));
+        task.setPriority(dbc.readPriorityByName("Низкий"));
+        task.setExecutor(dbc.readEmployeeByName("Jek"));
     }
 
     // Getters
@@ -39,7 +42,7 @@ public class TaskEditor {
         return task.getStatus().getName();
     }
     public String getGroup() {
-        return task.getGroup();
+        return task.getExecutorGroup().getFullName();
     }
     public String getExecutor() {
         return task.getExecutor().getName();
@@ -59,16 +62,16 @@ public class TaskEditor {
         task.setDescription(description);
     }
     public void setStatus(String status) {
-        task.setStatus(dbc.findStatusByName(status));
+        task.setStatus(dbc.readStatusByName(status));
     }
     public void setGroup(String group) {
-        task.setGroup(group);
+        task.setExecutorGroup(dbc.readGroupByName(group));
     }
     public void setExecutor(String executor) {
-        task.setExecutor(dbc.findEmployeeByName(executor));
+        task.setExecutor(dbc.readEmployeeByName(executor));
     }
     public void setPriority(String priority) {
-        task.setPriority(dbc.findPriorityByName(priority));
+        task.setPriority(dbc.readPriorityByName(priority));
     }
     public void setStartDate(Date date) {
         task.setStartDate(date);
@@ -79,16 +82,36 @@ public class TaskEditor {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return dbc.readStatuses();
+        List<String> result = new ArrayList<>();
+
+        for (Status s : dbc.readAllStatuses())
+            result.add(s.toString());
+
+        return result;
     }
     public List<String> getGroupOptions() {
-        return dbc.readGroups();
+        List<String> result = new ArrayList<>();
+
+        for (Group g: dbc.readAllGroups())
+            result.add(g.toString());
+
+        return result;
     }
     public List<String> getExecutorOptions() {
-        return dbc.readEmployees();
+        List<String> result = new ArrayList<>();
+
+        for (Employee e: dbc.readAllEmployees())
+            result.add(e.toString());
+
+        return result;
     }
     public List<String> getPriorityOptions() {
-        return dbc.readPriorities();
+        List<String> result = new ArrayList<>();
+
+        for (Priority p: dbc.readAllPriorities())
+            result.add(p.toString());
+
+        return result;
     }
 
     // Ajax listeners

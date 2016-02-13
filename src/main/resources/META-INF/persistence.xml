@@ -2,10 +2,15 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="MainPersistenceUnit">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <class>elcom.Entities.Comment</class>
+    <class>elcom.Entities.Contact</class>
+    <class>elcom.Entities.Employee</class>
+    <class>elcom.Entities.Group</class>
+    <class>elcom.Entities.Priority</class>
+    <class>elcom.Entities.Status</class>
     <class>elcom.Entities.Task</class>
-        <class>elcom.Entities.Employee</class>
-        <class>elcom.Entities.Priority</class>
-        <class>elcom.Entities.Status</class>
+    <class>elcom.Entities.TaskTemplate</class>
+    <class>elcom.Entities.Vendor</class>
     <properties>
         <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/wf"/>
         <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>

@@ -20,20 +20,21 @@ import java.util.Date;
                     query = "select t from Task t where t.executor = :employee and t.status = :status")
 })
 public class Task implements Serializable, Cloneable {
-    private int id;
+    private long id;
     private String description;
     private Date startDate;
     private Date finishDate;
+    private Group executorGroup;
+    private Employee creator;
     private Employee executor;
-    private Status status;
     private Priority priority;
-    private String group; // There's only 1 group yet
+    private Status status;
 
     public Task() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public int getId() {
+    public long getId() {
         return id;
     }
     @Basic
@@ -46,9 +47,15 @@ public class Task implements Serializable, Cloneable {
     public Status getStatus() {
         return status;
     }
-    @Transient
-    public String getGroup() {
-        return "Все";
+    @OneToOne
+    @JoinColumn(name="gr_performer_id")
+    public Group getExecutorGroup() {
+        return executorGroup;
+    }
+    @OneToOne
+    @JoinColumn(name="owner_id")
+    public Employee getCreator() {
+        return creator;
     }
     @OneToOne
     @JoinColumn(name="performer_id")
@@ -71,7 +78,7 @@ public class Task implements Serializable, Cloneable {
         return finishDate;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
     public void setDescription(String description) {
@@ -80,8 +87,11 @@ public class Task implements Serializable, Cloneable {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public void setGroup(String group) {
-        this.group = group;
+    public void setExecutorGroup(Group executorGroup) {
+        this.executorGroup = executorGroup;
+    }
+    public void setCreator(Employee creator) {
+        this.creator = creator;
     }
     public void setExecutor(Employee executor) {
         this.executor = executor;
@@ -98,9 +108,7 @@ public class Task implements Serializable, Cloneable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-
-        hash += (id * 51) / 17 + 322;
+        int hash = (int)id * 51 / 17 + 322;
         hash += description.hashCode();
         hash += executor.hashCode();
         hash += status.hashCode();
