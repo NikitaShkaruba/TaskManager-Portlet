@@ -218,74 +218,17 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         return result;
     }
 
-    public List<String> readOrganisationsAsStrings() {
-        List<String> organisationNames = new ArrayList<>();
+    public List<Contact> readAllOrganisations() {
+        List<Contact> orgs = null;
 
         try(DBConnection dbc = new DBConnection(emf)) {
-            List<Contact> orgs = dbc.getEntityManager().createNamedQuery("select all organisations").getResultList();
-            for (Contact o : orgs)
-                organisationNames.add(o.getContent());
+            orgs = dbc.getEntityManager().createNamedQuery("select all organisations").getResultList();
         } catch(Exception e) {
             e.printStackTrace();
-            return null;
         }
 
-        return organisationNames;
+        return orgs;
     }
-    public List<String> readVendorsAsStrings() {
-        List<String> vendorNames = new ArrayList<>();
-
-        try(DBConnection dbc = new DBConnection(emf)) {
-            List<Vendor> vendors = dbc.getEntityManager().createNamedQuery("select all vendors").getResultList();
-            for (Vendor v : vendors)
-                vendorNames.add(v.getName());
-        } catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return vendorNames;
-    }
-
-    public List<String> readGroupsAsStrings() {
-        List<String> result = new ArrayList<>();
-
-        for (Group g : groupsCache)
-            result.add(g.getFullName());
-
-        return result;
-    }
-    public List<String> readEmployeesAsStrings() {
-        List<String> result = null;
-
-        try (DBConnection dbc = new DBConnection(emf)) {
-            List<Employee> employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
-            result = new ArrayList<String>();
-            for (Employee e : employees)
-                result.add(e.getFullName().concat(" (").concat(e.getName()).concat(")"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-    public List<String> readPrioritiesAsStrings() {
-        List<String> result = new ArrayList<>();
-
-        for (Priority p : prioritiesCache)
-            result.add(p.getName());
-
-        return result;
-    }
-    public List<String> readStatusesAsStrings() {
-        List<String> result = new ArrayList<>();
-
-        for (Status s : statusesCache)
-            result.add(s.getName());
-
-        return result;
-    }
-
     public List<Comment> readAllComments() {
         List<Comment> comments = null;
 
@@ -312,6 +255,26 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         }
 
         return comments;
+    }
+    public List<Employee> readAllEmployees() {
+        List<Employee> employees = null;
+
+        try (DBConnection dbc = new DBConnection(emf)) {
+            employees = dbc.getEntityManager().createNamedQuery("select all employees").getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return employees;
+    }
+    public List<Group> readAllGroups() {
+        return groupsCache;
+    }
+    public List<Priority> readAllPriorities() {
+        return prioritiesCache;
+    }
+    public List<Status> readAllStatuses() {
+        return statusesCache;
     }
     public List<Task> readTasks(String statusFilter, String employeeFilter) {
         List<Task> tasks = new ArrayList<>();
@@ -343,6 +306,9 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         }
 
         return taskTemplates;
+    }
+    public List<Vendor> readAllVendors() {
+        return vendorsCache;
     }
 
     // UPDATE Methods

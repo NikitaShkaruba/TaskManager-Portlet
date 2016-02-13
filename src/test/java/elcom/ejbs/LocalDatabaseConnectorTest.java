@@ -2,10 +2,7 @@ package elcom.ejbs;
 
 import static org.junit.Assert.assertTrue;
 
-import elcom.Entities.Comment;
-import elcom.Entities.Status;
-import elcom.Entities.Task;
-import elcom.Entities.TaskTemplate;
+import elcom.Entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
@@ -35,17 +32,15 @@ public class LocalDatabaseConnectorTest {
     }
     @Test
     public void StatusTest() {
-        List<String> statuses = dbc.readStatusesAsStrings();
+        List<Status> statuses = dbc.readAllStatuses();
 
         assertTrue("Status Test failed at reading statuses", !statuses.isEmpty());
 
-        Status status = dbc.readStatusByName(statuses.get(0));
-
-        assertTrue("Status color is not working", status.getColor() != null);
+        assertTrue("Status color is not working", statuses.get(0).getColor() != null);
     }
     @Test
     public void GroupTest() {
-        List<String> groups = dbc.readGroupsAsStrings();
+        List<Group> groups = dbc.readAllGroups();
 
         assertTrue(!groups.isEmpty());
     }
@@ -57,13 +52,13 @@ public class LocalDatabaseConnectorTest {
     }
     @Test
     public void VendorsTest() {
-        List<String> vendors = dbc.readVendorsAsStrings();
+        List<Vendor> vendors = dbc.readAllVendors();
 
         assertTrue(!vendors.isEmpty());
     }
     @Test
     public void OrganisationsTest() {
-        List<String> organisations = dbc.readOrganisationsAsStrings();
+        List<Contact> organisations = dbc.readAllOrganisations();
 
         assertTrue(!organisations.isEmpty());
     }

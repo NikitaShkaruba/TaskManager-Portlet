@@ -4,9 +4,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import elcom.Entities.Task;
+
+import elcom.Entities.*;
 import elcom.ejbs.DatabaseConnector;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -80,16 +82,36 @@ public class TaskEditor {
 
     // logic
     public List<String> getTaskStatusOptions() {
-        return dbc.readStatusesAsStrings();
+        List<String> result = new ArrayList<>();
+
+        for (Status s : dbc.readAllStatuses())
+            result.add(s.toString());
+
+        return result;
     }
     public List<String> getGroupOptions() {
-        return dbc.readGroupsAsStrings();
+        List<String> result = new ArrayList<>();
+
+        for (Group g: dbc.readAllGroups())
+            result.add(g.toString());
+
+        return result;
     }
     public List<String> getExecutorOptions() {
-        return dbc.readEmployeesAsStrings();
+        List<String> result = new ArrayList<>();
+
+        for (Employee e: dbc.readAllEmployees())
+            result.add(e.toString());
+
+        return result;
     }
     public List<String> getPriorityOptions() {
-        return dbc.readPrioritiesAsStrings();
+        List<String> result = new ArrayList<>();
+
+        for (Priority p: dbc.readAllPriorities())
+            result.add(p.toString());
+
+        return result;
     }
 
     // Ajax listeners

@@ -2,6 +2,7 @@ package elcom.MBeans;
 
 import javax.faces.context.FacesContext;
 
+import elcom.Entities.Status;
 import elcom.ejbs.DatabaseConnector;
 import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
@@ -134,7 +135,12 @@ public class TaskPresenter {
         return options;
     }
     public List<String> getTaskStatusesOptions() {
-        return dbc.readStatusesAsStrings();
+        List<String> result = new ArrayList<>();
+
+        for (Status s : dbc.readAllStatuses())
+            result.add(s.toString());
+
+        return result;
     }
     public List<Integer> getItemAmountOptions() {
         Set<Integer> options = new TreeSet<Integer>();

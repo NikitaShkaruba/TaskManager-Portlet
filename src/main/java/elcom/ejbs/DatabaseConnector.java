@@ -23,15 +23,14 @@ public interface DatabaseConnector {
 
     List<Comment> readAllComments();
     List<Comment> readTaskComments(Task task);
+    List<Employee> readAllEmployees();
+    List<Group> readAllGroups();
+    List<Contact> readAllOrganisations();
+    List<Priority> readAllPriorities();
+    List<Status> readAllStatuses();
     List<Task> readTasks(String statusFilter, String employeeFilter);
     List<TaskTemplate> readAllTaskTemplates();
-
-    List<String> readEmployeesAsStrings();
-    List<String> readGroupsAsStrings();
-    List<String> readOrganisationsAsStrings();
-    List<String> readPrioritiesAsStrings();
-    List<String> readStatusesAsStrings();
-    List<String> readVendorsAsStrings();
+    List<Vendor> readAllVendors();
 
     // UPDATE Methods
     boolean tryUpdateComment(Comment comment);
