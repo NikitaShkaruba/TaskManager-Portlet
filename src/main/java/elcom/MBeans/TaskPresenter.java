@@ -1,19 +1,16 @@
 package elcom.MBeans;
 
+import elcom.Entities.*;
+
 import javax.faces.context.FacesContext;
 
-import elcom.Entities.Status;
 import elcom.ejbs.DatabaseConnector;
 import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import elcom.Entities.Task;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.TreeSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.EJB;
 
 // This MBean handles logic from ViewTasks page
@@ -21,51 +18,53 @@ import javax.ejb.EJB;
 @SessionScoped
 public class TaskPresenter {
     private List<Task> tasks;
-    private String selectedTaskFilter;
-    private String selectedEmployeeFilter;
-    private int currentPage;
-    private int displayedAmount;
-
-    private boolean firstPageDisabled;
-    private boolean lastPageDisabled;
-    private boolean prevPageDisabled;
-    private boolean nextPageDisabled;
-
+    private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
     private DatabaseConnector dbc;
     private Task selectedTask;
 
-    public TaskPresenter() {
-        selectedTaskFilter = "Любой";
-        selectedEmployeeFilter = "Все";
-        currentPage = 1;
-        displayedAmount = 15;
+    private String statusFilter;
+    private String organizationFilter;
+    private String vendorFilter;
+    private String groupFilter;
+    private String executorFilter;
+    private String creatorFilter;
+    private String descriptionFilter;
 
-        firstPageDisabled = true;
-        lastPageDisabled = false;
-        prevPageDisabled = true;
-        nextPageDisabled = false;
+    public TaskPresenter() {
+        statusFilter = "-- все --";
+        organizationFilter = "-- все --";
+        vendorFilter = "-- все --";
+        groupFilter = "-- все --";
+        executorFilter = "-- все --";
+        creatorFilter = "-- все --";
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        tasks = dbc.readTasks(this.selectedTaskFilter, this.selectedEmployeeFilter);
+        tasks = dbc.readTasks(this.statusFilter, "Все");
     }
 
     // Main Logic
-    public List<Task> getShowedTasks() {
-        int beginIndex = (currentPage - 1) * displayedAmount;
-        int endIndex;
-
-        if (currentPage != getPagesCount())
-            endIndex = beginIndex + displayedAmount;
-        else
-            endIndex = tasks.size();
-
-        return tasks.subList(beginIndex, endIndex);
+    public List<Task> getTasks() {
+        return tasks;
     }
-    public int getPagesCount() {
-        return (int)Math.ceil((double)tasks.size() / displayedAmount);
+    public String chooseRowColor(Task task) {
+       switch (task.getStatus().getName()) {
+           case "открыта": return "Red";
+           case "закрыта": return "Green";
+           case "отменена": return "Green";
+           case "отложена": return "Blue";
+           case "шаблон": return "Black";
+           case "выполнена": return "Green";
+           case "выполняется": return "Brown";
+
+           default: return null;
+       }
+    }
+    public boolean isNewToUser(Task task) {
+        // TODO: 13.02.16 add liferay-bounded logic
+        return true;
     }
     public int getTasksAmount() {
         return tasks.size();
@@ -73,162 +72,144 @@ public class TaskPresenter {
     private long getSelectedTaskId() {
         return selectedTask.getId();
     }
-
-    // Getters
-    public String getSelectedTaskFilter() {
-        return selectedTaskFilter;
-    }
-    public Task getSelectedTask() {
-        return selectedTask;
-    }
-    public String getSelectedEmployeeFilter() {
-        return selectedEmployeeFilter;
-    }
-    public int getCurrentPage() {
-        return currentPage;
-    }
-    public int getDisplayedAmount() {
-        return displayedAmount;
-    }
-    public boolean isFirstPageDisabled() {
-        return firstPageDisabled;
-    }
-    public boolean isLastPageDisabled() {
-        return lastPageDisabled;
-    }
-    public boolean isPrevPageDisabled() {
-        return prevPageDisabled;
-    }
-    public boolean isNextPageDisabled() {
-        return nextPageDisabled;
-    }
-
-    // Setters
-    public void setSelectedTaskFilter(String filter) {
-        this.selectedTaskFilter = filter;
-    }
-    public void setSelectedEmployeeFilter(String filter) {
-        this.selectedEmployeeFilter = filter;
-    }
-    public void setCurrentPage(int pageNumber) {
-        this.currentPage = pageNumber;
-        updateButtonsStatuses();
-    }
-    public void setDisplayedAmount(int amount) {
-        this.displayedAmount = amount;
-        setCurrentPage(1);
-    }
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
-    }
     public void setSelectedTask(Task selectedTask) {
         this.selectedTask = selectedTask;
     }
 
+
+    // Getters
+    public String getStatusFilter() {
+        return statusFilter;
+    }
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+    public String getOrganizationFilter() {
+        return organizationFilter;
+    }
+    public String getVendorFilter() {
+        return vendorFilter;
+    }
+    public String getGroupFilter() {
+        return groupFilter;
+    }
+    public String getExecutorFilter() {
+        return executorFilter;
+    }
+    public String getCreatorFilter() {
+        return creatorFilter;
+    }
+    public String getDescriptionFilter() {
+        return descriptionFilter;
+    }
+
+    // Setters
+    public void setStatusFilter(String filter) {
+        this.statusFilter = filter;
+    }
+    public void setOrganizationFilter(String organizationFilter) {
+        this.organizationFilter = organizationFilter;
+    }
+    public void setVendorFilter(String vendorFilter) {
+        this.vendorFilter = vendorFilter;
+    }
+    public void setGroupFilter(String groupFilter) {
+        this.groupFilter = groupFilter;
+    }
+    public void setExecutorFilter(String executorFilter) {
+        this.executorFilter = executorFilter;
+    }
+    public void setCreatorFilter(String creatorFilter) {
+        this.creatorFilter = creatorFilter;
+    }
+    public void setDescriptionFilter(String descriptionFilter) {
+        this.descriptionFilter = descriptionFilter;
+    }
+
     // Lists for GUI MenuOptions
-    public List<String> getEmployeeFilterOptions() {
-        List<String> options = new ArrayList<>();
-
-        options.add("Мои");
-        options.add("Все");
-
-        return options;
+    public List<Employee> getEmployeeOptions() {
+        return dbc.readAllEmployees();
     }
-    public List<String> getTaskStatusesOptions() {
-        List<String> result = new ArrayList<>();
-
-        for (Status s : dbc.readAllStatuses())
-            result.add(s.toString());
-
-        return result;
+    public List<Status> getStatusesOptions() {
+        return dbc.readAllStatuses();
     }
-    public List<Integer> getItemAmountOptions() {
-        Set<Integer> options = new TreeSet<Integer>();
-
-        int lowerBound = tasks.size() < 5 ? tasks.size() : 5;
-        int upperBound = tasks.size() < 30 ? tasks.size() : 30;
-        int cursor = lowerBound;
-
-        options.add(lowerBound);
-
-        while ((cursor % 5) != 0)
-            cursor += 1;
-        while (cursor < upperBound) {
-            options.add(cursor);
-            cursor += 5;
-        }
-
-        options.add(upperBound);
-
-        if (!(options.contains(displayedAmount)))
-            displayedAmount = upperBound;
-
-        return new ArrayList<Integer>(options);
+    public List<Contact> getOrganizationOptions() {
+        return dbc.readAllOrganizations();
     }
-    public List<Integer> getPagesOptions() {
-        List<Integer> variants = new ArrayList<>();
-
-        for(int i = 1; i <= getPagesCount(); i++)
-            variants.add(i);
-
-        return variants;
+    public List<Vendor> getVendorOptions() {
+        return dbc.readAllVendors();
+    }
+    public List<Group> getGroupOptions() {
+        return dbc.readAllGroups();
     }
 
     // AJAX Listeners
-    public void selectNewTaskFilter() {
-        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
-        setCurrentPage(1);
-    }
-    public void selectNewEmployeeFilter() {
-        tasks = dbc.readTasks(selectedTaskFilter, selectedEmployeeFilter);
-        setCurrentPage(1);
-    }
-    public void setNextPage() {
-        if (currentPage != getPagesCount())
-            setCurrentPage(currentPage + 1);
-    }
-    public void setPreviousPage() {
-        if (currentPage != 1)
-            setCurrentPage(currentPage - 1);
-    }
-    public void setLastPage() {
-        setCurrentPage(getPagesCount());
-    }
-    public void setFirstPage() {
-        setCurrentPage(1);
-    }
 
-    public void updateButtonsStatuses() {
-        if (currentPage == 1) {
-            firstPageDisabled = true;
-            prevPageDisabled = true;
-        }
-        else {
-            firstPageDisabled = false;
-            prevPageDisabled = false;
-        }
-
-        if (currentPage == getPagesCount()) {
-            lastPageDisabled = true;
-            nextPageDisabled = true;
-        }
-        else {
-            lastPageDisabled = false;
-            nextPageDisabled = false;
-        }
-
-        if (tasks.size() == 0) {
-            firstPageDisabled = true;
-            prevPageDisabled = true;
-            lastPageDisabled = true;
-            nextPageDisabled = true;
-        }
+    public void selectNewStatusFilter() {
+        // TODO: 13.02.16 Remove plug
+        tasks = dbc.readTasks(statusFilter, "Все");
+    }
+    public void selectNewCreatorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewExecutorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewVendorFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewOrganizationFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewGroupFilter() {
+        // TODO: 13.02.16 Fill with logic
+    }
+    public void selectNewDescriptionFilter() {
+        // TODO: 13.02.16 Fill with logic
     }
     public void onRowSelect(SelectEvent event) {
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + getSelectedTaskId());
+            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + selectedTask.getId());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // TODO: 13.02.16 Add logic
+    public void selectMyTasksPattern() {
+
+    }
+    public void selectFreeTasksPattern() {
+
+    }
+    public void selectClosedTasksPattern() {
+
+    }
+    public void selectTrackedTasksPattern() {
+
+    }
+    public void selectChangedTasksPattern() {
+
+    }
+    public void selectContractsTaskPattern() {
+
+    }
+    public int getMyCount() {
+        return 2;
+    }
+    public int getOpenCount() {
+        return 45;
+    }
+    public int getClosedCount() {
+        return 78;
+    }
+    public int getTrackedCount() {
+        return 32;
+    }
+    public int getChangedCount() {
+        return 333;
+    }
+    public int getContractsCount() {
+        return 1;
     }
 }

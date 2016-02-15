@@ -19,7 +19,8 @@
 
         <h:outputLabel value="Описание заявки:" escape="true"/>
         <br/>
-        <p:inputText value="#{TaskEditor.description}" style="width: 700px; height: 80px;" />
+
+        <p:editor id="editor" widgetVar="editorWidget" value="#{TaskEditor.description}" width="600" />
 
         <h:panelGrid columns="2" cellpadding="5">
             <h:outputLabel value="Статус"/>

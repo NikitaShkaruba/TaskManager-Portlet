@@ -1,7 +1,6 @@
 package elcom.ejbs;
 
 import elcom.Entities.*;
-
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
@@ -33,7 +32,7 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         statusesCache = cacheStatuses();
         groupsCache = cacheGroups();
         vendorsCache = cacheVendors();
-        }
+    }
 
     //Private methods used inside class
     private List<Group> cacheGroups() {
@@ -91,21 +90,7 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         return true;
     }
     private String createQueryForReadTasks(String statusFilter, String employeeFilter) {
-
-        String queryName;
-
-        if (statusFilter.equals(STATUS_FILTER_ANY))
-            if (employeeFilter.equals(EMPLOYEE_FILTER_ANY))
-                queryName = "select all tasks";
-            else
-                queryName = "select tasks by employee";
-        else
-            if (employeeFilter.equals(EMPLOYEE_FILTER_ANY))
-                queryName = "select tasks by status";
-            else
-                queryName = "select tasks by employee and status";
-
-        return queryName;
+        return "select all tasks";
     }
 
     public Task instantiateTaskByTemplate(TaskTemplate tt) {
@@ -284,11 +269,6 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         try(DBConnection dbc = new DBConnection(emf)) {
             Query query = dbc.getEntityManager().createNamedQuery(queryName);
 
-            if (queryName.contains("status"))
-                query.setParameter("status", readStatusByName(statusFilter));
-            if (queryName.contains("employee"))
-                query.setParameter("employee", readEmployeeByName(employeeFilter));
-
             tasks = query.getResultList();
         } catch(Exception e) {
             e.printStackTrace();
@@ -309,6 +289,9 @@ public class LocalDatabaseConnector implements DatabaseConnector {
     }
     public List<Vendor> readAllVendors() {
         return vendorsCache;
+    }
+    public List<Contact> readAllOrganizations() {
+        return null;
     }
 
     // UPDATE Methods
@@ -382,4 +365,3 @@ public class LocalDatabaseConnector implements DatabaseConnector {
         }
     }
 }
-

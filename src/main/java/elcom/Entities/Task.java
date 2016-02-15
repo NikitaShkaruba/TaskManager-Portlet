@@ -78,6 +78,16 @@ public class Task implements Serializable, Cloneable {
         return finishDate;
     }
 
+    // Plugs to be expanded
+    @Transient
+    public boolean isCritical() {
+        return true;
+    }
+    @Transient
+    public String getCompany() {
+        return "Oracle";
+    }
+
     public void setId(long id) {
         this.id = id;
     }

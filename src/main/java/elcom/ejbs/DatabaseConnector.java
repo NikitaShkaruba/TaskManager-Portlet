@@ -1,10 +1,9 @@
 package elcom.ejbs;
 
 import elcom.Entities.*;
-
-import javax.ejb.Local;
 import java.util.List;
 
+// Handles database data retrieving
 public interface DatabaseConnector {
     Task instantiateTaskByTemplate(TaskTemplate tt);
 
@@ -39,4 +38,6 @@ public interface DatabaseConnector {
     // DELETE Methods
     boolean tryDeleteComment(Comment comment);
     boolean tryDeleteTask(Task task);
+
+    List<Contact> readAllOrganizations();
 }
