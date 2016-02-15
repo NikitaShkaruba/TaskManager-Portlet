@@ -3,13 +3,14 @@ package elcom.MBeans;
 import elcom.Entities.*;
 
 import javax.faces.context.FacesContext;
-
+import elcom.tabs.*;
 import elcom.ejbs.DatabaseConnector;
 import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.EJB;
 
@@ -17,6 +18,7 @@ import javax.ejb.EJB;
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
+    private List<Tab> tabs;
     private List<Task> tasks;
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
@@ -42,12 +44,23 @@ public class TaskPresenter {
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        tasks = dbc.readTasks(this.statusFilter, "Все");
+        List<Task> allTasks = dbc.readTasks(this.statusFilter, "Все");
+
+        tabs = new ArrayList();
+        tabs.add(new ListTab(allTasks));
+        tabs.add(new ChangeTab(allTasks.get(0)));
+        tabs.add(new ChangeTab(allTasks.get(1)));
     }
 
     // Main Logic
     public List<Task> getTasks() {
-        return tasks;
+        return tabs.get(0).getTasks();
+    }
+    public List<Tab> getTabs() {
+        return tabs;
+    }
+    public List<Task> getSomeTasks() {
+        return getTasks().subList(1, 5);
     }
     public String chooseRowColor(Task task) {
        switch (task.getStatus().getName()) {
@@ -75,7 +88,6 @@ public class TaskPresenter {
     public void setSelectedTask(Task selectedTask) {
         this.selectedTask = selectedTask;
     }
-
 
     // Getters
     public String getStatusFilter() {
@@ -144,7 +156,12 @@ public class TaskPresenter {
     }
 
     // AJAX Listeners
-
+    public void viewMore() {
+        tabs.add(new MoreTab(getTasks().get(6)));
+    }
+    public void createTask() {
+        tabs.add(new CreateTab());
+    }
     public void selectNewStatusFilter() {
         // TODO: 13.02.16 Remove plug
         tasks = dbc.readTasks(statusFilter, "Все");
