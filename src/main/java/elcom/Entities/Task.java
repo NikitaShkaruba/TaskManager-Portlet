@@ -29,13 +29,16 @@ import java.util.Date;
 public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
+    private Contact organisation;
     private Date startDate;
+    private Date modificationDate;
     private Date finishDate;
     private Group executorGroup;
     private Employee creator;
     private Employee executor;
     private Priority priority;
     private Status status;
+    private Task parentTask;
 
     public Task() {}
 
@@ -48,6 +51,11 @@ public class Task implements Serializable, Cloneable {
     @Column(name = "name")
     public String getDescription() {
         return description;
+    }
+    @OneToOne
+    @JoinColumn(name="org_id")
+    public Contact getOrganisation() {
+        return organisation;
     }
     @OneToOne
     @JoinColumn(name="status_id")
@@ -80,19 +88,25 @@ public class Task implements Serializable, Cloneable {
         return startDate;
     }
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "mod_date")
+    public Date getModificationDate() {
+        return modificationDate;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end_date")
     public Date getFinishDate() {
         return finishDate;
+    }
+    @OneToOne
+    @JoinColumn(name="parent_id")
+    public Task getParentTask() {
+        return parentTask;
     }
 
     // Plugs to be expanded
     @Transient
     public boolean isCritical() {
         return true;
-    }
-    @Transient
-    public String getCompany() {
-        return "Oracle";
     }
 
     public void setId(long id) {
@@ -121,6 +135,15 @@ public class Task implements Serializable, Cloneable {
     }
     public void setFinishDate(Date date) {
         this.finishDate = date;
+    }
+    public void setOrganisation(Contact organisation) {
+        this.organisation = organisation;
+    }
+    public void setModificationDate(Date modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+    public void setParentTask(Task parentTask) {
+        this.parentTask = parentTask;
     }
 
     @Override
