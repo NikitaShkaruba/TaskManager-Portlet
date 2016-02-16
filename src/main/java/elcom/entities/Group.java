@@ -1,30 +1,23 @@
-package elcom.Entities;
+package elcom.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name="wfuser")
-@NamedQueries({
-        @NamedQuery(name = "select from Employee",
-                    query = "select e from Employee e"),
-
-        @NamedQuery(name = "select from Employee with name",
-                    query = "select e from Employee e where e.name = :name")
-})
-public class Employee implements Serializable {
+@Table(name="wfgroup")
+@NamedQuery(name="select from Group", query="select g from Group g")
+public class Group implements Serializable {
     private long id;
-    private String name; //aka login aka nickname
+    private String name;
     private String nickName;
-    private Boolean active;
-
-    public Employee(){}
+    private Boolean closed;
 
     @Id
     @GeneratedValue
     public long getId() {
         return id;
     }
+
     @Basic
     @Column(name="fullname")
     public String getName() {
@@ -36,9 +29,9 @@ public class Employee implements Serializable {
         return nickName;
     }
     @Basic
-    @Column(name="active")
-    public Boolean getActive() {
-        return active;
+    @Column(name="closed")
+    public Boolean getClosed() {
+        return closed;
     }
 
     public void setId(long id) {
@@ -50,33 +43,34 @@ public class Employee implements Serializable {
     public void setNickName(String fullName) {
         this.nickName = fullName;
     }
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setClosed(Boolean closed) {
+        this.closed = closed;
     }
 
     @Override
     public int hashCode() {
-        int hash = (int)id;
+        int hash = (int) id;
         hash += name.hashCode();
         hash += nickName.hashCode();
-        hash += active.hashCode();
 
         return hash;
     }
+
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Employee))
+        if (!(obj instanceof Group))
             return false;
 
-        Employee other = (Employee) obj;
+        Group other = (Group) obj;
 
         if (this.id != other.id) return false;
         if (!(this.name.equals(other.name))) return false;
         if (!(this.nickName.equals(other.nickName))) return false;
-        if (!(this.active.equals(other.active))) return false;
+        if (!(this.closed.equals(other.closed))) return false;
 
         return true;
     }
+
     @Override
     public String toString() {
         return name;

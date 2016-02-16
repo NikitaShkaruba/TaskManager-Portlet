@@ -1,6 +1,6 @@
 package elcom.ejbs;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 import elcom.jpa.DatabaseConnector;
 import elcom.jpa.QueryBuilder;
 

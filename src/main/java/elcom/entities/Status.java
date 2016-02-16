@@ -1,4 +1,4 @@
-package elcom.Entities;
+package elcom.entities;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -18,7 +18,6 @@ public class Status implements Serializable {
     private long id;
     private String name;
     private Color color;
-
     public Status(){}
 
     @Id

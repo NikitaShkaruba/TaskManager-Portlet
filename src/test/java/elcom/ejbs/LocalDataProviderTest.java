@@ -2,7 +2,7 @@ package elcom.ejbs;
 
 import static org.junit.Assert.assertTrue;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 

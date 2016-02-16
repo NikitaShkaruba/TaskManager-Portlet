@@ -1,16 +1,16 @@
-package elcom.MBeans;
+package elcom.mbeans;
 
-import elcom.Entities.*;
-
-import javax.faces.context.FacesContext;
+import elcom.entities.*;
 
 import elcom.ejbs.DataProvider;
-import org.primefaces.event.SelectEvent;
+import elcom.tabs.*;
+import org.primefaces.event.TabCloseEvent;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
@@ -19,6 +19,7 @@ import javax.ejb.EJB;
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
+    private List<Tab> tabs;
     private List<Task> tasks;
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
@@ -44,12 +45,23 @@ public class TaskPresenter {
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        tasks = dp.getAllTasks();
+        List<Task> allTasks = dp.getAllTasks();
+
+        tabs = new ArrayList();
+        tabs.add(new ListTab(allTasks));
+        tabs.add(new ChangeTab(allTasks.get(0)));
+        tabs.add(new ChangeTab(allTasks.get(1)));
     }
 
     // Main Logic
     public List<Task> getTasks() {
-        return tasks;
+        return tabs.get(0).getTasks();
+    }
+    public List<Tab> getTabs() {
+        return tabs;
+    }
+    public List<Task> getSomeTasks() {
+        return getTasks().subList(1, 5);
     }
     public String chooseRowColor(Task task) {
        switch (task.getStatus().getName()) {
@@ -71,20 +83,10 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
-    private long getSelectedTaskId() {
-        return selectedTask.getId();
-    }
-    public void setSelectedTask(Task selectedTask) {
-        this.selectedTask = selectedTask;
-    }
-
 
     // Getters
     public String getStatusFilter() {
         return statusFilter;
-    }
-    public Task getSelectedTask() {
-        return selectedTask;
     }
     public String getOrganizationFilter() {
         return organizationFilter;
@@ -146,7 +148,12 @@ public class TaskPresenter {
     }
 
     // AJAX Listeners
-
+    public void viewMore() {
+        tabs.add(new MoreTab(getTasks().get(6)));
+    }
+    public void createTask() {
+        tabs.add(new CreateTab());
+    }
     public void selectNewStatusFilter() {
         Map<String, String> filters = new HashMap<>();
 
@@ -171,12 +178,8 @@ public class TaskPresenter {
     public void selectNewDescriptionFilter() {
         // TODO: 13.02.16 Fill with logic
     }
-    public void onRowSelect(SelectEvent event) {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + selectedTask.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void onTabClose(TabCloseEvent event) {
+        tabs.remove(Integer.valueOf(event.getTab().getId()));
     }
 
     // TODO: 13.02.16 Add logic

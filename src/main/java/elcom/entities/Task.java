@@ -1,4 +1,4 @@
-package elcom.Entities;
+package elcom.entities;
 
 import java.io.Serializable;
 import javax.persistence.*;
