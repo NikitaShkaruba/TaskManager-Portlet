@@ -14,7 +14,7 @@ import java.io.Serializable;
 })
 public class Employee implements Serializable {
     private long id;
-    private String name; //aka login aka nickname
+    private String name;
     private String nickName;
     private Boolean active;
 
