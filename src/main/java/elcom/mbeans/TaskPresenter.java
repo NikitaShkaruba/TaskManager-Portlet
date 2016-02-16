@@ -26,8 +26,10 @@ public class TaskPresenter {
     private DataProvider dp;
     private Task selectedTask;
 
+    private static final String NO_FILTER = "-- все --";
+
     private String statusFilter;
-    private String organizationFilter;
+    private String organisationFilter;
     private String vendorFilter;
     private String groupFilter;
     private String executorFilter;
@@ -35,12 +37,13 @@ public class TaskPresenter {
     private String descriptionFilter;
 
     public TaskPresenter() {
-        statusFilter = "-- все --";
-        organizationFilter = "-- все --";
-        vendorFilter = "-- все --";
-        groupFilter = "-- все --";
-        executorFilter = "-- все --";
-        creatorFilter = "-- все --";
+        statusFilter = NO_FILTER;
+        organisationFilter = NO_FILTER;
+        vendorFilter = NO_FILTER;
+        groupFilter = NO_FILTER;
+        executorFilter = NO_FILTER;
+        creatorFilter = NO_FILTER;
+        descriptionFilter = NO_FILTER;
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
@@ -53,6 +56,19 @@ public class TaskPresenter {
         tabs.add(new ChangeTab(allTasks.get(1)));
     }
 
+    private Map<String, String> combineFilters() {
+        Map<String, String> filters = new HashMap<>();
+
+        if (!statusFilter.equals(NO_FILTER)) filters.put("status", statusFilter);
+        if (!organisationFilter.equals(NO_FILTER)) filters.put("organisation", organisationFilter);
+        if (!vendorFilter.equals(NO_FILTER)) filters.put("vendor", vendorFilter);
+        if (!groupFilter.equals(NO_FILTER)) filters.put("executorGroup", groupFilter);
+        if (!executorFilter.equals(NO_FILTER)) filters.put("executor", executorFilter);
+        if (!creatorFilter.equals(NO_FILTER)) filters.put("creator", creatorFilter);
+
+        return filters;
+    }
+
     // Main Logic
     public List<Task> getTasks() {
         return tabs.get(0).getTasks();
@@ -60,9 +76,7 @@ public class TaskPresenter {
     public List<Tab> getTabs() {
         return tabs;
     }
-    public List<Task> getSomeTasks() {
-        return getTasks().subList(1, 5);
-    }
+
     public String chooseRowColor(Task task) {
        switch (task.getStatus().getName()) {
            case "открыта": return "Red";
@@ -80,16 +94,13 @@ public class TaskPresenter {
         // TODO: 13.02.16 add liferay-bounded logic
         return true;
     }
-    public int getTasksAmount() {
-        return tasks.size();
-    }
 
     // Getters
     public String getStatusFilter() {
         return statusFilter;
     }
-    public String getOrganizationFilter() {
-        return organizationFilter;
+    public String getOrganisationFilter() {
+        return organisationFilter;
     }
     public String getVendorFilter() {
         return vendorFilter;
@@ -111,8 +122,8 @@ public class TaskPresenter {
     public void setStatusFilter(String filter) {
         this.statusFilter = filter;
     }
-    public void setOrganizationFilter(String organizationFilter) {
-        this.organizationFilter = organizationFilter;
+    public void setOrganisationFilter(String organisationFilter) {
+        this.organisationFilter = organisationFilter;
     }
     public void setVendorFilter(String vendorFilter) {
         this.vendorFilter = vendorFilter;
@@ -155,34 +166,42 @@ public class TaskPresenter {
         tabs.add(new CreateTab());
     }
     public void selectNewStatusFilter() {
-        Map<String, String> filters = new HashMap<>();
-
-        filters.put("Status", statusFilter);
+        Map<String, String> filters = combineFilters();
         tasks = dp.getTasks(filters);
     }
     public void selectNewCreatorFilter() {
-        // TODO: 13.02.16 Fill with logic
+        Map<String, String> filters = combineFilters();
+        tasks = dp.getTasks(filters);
     }
     public void selectNewExecutorFilter() {
-        // TODO: 13.02.16 Fill with logic
+        Map<String, String> filters = combineFilters();
+        tasks = dp.getTasks(filters);
     }
     public void selectNewVendorFilter() {
-        // TODO: 13.02.16 Fill with logic
+        //TODO: Add vendor field to Task?
     }
     public void selectNewOrganizationFilter() {
-        // TODO: 13.02.16 Fill with logic
+        Map<String, String> filters = combineFilters();
+        tasks = dp.getTasks(filters);
     }
     public void selectNewGroupFilter() {
-        // TODO: 13.02.16 Fill with logic
+        Map<String, String> filters = combineFilters();
+        tasks = dp.getTasks(filters);
     }
     public void selectNewDescriptionFilter() {
-        // TODO: 13.02.16 Fill with logic
+        List<Task> allTasks = dp.getAllTasks();
+        for(Task t : allTasks)
+            if (!t.getDescription().contains(descriptionFilter))
+                allTasks.remove(t);
+
+        tasks = allTasks;
     }
     public void onTabClose(TabCloseEvent event) {
         tabs.remove(Integer.valueOf(event.getTab().getId()));
     }
 
     // TODO: 13.02.16 Add logic
+    // TODO: Learn to write better TODO's. I have no idea what these methods are.
     public void selectMyTasksPattern() {
 
     }

@@ -190,6 +190,7 @@ public class LocalDataProvider implements DataProvider {
                 String filterName = Character.toUpperCase(e.getKey().charAt(0))+e.getKey().substring(1);
 
                 List<Object> entities = dbc.getQueryResult(new QueryBuilder(filterName).addParameter("name", e.getValue()).getQuery());
+
                 if (entities == null || entities.isEmpty())
                     throw new IllegalArgumentException("Invalid filter value for filter " + filterName + ": " + e.getValue());
 

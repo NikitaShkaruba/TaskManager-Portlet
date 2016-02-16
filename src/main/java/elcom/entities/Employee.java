@@ -7,10 +7,10 @@ import java.io.Serializable;
 @Table(name="wfuser")
 @NamedQueries({
         @NamedQuery(name = "select from Employee",
-                    query = "select e from Employee e"),
+                    query = "select e from Employee e where e.active = true"),
 
         @NamedQuery(name = "select from Employee with name",
-                    query = "select e from Employee e where e.name = :name")
+                    query = "select e from Employee e where e.name = :name and e.active = true")
 })
 public class Employee implements Serializable {
     private long id;

@@ -1,14 +1,12 @@
 package elcom.jpa;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class QueryBuilder {
-    public class NamedQuery {
+    class NamedQuery {
         private String queryString;
         private Map<String, Object> params = new HashMap<>();
 
@@ -36,9 +34,9 @@ public class QueryBuilder {
         query.queryString = "select from " + typeName;
     }
 
-    public QueryBuilder addParameter(String name, Object value) {
-        filters.add(name.toLowerCase());
-        query.params.put(name, value);
+    public QueryBuilder addParameter(String fieldName, Object value) {
+        filters.add(fieldName.toLowerCase());
+        query.params.put(fieldName, value);
 
         return this;
     }

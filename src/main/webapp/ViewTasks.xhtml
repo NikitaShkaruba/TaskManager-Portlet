@@ -50,7 +50,7 @@
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Организация"/>
-                    <p:selectOneMenu id="organizations" value="#{TaskPresenter.organizationFilter}">
+                    <p:selectOneMenu id="organizations" value="#{TaskPresenter.organisationFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.organizationOptions}"/>
                         <p:ajax event="change" listener="#{TaskPresenter.selectNewOrganizationFilter}"
@@ -194,8 +194,8 @@
                         <p:column headerText="id" style="width:10%">
                             <h:outputText value="#{task.id}"/>
                         </p:column>
-                        <p:column headerText="Компания" style="width:10%">
-                            <h:outputText value="#{task.company}"/>
+                        <p:column headerText="Организация" style="width:10%">
+                            <h:outputText value="#{task.organisation}"/>
                         </p:column>
                         <p:column headerText="Создатель" style="width:10%">
                         <h:outputText value="#{task.creator}"/>
