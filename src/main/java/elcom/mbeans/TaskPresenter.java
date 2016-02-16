@@ -1,6 +1,6 @@
-package elcom.MBeans;
+package elcom.mbeans;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 
 import javax.faces.context.FacesContext;
 import elcom.tabs.*;

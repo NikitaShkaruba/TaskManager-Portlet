@@ -1,6 +1,6 @@
 package elcom.ejbs;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 import java.util.List;
 
 // Handles database data retrieving

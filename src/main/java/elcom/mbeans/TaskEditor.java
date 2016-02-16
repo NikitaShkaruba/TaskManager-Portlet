@@ -1,11 +1,11 @@
-package elcom.MBeans;
+package elcom.mbeans;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 import elcom.ejbs.DatabaseConnector;
 
 import java.util.ArrayList;

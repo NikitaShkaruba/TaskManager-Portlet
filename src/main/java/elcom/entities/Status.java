@@ -1,4 +1,4 @@
-package elcom.Entities;
+package elcom.entities;
 
 import javax.persistence.*;
 import java.awt.*;

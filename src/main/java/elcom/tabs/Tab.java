@@ -1,6 +1,6 @@
 package elcom.tabs;
 
-import elcom.Entities.Task;
+import elcom.entities.Task;
 import java.util.List;
 
 public abstract class Tab {

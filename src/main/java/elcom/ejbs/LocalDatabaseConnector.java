@@ -1,6 +1,6 @@
 package elcom.ejbs;
 
-import elcom.Entities.*;
+import elcom.entities.*;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
