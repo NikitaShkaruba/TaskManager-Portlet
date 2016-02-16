@@ -20,23 +20,6 @@ public class ChangeTab extends Tab {
     }
 
     @Override
-    public boolean isMoreTab() {
-        return false;
-    }
-    @Override
-    public boolean isChangeTab() {
-        return true;
-    }
-    @Override
-    public boolean isCreateTab() {
-        return false;
-    }
-    @Override
-    public boolean isListTab() {
-        return false;
-    }
-
-    @Override
     public String getTitle() {
         return "Правка заявки №" + tasks.get(0).getId();
     }

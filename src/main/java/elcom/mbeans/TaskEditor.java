@@ -1,6 +1,7 @@
 package elcom.mbeans;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.NoneScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -15,7 +16,7 @@ import javax.ejb.EJB;
 
 // This bean handles logic from CreateTask page
 @ManagedBean(name = "TaskEditor", eager=false)
-@ViewScoped
+@NoneScoped
 public class TaskEditor {
     Task task;
     @EJB

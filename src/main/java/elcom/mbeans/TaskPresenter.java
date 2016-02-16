@@ -6,6 +6,8 @@ import javax.faces.context.FacesContext;
 import elcom.tabs.*;
 import elcom.ejbs.DatabaseConnector;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabCloseEvent;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -23,7 +25,6 @@ public class TaskPresenter {
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
     private DatabaseConnector dbc;
-    private Task selectedTask;
 
     private String statusFilter;
     private String organizationFilter;
@@ -82,19 +83,10 @@ public class TaskPresenter {
     public int getTasksAmount() {
         return tasks.size();
     }
-    private long getSelectedTaskId() {
-        return selectedTask.getId();
-    }
-    public void setSelectedTask(Task selectedTask) {
-        this.selectedTask = selectedTask;
-    }
 
     // Getters
     public String getStatusFilter() {
         return statusFilter;
-    }
-    public Task getSelectedTask() {
-        return selectedTask;
     }
     public String getOrganizationFilter() {
         return organizationFilter;
@@ -184,12 +176,8 @@ public class TaskPresenter {
     public void selectNewDescriptionFilter() {
         // TODO: 13.02.16 Fill with logic
     }
-    public void onRowSelect(SelectEvent event) {
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("CorrectTask.xhtml?id=" + selectedTask.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void onTabClose(TabCloseEvent event) {
+        tabs.remove(Integer.valueOf(event.getTab().getId()));
     }
 
     // TODO: 13.02.16 Add logic
