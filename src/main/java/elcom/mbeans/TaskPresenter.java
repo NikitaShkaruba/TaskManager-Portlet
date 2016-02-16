@@ -201,7 +201,7 @@ public class TaskPresenter {
     }
 
     // TODO: 13.02.16 Add logic
-    // TODO: Learn to write better TODO's. I have no idea what these methods are.
+    // TODO: Learn to write better TODO's. I have no idea what these methods are for.
     public void selectMyTasksPattern() {
 
     }
