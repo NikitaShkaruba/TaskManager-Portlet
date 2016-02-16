@@ -5,11 +5,11 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="wfgroup")
-@NamedQuery(name="select all groups", query="select g from Group g")
+@NamedQuery(name="select from Group", query="select g from Group g")
 public class Group implements Serializable {
     private long id;
     private String name;
-    private String fullName;
+    private String nickName;
     private Boolean closed;
 
     @Id
@@ -19,14 +19,14 @@ public class Group implements Serializable {
     }
 
     @Basic
-    @Column(name="name")
+    @Column(name="fullname")
     public String getName() {
         return name;
     }
     @Basic
-    @Column(name="fullname")
-    public String getFullName() {
-        return fullName;
+    @Column(name="name")
+    public String getNickName() {
+        return nickName;
     }
     @Basic
     @Column(name="closed")
@@ -40,8 +40,8 @@ public class Group implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setNickName(String fullName) {
+        this.nickName = fullName;
     }
     public void setClosed(Boolean closed) {
         this.closed = closed;
@@ -51,7 +51,7 @@ public class Group implements Serializable {
     public int hashCode() {
         int hash = (int) id;
         hash += name.hashCode();
-        hash += fullName.hashCode();
+        hash += nickName.hashCode();
 
         return hash;
     }
@@ -65,7 +65,7 @@ public class Group implements Serializable {
 
         if (this.id != other.id) return false;
         if (!(this.name.equals(other.name))) return false;
-        if (!(this.fullName.equals(other.fullName))) return false;
+        if (!(this.nickName.equals(other.nickName))) return false;
         if (!(this.closed.equals(other.closed))) return false;
 
         return true;
@@ -73,6 +73,6 @@ public class Group implements Serializable {
 
     @Override
     public String toString() {
-        return fullName;
+        return name;
     }
 }

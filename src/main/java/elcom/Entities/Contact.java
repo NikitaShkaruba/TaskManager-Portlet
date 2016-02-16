@@ -1,16 +1,22 @@
 package elcom.Entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name="contact")
 @NamedQueries({
-        @NamedQuery(name="select all organisations", query="select c from Contact c where c.organisation = true"),
-        @NamedQuery(name="select all persons", query="select c from Contact c where c.person = true"),
-        @NamedQuery(name="select all contacts", query="select c from Contact c")
+        @NamedQuery(name="select from Contact with organisation",
+                    query="select c from Contact c where c.organisation = :organisation"),
+
+        @NamedQuery(name="select from Contact with person",
+                    query="select c from Contact c where c.person = :person"),
+
+        @NamedQuery(name="select from Contact",
+                    query="select c from Contact c")
 })
-public class Contact {
+public class Contact implements Serializable {
     private long id;
     private String content;
     private List<Contact> contacts;

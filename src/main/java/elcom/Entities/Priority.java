@@ -5,7 +5,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="priorities")
-@NamedQuery(query = "select p from Priority p", name = "select all priorities")
+@NamedQueries({
+        @NamedQuery(name = "select from Priority",
+                    query = "select p from Priority p"),
+
+        @NamedQuery(name = "select from Priority with name",
+                    query = "select p from Priority p where name = :name")
+})
 public class Priority implements Serializable{
     private long id;
     private String name;

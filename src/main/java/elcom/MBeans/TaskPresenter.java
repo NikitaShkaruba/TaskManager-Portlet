@@ -4,13 +4,15 @@ import elcom.Entities.*;
 
 import javax.faces.context.FacesContext;
 
-import elcom.ejbs.DatabaseConnector;
+import elcom.ejbs.DataProvider;
 import org.primefaces.event.SelectEvent;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 
 // This MBean handles logic from ViewTasks page
@@ -20,7 +22,7 @@ public class TaskPresenter {
     private List<Task> tasks;
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
-    private DatabaseConnector dbc;
+    private DataProvider dp;
     private Task selectedTask;
 
     private String statusFilter;
@@ -42,7 +44,7 @@ public class TaskPresenter {
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        tasks = dbc.readTasks(this.statusFilter, "Все");
+        tasks = dp.getAllTasks();
     }
 
     // Main Logic
@@ -128,26 +130,28 @@ public class TaskPresenter {
 
     // Lists for GUI MenuOptions
     public List<Employee> getEmployeeOptions() {
-        return dbc.readAllEmployees();
+        return dp.getAllEmployees();
     }
     public List<Status> getStatusesOptions() {
-        return dbc.readAllStatuses();
+        return dp.getAllStatuses();
     }
     public List<Contact> getOrganizationOptions() {
-        return dbc.readAllOrganizations();
+        return dp.getAllOrganisations();
     }
     public List<Vendor> getVendorOptions() {
-        return dbc.readAllVendors();
+        return dp.getAllVendors();
     }
     public List<Group> getGroupOptions() {
-        return dbc.readAllGroups();
+        return dp.getAllGroups();
     }
 
     // AJAX Listeners
 
     public void selectNewStatusFilter() {
-        // TODO: 13.02.16 Remove plug
-        tasks = dbc.readTasks(statusFilter, "Все");
+        Map<String, String> filters = new HashMap<>();
+
+        filters.put("Status", statusFilter);
+        tasks = dp.getTasks(filters);
     }
     public void selectNewCreatorFilter() {
         // TODO: 13.02.16 Fill with logic

@@ -5,11 +5,17 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="wfuser")
-@NamedQuery(query = "select e from Employee e", name = "select all employees")
-public class Employee implements Serializable{
+@NamedQueries({
+        @NamedQuery(name = "select from Employee",
+                    query = "select e from Employee e"),
+
+        @NamedQuery(name = "select from Employee with name",
+                    query = "select e from Employee e where e.name = :name")
+})
+public class Employee implements Serializable {
     private long id;
     private String name; //aka login aka nickname
-    private String fullName;
+    private String nickName;
     private Boolean active;
 
     public Employee(){}
@@ -20,14 +26,14 @@ public class Employee implements Serializable{
         return id;
     }
     @Basic
-    @Column(name="name")
+    @Column(name="fullname")
     public String getName() {
         return name;
     }
     @Basic
-    @Column(name="fullname")
-    public String getFullName() {
-        return fullName;
+    @Column(name="name")
+    public String getNickName() {
+        return nickName;
     }
     @Basic
     @Column(name="active")
@@ -41,8 +47,8 @@ public class Employee implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setNickName(String fullName) {
+        this.nickName = fullName;
     }
     public void setActive(Boolean active) {
         this.active = active;
@@ -52,7 +58,7 @@ public class Employee implements Serializable{
     public int hashCode() {
         int hash = (int)id;
         hash += name.hashCode();
-        hash += fullName.hashCode();
+        hash += nickName.hashCode();
         hash += active.hashCode();
 
         return hash;
@@ -66,13 +72,13 @@ public class Employee implements Serializable{
 
         if (this.id != other.id) return false;
         if (!(this.name.equals(other.name))) return false;
-        if (!(this.fullName.equals(other.fullName))) return false;
+        if (!(this.nickName.equals(other.nickName))) return false;
         if (!(this.active.equals(other.active))) return false;
 
         return true;
     }
     @Override
     public String toString() {
-        return fullName;
+        return name;
     }
 }

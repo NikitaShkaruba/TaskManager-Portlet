@@ -7,17 +7,24 @@ import java.util.Date;
 @Entity
 @Table(name="task")
 @NamedQueries({
-        @NamedQuery(name = "select all tasks",
+        @NamedQuery(name = "select from Task",
                     query = "select t from Task t"),
 
-        @NamedQuery(name = "select tasks by status",
+        @NamedQuery(name = "select from Task with executor",
+                query = "select t from Task t where t.executor = :executor"),
+
+        @NamedQuery(name = "select from Task with status",
                     query = "select t from Task t where t.status = :status"),
 
-        @NamedQuery(name = "select tasks by employee",
-                    query = "select t from Task t where t.executor = :employee"),
+        @NamedQuery(name = "select from Task with creator",
+                    query = "select t from Task t where t.creator = :creator"),
 
-        @NamedQuery(name = "select tasks by employee and status",
-                    query = "select t from Task t where t.executor = :employee and t.status = :status")
+        @NamedQuery(name = "select from Task with executorGroup",
+                    query = "select t from Task t where t.executorGroup = :executorGroup"),
+
+        @NamedQuery(name = "select from Task with priority",
+                    query = "select t from Task t where t.priority = :priority")
+
 })
 public class Task implements Serializable, Cloneable {
     private long id;
@@ -119,12 +126,12 @@ public class Task implements Serializable, Cloneable {
     @Override
     public int hashCode() {
         int hash = (int)id * 51 / 17 + 322;
-        hash += description.hashCode();
-        hash += executor.hashCode();
-        hash += status.hashCode();
-        hash += priority.hashCode();
-        hash += startDate.hashCode();
-        hash += finishDate.hashCode();
+        hash += description != null ? description.hashCode() : id;
+        hash += executor != null ? executor.hashCode() : id;
+        hash += status != null ? status.hashCode() : id;
+        hash += priority != null ? priority.hashCode() : id;
+        hash += startDate != null ? startDate.hashCode() : id;
+        hash += finishDate != null ? finishDate.hashCode() : id;
 
         return hash;
     }
