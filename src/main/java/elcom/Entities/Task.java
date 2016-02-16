@@ -7,28 +7,38 @@ import java.util.Date;
 @Entity
 @Table(name="task")
 @NamedQueries({
-        @NamedQuery(name = "select all tasks",
+        @NamedQuery(name = "select from Task",
                     query = "select t from Task t"),
 
-        @NamedQuery(name = "select tasks by status",
+        @NamedQuery(name = "select from Task with executor",
+                query = "select t from Task t where t.executor = :executor"),
+
+        @NamedQuery(name = "select from Task with status",
                     query = "select t from Task t where t.status = :status"),
 
-        @NamedQuery(name = "select tasks by employee",
-                    query = "select t from Task t where t.executor = :employee"),
+        @NamedQuery(name = "select from Task with creator",
+                    query = "select t from Task t where t.creator = :creator"),
 
-        @NamedQuery(name = "select tasks by employee and status",
-                    query = "select t from Task t where t.executor = :employee and t.status = :status")
+        @NamedQuery(name = "select from Task with executorGroup",
+                    query = "select t from Task t where t.executorGroup = :executorGroup"),
+
+        @NamedQuery(name = "select from Task with priority",
+                    query = "select t from Task t where t.priority = :priority")
+
 })
 public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
+    private Contact organisation;
     private Date startDate;
+    private Date modificationDate;
     private Date finishDate;
     private Group executorGroup;
     private Employee creator;
     private Employee executor;
     private Priority priority;
     private Status status;
+    private Task parentTask;
 
     public Task() {}
 
@@ -41,6 +51,11 @@ public class Task implements Serializable, Cloneable {
     @Column(name = "name")
     public String getDescription() {
         return description;
+    }
+    @OneToOne
+    @JoinColumn(name="org_id")
+    public Contact getOrganisation() {
+        return organisation;
     }
     @OneToOne
     @JoinColumn(name="status_id")
@@ -73,19 +88,25 @@ public class Task implements Serializable, Cloneable {
         return startDate;
     }
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "mod_date")
+    public Date getModificationDate() {
+        return modificationDate;
+    }
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "end_date")
     public Date getFinishDate() {
         return finishDate;
+    }
+    @OneToOne
+    @JoinColumn(name="parent_id")
+    public Task getParentTask() {
+        return parentTask;
     }
 
     // Plugs to be expanded
     @Transient
     public boolean isCritical() {
         return true;
-    }
-    @Transient
-    public String getCompany() {
-        return "Oracle";
     }
 
     public void setId(long id) {
@@ -115,16 +136,25 @@ public class Task implements Serializable, Cloneable {
     public void setFinishDate(Date date) {
         this.finishDate = date;
     }
+    public void setOrganisation(Contact organisation) {
+        this.organisation = organisation;
+    }
+    public void setModificationDate(Date modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+    public void setParentTask(Task parentTask) {
+        this.parentTask = parentTask;
+    }
 
     @Override
     public int hashCode() {
         int hash = (int)id * 51 / 17 + 322;
-        hash += description.hashCode();
-        hash += executor.hashCode();
-        hash += status.hashCode();
-        hash += priority.hashCode();
-        hash += startDate.hashCode();
-        hash += finishDate.hashCode();
+        hash += description != null ? description.hashCode() : id;
+        hash += executor != null ? executor.hashCode() : id;
+        hash += status != null ? status.hashCode() : id;
+        hash += priority != null ? priority.hashCode() : id;
+        hash += startDate != null ? startDate.hashCode() : id;
+        hash += finishDate != null ? finishDate.hashCode() : id;
 
         return hash;
     }
