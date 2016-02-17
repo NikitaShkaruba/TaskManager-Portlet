@@ -1,11 +1,12 @@
 package elcom.mbeans;
 
 import elcom.entities.*;
-
 import elcom.ejbs.DataProvider;
 import elcom.tabs.*;
+import elcom.tabs.Tab;
+import org.primefaces.component.tabview.*;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -15,16 +16,15 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 
-// This MBean handles logic from ViewTasks page
+// This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
     private List<Tab> tabs;
-    private List<Task> tasks;
+    private int activeTabIndex;
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
     private DataProvider dp;
-    private Task selectedTask;
 
     private static final String NO_FILTER = "-- все --";
 
@@ -52,8 +52,7 @@ public class TaskPresenter {
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
-        tabs.add(new ChangeTab(allTasks.get(0)));
-        tabs.add(new ChangeTab(allTasks.get(1)));
+        tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
     private Map<String, String> combineFilters() {
@@ -158,50 +157,46 @@ public class TaskPresenter {
         return dp.getAllGroups();
     }
 
-    // AJAX Listeners
-    public void viewMore() {
-        tabs.add(new MoreTab(getTasks().get(6)));
+    // Tabs logic
+    public void onTabClose(TabCloseEvent event) {
+        if (tabs.size() == 1) {
+            tabs.remove(0);
+            activeTabIndex = -1;
+        } else
+            tabs.remove(activeTabIndex);
     }
-    public void createTask() {
+    public void onTabChange(TabChangeEvent event) {
+        TabView tabView = (TabView) event.getComponent();
+        activeTabIndex = tabView.getIndex();
+    }
+    public void addMoreTab(Task content) {
+        tabs.add(new MoreTab(content));
+    }
+    public void addCreateTab() {
         tabs.add(new CreateTab());
     }
-    public void selectNewStatusFilter() {
-        Map<String, String> filters = combineFilters();
-        tasks = dp.getTasks(filters);
+    public void addCorrectTab(Task content) {
+        tabs.add(new CorrectTab(content));
     }
-    public void selectNewCreatorFilter() {
-        Map<String, String> filters = combineFilters();
-        tasks = dp.getTasks(filters);
-    }
-    public void selectNewExecutorFilter() {
-        Map<String, String> filters = combineFilters();
-        tasks = dp.getTasks(filters);
-    }
-    public void selectNewVendorFilter() {
-        //TODO: Add vendor field to Task?
-    }
-    public void selectNewOrganizationFilter() {
-        Map<String, String> filters = combineFilters();
-        tasks = dp.getTasks(filters);
-    }
-    public void selectNewGroupFilter() {
-        Map<String, String> filters = combineFilters();
-        tasks = dp.getTasks(filters);
-    }
-    public void selectNewDescriptionFilter() {
-        List<Task> allTasks = dp.getAllTasks();
-        for(Task t : allTasks)
-            if (!t.getDescription().contains(descriptionFilter))
-                allTasks.remove(t);
-
-        tasks = allTasks;
-    }
-    public void onTabClose(TabCloseEvent event) {
-        tabs.remove(Integer.valueOf(event.getTab().getId()));
+    public void addListTab() {
+        // TODO: 17.02.16 add logic
+        tabs.add(new ListTab(dp.getTasks(combineFilters())));
     }
 
-    // TODO: 13.02.16 Add logic
-    // TODO: Learn to write better TODO's. I have no idea what these methods are for.
+    // Proxy logic
+    public Task getSelectedTask() {
+        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
+            return ((TaskSelector)tabs.get(activeTabIndex)).getSelectedTask();
+        else
+            return null;
+    }
+    public void setSelectedTask(Task selectedTask) {
+        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
+            ((TaskSelector)tabs.get(activeTabIndex)).setSelectedTask(selectedTask);
+    }
+
+    // TODO: 13.02.16 Add logic for pattern bar
+    // Filter-pattern selection listeners
     public void selectMyTasksPattern() {
 
     }
@@ -220,6 +215,8 @@ public class TaskPresenter {
     public void selectContractsTaskPattern() {
 
     }
+
+    // Filter-pattern task counts
     public int getMyCount() {
         return 2;
     }
@@ -238,4 +235,5 @@ public class TaskPresenter {
     public int getContractsCount() {
         return 1;
     }
+
 }

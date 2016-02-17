@@ -1,7 +1,6 @@
 package elcom.tabs;
 
 import elcom.entities.Task;
-
 import java.util.ArrayList;
 
 public class CreateTab extends Tab {
