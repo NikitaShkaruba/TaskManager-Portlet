@@ -11,18 +11,18 @@
 
 <h:body>
     <h:form>
-        <p:panel header="Фильтры">
-            <p:toolbar id="patternBar">
-                <f:facet name="patterns">
-                    <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}"/>
-                    <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}"/>
-                    <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}"/>
-                    <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}"/>
-                    <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}"/>
-                    <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}"/>
-                </f:facet>
+        <p:toolbar id="patternBar">
+            <p:toolbarGroup>
+                <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}"/>
+                <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}"/>
+                <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}"/>
+                <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}"/>
+                <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}"/>
+                <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}"/>
+            </p:toolbarGroup>
             </p:toolbar>
 
+        <p:panel header="Фильтры">
             <p:panelGrid columns="2">
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Краткое описание"/>
@@ -86,23 +86,22 @@
                 </h:panelGrid>
             </p:panelGrid>
 
-            <p:commandButton value="Показать заявки по фильтрам" actionListener="#{TaskPresenter.addListTab}"
-                             update="tabView"/>
+            <p:commandButton value="Показать заявки по фильтрам" actionListener="#{TaskPresenter.addListTab}" update="tabView"/>
             <p:commandButton value="Добавить новую" actionListener="#{TaskPresenter.addCreateTab}" update="tabView"/>
         </p:panel>
     </h:form>
 
     <p:messages id="messages" showDadftail="true" autoUpdate="true" closable="true"/>
 
-    <p:tabView id="tabView" scrollable="true" dynamic="true" value="#{TaskPresenter.tabs}" var="tab">
+    <p:tabView id="tabView" scrollable="true" value="#{TaskPresenter.tabs}" var="tab">
         <p:ajax event="tabChange" listener="#{TaskPresenter.onTabChange}"/>
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
-
 
         <p:tab title="#{tab.title}" closable="true">
 
             <!-- Case list tab -->
-            <h:form rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
+            <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
+            <h:form>
                 <p:dataTable id="taskTable" value="#{tab.tasks}" var="task"
                              selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}"
                              resizableColumns="true"
@@ -137,9 +136,10 @@
                     </p:column>
                 </p:dataTable>
             </h:form>
+            </p:panel>
 
             <!-- Case change tab -->
-            <h:form rendered="#{tab.getClass().getSimpleName() == 'CorrectTab'}">
+            <p:panel rendered="#{tab.getClass().getSimpleName() == 'CorrectTab'}">
                 <p:outputLabel value="Корректировка существующей заявки" style="font-size: '30px'"/>
 
                 <h:panelGrid columns="2" cellpadding="5">
@@ -181,12 +181,14 @@
                 </h:panelGrid>
 
                 <p:commandButton value="Подтвердить изменения"/>
-            </h:form>
+            </p:panel>
 
             <!-- Case more tab -->
             <!-- TODO: remove plugs -->
-            <h:form rendered="#{tab.getClass().getSimpleName() == 'MoreTab'}">
+            <p:panel rendered="#{tab.getClass().getSimpleName() == 'MoreTab'}">
                 <p:panel header="Дерево задач">
+                    <h:form>
+
                     <p:dataTable value="#{tab.tasks}" var="task"
                                  resizableColumns="true"
                                  selectionMode="single" selection="#{TaskPresenter.selectedTask}" rowKey="#{task.id}"
@@ -221,6 +223,7 @@
                             <h:outputText value="#{task.description}"/>
                         </p:column>
                     </p:dataTable>
+                    </h:form>
                 </p:panel>
 
                 <!-- TODO remove plugs -->
@@ -265,7 +268,7 @@
                 </p:panel>
 
                 <!-- TODO: fix action listener not being fired -->
-                <p:commandButton value="Править заявку" actionListener="#{TaskPresenter.addCreateTab}" update="tabView" />
+                <p:commandButton value="Править заявку" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="tabView" />
 
                 <p:panel header="Прикреплнные фаилы">
                     <!-- TODO add components -->
@@ -280,11 +283,12 @@
                     <p:editor id="editor" widgetVar="editorWidget" value="" width="600"/>
                     <p:commandButton value="Добавить"/>
                 </p:panel>
-            </h:form>
+            </p:panel>
 
             <!-- TODO: remove plugs -->
             <!-- Case create tab -->
-            <h:form rendered="#{tab.getClass().getSimpleName() == 'CreateTab'}">
+            <p:panel rendered="#{tab.getClass().getSimpleName() == 'CreateTab'}" >
+            <h:form >
                 <h:outputLabel value="Создание новой заявки"/>
 
                 <h:panelGrid columns="2" cellpadding="5">
@@ -327,6 +331,7 @@
                 </h:panelGrid>
 
             </h:form>
+            </p:panel>
         </p:tab>
     </p:tabView>
 

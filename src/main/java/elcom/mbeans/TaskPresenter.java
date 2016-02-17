@@ -190,6 +190,7 @@ public class TaskPresenter {
     }
     public void addListTab() {
         // TODO: 17.02.16 add logic
+        tabs.add(new ListTab(dp.getAllTasks()));
     }
 
     // Proxy logic
