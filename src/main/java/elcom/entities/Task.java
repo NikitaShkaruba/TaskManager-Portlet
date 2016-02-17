@@ -39,6 +39,7 @@ public class Task implements Serializable, Cloneable {
     private Priority priority;
     private Status status;
     private Task parentTask;
+    private TaskType type;
 
     public Task() {}
 
@@ -102,8 +103,13 @@ public class Task implements Serializable, Cloneable {
     public Task getParentTask() {
         return parentTask;
     }
+    @OneToOne
+    @JoinColumn(name="type_id")
+    public TaskType getType() {
+        return type;
+    }
 
-    // Plugs to be expanded
+    //TODO: remove isCritical plug from Task entity
     @Transient
     public boolean isCritical() {
         return true;
@@ -144,6 +150,9 @@ public class Task implements Serializable, Cloneable {
     }
     public void setParentTask(Task parentTask) {
         this.parentTask = parentTask;
+    }
+    public void setType(TaskType type) {
+        this.type = type;
     }
 
     @Override

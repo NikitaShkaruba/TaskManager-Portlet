@@ -9,6 +9,7 @@
         <class>elcom.entities.Priority</class>
         <class>elcom.entities.Status</class>
         <class>elcom.entities.Task</class>
+        <class>elcom.entities.TaskType</class>
         <class>elcom.entities.TaskTemplate</class>
         <class>elcom.entities.Vendor</class>
         <properties>
