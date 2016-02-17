@@ -1,11 +1,12 @@
 package elcom.mbeans;
 
 import elcom.entities.*;
-
 import elcom.ejbs.DataProvider;
 import elcom.tabs.*;
+import elcom.tabs.Tab;
+import org.primefaces.component.tabview.*;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -15,16 +16,15 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 
-// This MBean handles logic from ViewTasks page
+// This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
     private List<Tab> tabs;
-    private List<Task> tasks;
     private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
     @EJB
     private DataProvider dp;
-    private Task selectedTask;
+    private int activeTabIndex;
 
     private String statusFilter;
     private String organizationFilter;
@@ -49,8 +49,7 @@ public class TaskPresenter {
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
-        tabs.add(new ChangeTab(allTasks.get(0)));
-        tabs.add(new ChangeTab(allTasks.get(1)));
+        tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
     // Main Logic
@@ -79,9 +78,6 @@ public class TaskPresenter {
     public boolean isNewToUser(Task task) {
         // TODO: 13.02.16 add liferay-bounded logic
         return true;
-    }
-    public int getTasksAmount() {
-        return tasks.size();
     }
 
     // Getters
@@ -147,18 +143,10 @@ public class TaskPresenter {
         return dp.getAllGroups();
     }
 
-    // AJAX Listeners
-    public void viewMore() {
-        tabs.add(new MoreTab(getTasks().get(6)));
-    }
-    public void createTask() {
-        tabs.add(new CreateTab());
-    }
+    // Filter change listeners
     public void selectNewStatusFilter() {
         Map<String, String> filters = new HashMap<>();
-
         filters.put("Status", statusFilter);
-        tasks = dp.getTasks(filters);
     }
     public void selectNewCreatorFilter() {
         // TODO: 13.02.16 Fill with logic
@@ -178,11 +166,46 @@ public class TaskPresenter {
     public void selectNewDescriptionFilter() {
         // TODO: 13.02.16 Fill with logic
     }
+
+    // Tabs logic
     public void onTabClose(TabCloseEvent event) {
-        tabs.remove(Integer.valueOf(event.getTab().getId()));
+        if (tabs.size() == 1) {
+            tabs.remove(0);
+            activeTabIndex = -1;
+        } else
+            tabs.remove(activeTabIndex);
+    }
+    public void onTabChange(TabChangeEvent event) {
+        TabView tabView = (TabView) event.getComponent();
+        activeTabIndex = tabView.getIndex();
+    }
+    public void addMoreTab(Task content) {
+        tabs.add(new MoreTab(content));
+    }
+    public void addCreateTab() {
+        tabs.add(new CreateTab());
+    }
+    public void addCorrectTab(Task content) {
+        tabs.add(new CorrectTab(content));
+    }
+    public void addListTab() {
+        // TODO: 17.02.16 add logic
+    }
+
+    // Proxy logic
+    public Task getSelectedTask() {
+        if (tabs.get(activeTabIndex) instanceof TaskSelector)
+            return ((TaskSelector)tabs.get(activeTabIndex)).getSelectedTask();
+        else
+            return null;
+    }
+    public void setSelectedTask(Task selectedTask) {
+        if (tabs.get(activeTabIndex) instanceof TaskSelector)
+            ((TaskSelector)tabs.get(activeTabIndex)).setSelectedTask(selectedTask);
     }
 
     // TODO: 13.02.16 Add logic
+    // Filter-pattern selection lsteners
     public void selectMyTasksPattern() {
 
     }
@@ -201,6 +224,8 @@ public class TaskPresenter {
     public void selectContractsTaskPattern() {
 
     }
+
+    // Filter-pattern task counts
     public int getMyCount() {
         return 2;
     }
@@ -219,4 +244,5 @@ public class TaskPresenter {
     public int getContractsCount() {
         return 1;
     }
+
 }

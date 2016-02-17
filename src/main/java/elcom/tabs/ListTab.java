@@ -1,11 +1,11 @@
 package elcom.tabs;
 
 import elcom.entities.Task;
-import org.primefaces.event.SelectEvent;
-
 import java.util.List;
 
-public class ListTab extends Tab {
+public class ListTab extends Tab implements TaskSelector {
+    private Task selectedTask;
+
     public ListTab(List<Task> tasks) {
         this.tasks = tasks;
     }
@@ -13,5 +13,14 @@ public class ListTab extends Tab {
     @Override
     public String getTitle() {
         return "Список задач";
+    }
+
+    @Override
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+    @Override
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
     }
 }
