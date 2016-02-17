@@ -55,15 +55,41 @@ public class TaskPresenter {
         tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
-    private Map<String, String> combineFilters() {
-        Map<String, String> filters = new HashMap<>();
+    private Map<String, Object> parseFilters() {
+        Map<String, Object> filters = new HashMap<>();
 
-        if (!statusFilter.equals(NO_FILTER)) filters.put("status", statusFilter);
-        if (!organisationFilter.equals(NO_FILTER)) filters.put("organisation", organisationFilter);
-        if (!vendorFilter.equals(NO_FILTER)) filters.put("vendor", vendorFilter);
-        if (!groupFilter.equals(NO_FILTER)) filters.put("executorGroup", groupFilter);
-        if (!executorFilter.equals(NO_FILTER)) filters.put("executor", executorFilter);
-        if (!creatorFilter.equals(NO_FILTER)) filters.put("creator", creatorFilter);
+        Object entity;
+
+        if (!statusFilter.equals(NO_FILTER) ) {
+            entity = dp.getStatusEntityByName(statusFilter);
+            if (entity != null)
+                filters.put("status", entity);
+        }
+        if (!organisationFilter.equals(NO_FILTER)) {
+            entity = dp.getOrganisationEntityByName(organisationFilter);
+            if (entity != null)
+                filters.put("organisation", entity);
+        }
+        if (!vendorFilter.equals(NO_FILTER)) {
+            entity = dp.getOrganisationEntityByName(organisationFilter);
+            if (entity != null)
+                filters.put("vendor", vendorFilter);
+        }
+        if (!groupFilter.equals(NO_FILTER)) {
+            entity = dp.getGroupEntityByName(groupFilter);
+            if (entity != null)
+                filters.put("executorGroup", groupFilter);
+        }
+        if (!executorFilter.equals(NO_FILTER)) {
+            entity = dp.getEmployeeEntityByName(executorFilter);
+            if (entity != null)
+                filters.put("executor", entity);
+        }
+        if (!creatorFilter.equals(NO_FILTER)) {
+            entity = dp.getEmployeeEntityByName(creatorFilter);
+            if (entity != null)
+                filters.put("creator", entity);
+        }
 
         return filters;
     }
@@ -77,6 +103,9 @@ public class TaskPresenter {
     }
 
     public String chooseRowColor(Task task) {
+        if (task == null || task.getStatus() == null)
+            return "null";
+
        switch (task.getStatus().getName()) {
            case "открыта": return "Red";
            case "закрыта": return "Green";
@@ -180,7 +209,9 @@ public class TaskPresenter {
     }
     public void addListTab() {
         // TODO: 17.02.16 add logic
-        tabs.add(new ListTab(dp.getTasks(combineFilters())));
+        List<Task> tasks = dp.getTasks(parseFilters());
+
+        tabs.add(new ListTab(tasks));
     }
 
     // Proxy logic

@@ -28,7 +28,7 @@ public interface DataProvider {
     List<Group> getAllGroups();
     List<Priority> getAllPriorities();
     List<Status> getAllStatuses();
-    List<Task> getTasks(Map<String, String> filters);
+    List<Task> getTasks(Map<String, Object> filters);
     List<Task> getAllTasks();
     List<TaskTemplate> getAllTasktemplates();
     List<TaskType> getAllTasktypes();
