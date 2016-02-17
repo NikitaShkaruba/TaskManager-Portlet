@@ -8,7 +8,7 @@ import java.util.Map;
 public interface DataProvider {
     Task instantiateTaskByTemplate(TaskTemplate tt);
 
-    boolean tryPersist(Object o);
+    void persist(Object o);
 
     Comment getCommentEntityByContent(String content);
     Contact getOrganisationEntityByName(String name);
@@ -18,6 +18,7 @@ public interface DataProvider {
     Status getStatusEntityByName(String name);
     Task getTaskEntityById(long id);
     TaskTemplate getTasktemplateEntityByName(String name);
+    TaskType getTasktypeEntityByName(String name);
     Vendor getVendorEntityByName(String name);
 
     List<Comment> getAllComments();
@@ -29,6 +30,7 @@ public interface DataProvider {
     List<Status> getAllStatuses();
     List<Task> getTasks(Map<String, String> filters);
     List<Task> getAllTasks();
-    List<TaskTemplate> getAllTaskTemplates();
+    List<TaskTemplate> getAllTasktemplates();
+    List<TaskType> getAllTasktypes();
     List<Vendor> getAllVendors();
 }

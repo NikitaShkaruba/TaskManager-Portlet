@@ -5,6 +5,13 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="tasktypes")
+@NamedQueries({
+        @NamedQuery(name = "select from TaskType",
+                    query = "select t from TaskType t"),
+
+        @NamedQuery(name = "select from TaskType with name",
+                    query = "select t from TaskType t where t.name = :name")
+})
 public class TaskType implements Serializable {
     private long id;
     private String name;
