@@ -18,12 +18,14 @@ public class LocalDataProvider implements DataProvider {
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
     private final List<Vendor> vendorsCache;
+    private final List<TaskType> tasktypesCache;
 
     public LocalDataProvider() {
         prioritiesCache = dbc.getQueryResult(new QueryBuilder(Priority.class).getQuery());
         statusesCache = dbc.getQueryResult(new QueryBuilder(Status.class).getQuery());
         groupsCache = dbc.getQueryResult(new QueryBuilder(Group.class).getQuery());
-        vendorsCache = dbc.getQueryResult(new QueryBuilder(Vendor.class).addParameter("vendor", new Boolean(true)).getQuery());
+        vendorsCache = dbc.getQueryResult(new QueryBuilder(Vendor.class).addParameter("vendor", true).getQuery());
+        tasktypesCache = dbc.getQueryResult(new QueryBuilder(TaskType.class).getQuery());
     }
 
     private boolean tryCopyComments(Task from, Task to) {
@@ -31,8 +33,8 @@ public class LocalDataProvider implements DataProvider {
         for (Comment c : comments) {
             c.setTask(to);
             c.setId(0);
-            if (tryPersist(c))
-                return false;
+            try { persist(c);}
+            catch (Exception e) {e.printStackTrace(); return false;}
         }
 
         return true;
@@ -60,17 +62,11 @@ public class LocalDataProvider implements DataProvider {
         return newborn;
     }
 
-    public boolean tryPersist(Object o) {
+    public void persist(Object o) {
         if (o == null)
             throw new IllegalArgumentException();
 
-        try {
-            dbc.persist(o);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        dbc.persist(o);
     }
 
     public Comment getCommentEntityByContent(String content) {
@@ -79,7 +75,10 @@ public class LocalDataProvider implements DataProvider {
 
         List<Comment> entities = dbc.getQueryResult(new QueryBuilder(Comment.class).addParameter("content", content).getQuery());
 
-        return entities.get(0);
+        if (entities != null && entities.size() > 0)
+            return entities.get(0);
+
+        return null;
     }
     public Contact getOrganisationEntityByName(String name) {
         if (name == null)
@@ -87,7 +86,10 @@ public class LocalDataProvider implements DataProvider {
 
         List<Contact> entities = dbc.getQueryResult(new QueryBuilder(Contact.class).addParameter("name", name).getQuery());
 
-        return entities.get(0);
+        if (entities != null && entities.size() > 0)
+            return entities.get(0);
+
+        return null;
     }
     public Employee getEmployeeEntityByName(String name) {
         if (name == null)
@@ -95,7 +97,10 @@ public class LocalDataProvider implements DataProvider {
 
         List<Employee> entities = dbc.getQueryResult(new QueryBuilder(Employee.class).addParameter("name", name).getQuery());
 
-        return entities.get(0);
+        if (entities != null && entities.size() > 0)
+            return entities.get(0);
+
+        return null;
 
     }
     public Group getGroupEntityByName(String name) {
@@ -137,7 +142,20 @@ public class LocalDataProvider implements DataProvider {
 
         List<TaskTemplate> entities = dbc.getQueryResult(new QueryBuilder(TaskTemplate.class).addParameter("name", name).getQuery());
 
-        return entities.get(0);
+        if (entities != null && entities.size() > 0)
+            return entities.get(0);
+
+        return null;
+    }
+    public TaskType getTasktypeEntityByName(String name) {
+        if (name == null)
+            throw new IllegalArgumentException();
+
+        for (TaskType tt : tasktypesCache)
+            if (tt.getName().equals(name))
+                return tt;
+
+        return null;
     }
     public Vendor getVendorEntityByName(String name) {
         if (name == null)
@@ -208,9 +226,13 @@ public class LocalDataProvider implements DataProvider {
 
         return new ArrayList<>(result);
     }
-    public List<TaskTemplate> getAllTaskTemplates() {
+    public List<TaskTemplate> getAllTasktemplates() {
         return dbc.getQueryResult(new QueryBuilder(TaskTemplate.class).getQuery());
     }
+    public List<TaskType> getAllTasktypes() {
+        return tasktypesCache;
+    }
+
     public List<Vendor> getAllVendors() {
         return vendorsCache;
     }

@@ -23,7 +23,7 @@ public class LocalDataProviderTest {
     public void tryPersistTest() {
         Task t = dp.getAllTasks().get(0);
 
-        assertTrue("Task persist not work", dp.tryPersist(t));
+        dp.persist(t);
     }
     @Test
     public void getUncachedEntityTest() {
