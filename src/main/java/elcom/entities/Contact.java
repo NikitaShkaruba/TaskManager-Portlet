@@ -14,7 +14,10 @@ import java.util.List;
                     query="select c from Contact c where c.person = :person"),
 
         @NamedQuery(name="select from Contact",
-                    query="select c from Contact c")
+                    query="select c from Contact c"),
+
+        @NamedQuery(name="select from Contact with name",
+                    query="select c from Contact c where c.content = :name")
 })
 public class Contact implements Serializable {
     private long id;

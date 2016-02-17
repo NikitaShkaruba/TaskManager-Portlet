@@ -59,10 +59,10 @@ public class LocalDataProviderTest {
     }
     @Test
     public void getTasksWithFiltersTest() {
-        Map<String, String> filters = new HashMap<>();
+        Map<String, Object> filters = new HashMap<>();
 
-        filters.put("Status", "открыта");
-        filters.put("Priority", "низкий");
+        filters.put("status", dp.getStatusEntityByName("открыта"));
+        filters.put("priority", dp.getPriorityEntityByName("низкий"));
 
         List<Task> tasks = dp.getTasks(filters);
 

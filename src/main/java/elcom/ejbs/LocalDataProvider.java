@@ -28,6 +28,22 @@ public class LocalDataProvider implements DataProvider {
         tasktypesCache = dbc.getQueryResult(new QueryBuilder(TaskType.class).getQuery());
     }
 
+    private List<Task> selectUbiquitousTasks(List<List<Task>> taskLists) {
+        int ubiCoefficient = taskLists.size(); //guaranteed to be > 0
+
+        Map<Task, Integer> taskCoefficients = new HashMap<>();
+
+        for (List<Task> taskList : taskLists)
+            for (Task task : taskList)
+                taskCoefficients.put(task, taskCoefficients.getOrDefault(task, 0) + 1);
+
+        List<Task> result = new ArrayList<>();
+        for (Map.Entry<Task, Integer> e : taskCoefficients.entrySet())
+            if (e.getValue().equals(ubiCoefficient))
+                result.add(e.getKey());
+
+        return result;
+    }
     private boolean tryCopyComments(Task from, Task to) {
         List<Comment> comments = getTaskComments(from);
         for (Comment c : comments) {
@@ -39,6 +55,7 @@ public class LocalDataProvider implements DataProvider {
 
         return true;
     }
+
     public Task instantiateTaskByTemplate(TaskTemplate tt) {
         Task newborn = new Task();
 
@@ -196,35 +213,15 @@ public class LocalDataProvider implements DataProvider {
     public List<Task> getAllTasks() {
         return dbc.getQueryResult(new QueryBuilder(Task.class).getQuery());
     }
-    public List<Task> getTasks(Map<String, String> filters) {
-        //Find appropriate objects for filters and put them in 'parameters' map
-        //e.g. <"Status","Открыта"> becomes <"Status", {StatusEntity}>
-        //also it capitalizes Key (eg "sTaTUs" becomes "Status")
-        Map<String, Object> parameters = new HashMap<>();
-        if (filters != null && !filters.isEmpty())
-            for (Map.Entry<String, String> e : filters.entrySet()) {
-                if (e.getKey().length() < 2)
-                    throw new IllegalArgumentException("Filter Names can't be less than 2 symbols:" + e.getKey());
-                String filterName = Character.toUpperCase(e.getKey().charAt(0))+e.getKey().substring(1);
+    public List<Task> getTasks(Map<String, Object> filters) {
+        if (filters == null || filters.size() == 0)
+            return dbc.getQueryResult(new QueryBuilder(Task.class).getQuery());
 
-                List<Object> entities = dbc.getQueryResult(new QueryBuilder(filterName).addParameter("name", e.getValue()).getQuery());
-
-                if (entities == null || entities.isEmpty())
-                    throw new IllegalArgumentException("Invalid filter value for filter " + filterName + ": " + e.getValue());
-
-                parameters.put(filterName.toLowerCase(), entities.get(0));
-            }
-        //For every filter we run a query to get tasks with selected filter and put result in list (of lists of tasks)
         List<List<Task>> tasksLists = new ArrayList<>();
-        Set<Task> result = new HashSet<>();
-        for (Map.Entry<String, Object> e : parameters.entrySet())
+        for (Map.Entry<String, Object> e : filters.entrySet())
                 tasksLists.add(dbc.getQueryResult(new QueryBuilder(Task.class).addParameter(e.getKey(), e.getValue()).getQuery()));
-        //Now just add all tasks from all lists to set to avoid duplicates
-        for (List<Task> taskList : tasksLists)
-                for (Task task : taskList)
-                        result.add(task);
 
-        return new ArrayList<>(result);
+        return selectUbiquitousTasks(tasksLists);
     }
     public List<TaskTemplate> getAllTasktemplates() {
         return dbc.getQueryResult(new QueryBuilder(TaskTemplate.class).getQuery());

@@ -26,8 +26,7 @@
             <p:panelGrid columns="2">
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Краткое описание"/>
-                    <p:inputText value="#{TaskPresenter.descriptionFilter}"
-                                 valueChangeListener="#{TaskPresenter.selectNewDescriptionFilter}"/>
+                    <p:inputText value="#{TaskPresenter.descriptionFilter}" />
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
@@ -35,7 +34,6 @@
                     <p:selectOneMenu id="vendors" value="#{TaskPresenter.vendorFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.vendorOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewVendorFilter}" update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -44,7 +42,6 @@
                     <p:selectOneMenu id="creators" value="#{TaskPresenter.creatorFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.employeeOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewCreatorFilter}" update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -53,8 +50,6 @@
                     <p:selectOneMenu id="organizations" value="#{TaskPresenter.organisationFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.organizationOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewOrganizationFilter}"
-                                update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -63,7 +58,6 @@
                     <p:selectOneMenu id="executors" value="#{TaskPresenter.executorFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.employeeOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewExecutorFilter}" update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -72,7 +66,6 @@
                     <p:selectOneMenu id="groups" value="#{TaskPresenter.groupFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.groupOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewGroupFilter}" update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -81,7 +74,6 @@
                     <p:selectOneMenu id="statuses" value="#{TaskPresenter.statusFilter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
                         <f:selectItems value="#{TaskPresenter.statusesOptions}"/>
-                        <p:ajax event="change" listener="#{TaskPresenter.selectNewStatusFilter}" update="tabView"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
             </p:panelGrid>
