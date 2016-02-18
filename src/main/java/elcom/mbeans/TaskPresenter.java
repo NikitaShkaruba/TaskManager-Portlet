@@ -78,7 +78,7 @@ public class TaskPresenter {
         if (!vendorFilter.equals(NO_FILTER)) {
             Vendor v = dp.getVendorEntityByName(organisationFilter);
             if (v != null);
-                //TODO: implement Vendor filter to Task
+                //TODO: implement Vendor filter to Task???
         }
         if (!groupFilter.equals(NO_FILTER)) {
             Group g = dp.getGroupEntityByName(groupFilter);
