@@ -238,7 +238,6 @@ public class LocalDataProvider implements DataProvider {
     public List<Employee> getAllWorkers() {
         return workersCache;
     }
-
     public List<Group> getAllGroups() {
         return groupsCache;
     }
@@ -249,9 +248,18 @@ public class LocalDataProvider implements DataProvider {
         return statusesCache;
     }
     public List<Task> getAllTasks() {
-        return dbc.getNamedQueryResult("select from Task");
+        return getTasks(new TasksQueryBuilder().getQuery());
     }
     public List<Task> getTasks(TasksQueryBuilder.TasksQuery query) {
+        List<Task> tasks = dbc.getTasksQueryResult(query);
+        //if we get Task with null-Status, update it with cancelled status
+        for (Task t : tasks) {
+            if (t.getStatus() == null) {
+                t.setStatus(getStatusEntityByName("отменена"));
+                persist(t);
+            }
+        }
+
         return dbc.getTasksQueryResult(query);
     }
     public List<TaskTemplate> getAllTasktemplates() {
