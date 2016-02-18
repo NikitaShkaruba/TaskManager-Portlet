@@ -5,9 +5,11 @@ import elcom.ejbs.DataProvider;
 import elcom.tabs.*;
 import elcom.tabs.Tab;
 import org.primefaces.component.tabview.*;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 
 // This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
@@ -22,7 +25,7 @@ import javax.ejb.EJB;
 public class TaskPresenter {
     private List<Tab> tabs;
     private int activeTabIndex;
-    private Employee user;  //// TODO: 13.02.16 Add liferay-bounded logic
+    private Employee user;
     @EJB
     private DataProvider dp;
 
@@ -50,6 +53,9 @@ public class TaskPresenter {
     public void init() {
         List<Task> allTasks = dp.getAllTasks();
 
+        // TODO: 13.02.16 Add liferay-bounded logic
+        user = dp.getEmployeeEntityByName("jek");
+
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
         tabs.add(new CorrectTab(allTasks.get(0)));
@@ -76,7 +82,11 @@ public class TaskPresenter {
         return tabs;
     }
 
+    // TODO: 18.02.16 Rewrite this method
     public String chooseRowColor(Task task) {
+       if (task == null || task.getStatus() == null)
+            return null;
+
        switch (task.getStatus().getName()) {
            case "открыта": return "Red";
            case "закрыта": return "Green";
@@ -144,7 +154,7 @@ public class TaskPresenter {
     public List<Employee> getEmployeeOptions() {
         return dp.getAllEmployees();
     }
-    public List<Status> getStatusesOptions() {
+    public List<Status> getStatusOptions() {
         return dp.getAllStatuses();
     }
     public List<Contact> getOrganizationOptions() {
@@ -156,14 +166,21 @@ public class TaskPresenter {
     public List<Group> getGroupOptions() {
         return dp.getAllGroups();
     }
+    public List<Priority> getPriorityOptions() {
+        return dp.getAllPriorities();
+    }
 
     // Tabs logic
     public void onTabClose(TabCloseEvent event) {
         if (tabs.size() == 1) {
             tabs.remove(0);
             activeTabIndex = -1;
-        } else
+        } else {
+            TabView tabView = (TabView) event.getComponent();
+            activeTabIndex = tabView.getIndex();
+
             tabs.remove(activeTabIndex);
+        }
     }
     public void onTabChange(TabChangeEvent event) {
         TabView tabView = (TabView) event.getComponent();
@@ -178,9 +195,25 @@ public class TaskPresenter {
     public void addCorrectTab(Task content) {
         tabs.add(new CorrectTab(content));
     }
-    public void addListTab() {
+    public void addListTabByFilters() {
         // TODO: 17.02.16 add logic
         tabs.add(new ListTab(dp.getTasks(combineFilters())));
+    }
+    public void addListTab(List<Task> tasks) {
+        tabs.add(new ListTab(tasks));
+    }
+    public Comment getNewActiveTabCommentary() {
+        return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary() : null;
+    }
+    public void setNewActiveTabCommentary(Comment comment) {
+        if (tabs.get(activeTabIndex) instanceof Commentable)
+            ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(comment);
+    }
+    public void handleFileAttachment(FileUploadEvent event) {
+        // TODO: 18.02.16 add logic
+    }
+    public Comment getTaskComment(Task task) {
+        return null;
     }
 
     // Proxy logic

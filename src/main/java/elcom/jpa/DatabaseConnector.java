@@ -35,12 +35,11 @@ public class DatabaseConnector {
         em.getTransaction().begin();
 
         T result = em.find(type, id);
-
         em.getTransaction().commit();
         em.close();
-
         return result;
     }
+
     public <T> List<T> getQueryResult(QueryBuilder.NamedQuery query) {
         em = emf.createEntityManager();
         em.getTransaction().begin();
