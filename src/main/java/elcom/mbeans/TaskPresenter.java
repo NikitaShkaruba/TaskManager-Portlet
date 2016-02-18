@@ -72,7 +72,7 @@ public class TaskPresenter {
         if (!vendorFilter.equals(NO_FILTER)) {
             Vendor v = dp.getVendorEntityByName(organisationFilter);
             if (v != null);
-                //TODO: emplement Vendor filter to Task
+                //TODO: implement Vendor filter to Task
         }
         if (!groupFilter.equals(NO_FILTER)) {
             Group g = dp.getGroupEntityByName(groupFilter);
@@ -207,10 +207,7 @@ public class TaskPresenter {
         tabs.add(new CorrectTab(content));
     }
     public void addListTab() {
-        // TODO: 17.02.16 add logic
-        List<Task> tasks = dp.getTasks(parseFilters());
-
-        tabs.add(new ListTab(tasks));
+        tabs.add(new ListTab(dp.getTasks(parseFilters())));
     }
 
     // Proxy logic

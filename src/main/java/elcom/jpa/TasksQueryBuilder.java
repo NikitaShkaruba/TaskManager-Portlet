@@ -9,6 +9,7 @@ public class TasksQueryBuilder {
         private long id;
         private String description;
         private Contact organisation;
+        private Date creationDate;
         private Date startDate;
         private Date modificationDate;
         private Date finishDate;
@@ -19,6 +20,7 @@ public class TasksQueryBuilder {
         private Status status;
         private Task parentTask;
         private TaskType type;
+        private Boolean visible;
 
         private TasksQuery(){}
 
@@ -31,6 +33,9 @@ public class TasksQueryBuilder {
         }
         Contact getOrganisation() {
             return organisation;
+        }
+        Date getCreationDate() {
+            return creationDate;
         }
         Date getStartDate() {
             return startDate;
@@ -62,10 +67,8 @@ public class TasksQueryBuilder {
         TaskType getType() {
             return type;
         }
-
-        public void setCreator(Employee creator) {
-            if (creator != null)
-                this.creator = creator;
+        Boolean getVisible() {
+            return visible;
         }
     }
 
@@ -85,73 +88,72 @@ public class TasksQueryBuilder {
         return this;
     }
     public TasksQueryBuilder setDescription(String description) {
-        if (description != null)
-            query.description = description;
+        query.description = description;
 
         return this;
     }
     public TasksQueryBuilder setOrganisation(Contact organisation) {
-        if (organisation != null)
-            query.organisation = organisation;
+        query.organisation = organisation;
+
+        return this;
+    }
+    public TasksQueryBuilder setCreationDate(Date creationDate) {
+        query.creationDate = creationDate;
 
         return this;
     }
     public TasksQueryBuilder setStartDate(Date startDate) {
-        if (startDate != null)
-            query.startDate = startDate;
+        query.startDate = startDate;
 
         return this;
     }
     public TasksQueryBuilder setModificationDate(Date modificationDate) {
-        if (modificationDate != null)
-            query.modificationDate = modificationDate;
+        query.modificationDate = modificationDate;
 
         return this;
     }
     public TasksQueryBuilder setFinishDate(Date finishDate) {
-        if (finishDate != null)
-            query.finishDate = finishDate;
+        query.finishDate = finishDate;
 
         return this;
     }
     public TasksQueryBuilder setExecutorGroup(Group executorGroup) {
-        if (executorGroup != null)
-            query.executorGroup = executorGroup;
+        query.executorGroup = executorGroup;
 
         return this;
     }
     public TasksQueryBuilder setCreator(Employee creator) {
-        query.setCreator(creator);
+        query.creator = creator;
 
         return this;
     }
     public TasksQueryBuilder setExecutor(Employee executor) {
-        if (executor != null)
-            query.executor = executor;
+        query.executor = executor;
 
         return this;
     }
     public TasksQueryBuilder setPriority(Priority priority) {
-        if (priority != null)
-            query.priority = priority;
+        query.priority = priority;
 
         return this;
     }
     public TasksQueryBuilder setStatus(Status status) {
-        if (status != null)
-            query.status = status;
+        query.status = status;
 
         return this;
     }
     public TasksQueryBuilder setParentTask(Task parentTask) {
-        if (parentTask != null)
-            query.parentTask = parentTask;
+        query.parentTask = parentTask;
 
         return this;
     }
     public TasksQueryBuilder setType(TaskType type) {
-        if (type != null)
-            query.type = type;
+        query.type = type;
+
+        return this;
+    }
+    public TasksQueryBuilder setVisible(Boolean visible) {
+        query.visible = visible;
 
         return this;
     }

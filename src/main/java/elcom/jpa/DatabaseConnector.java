@@ -67,6 +67,17 @@ public class DatabaseConnector {
                 }
             });
 
+        if (query.getCreationDate() != null)
+            tasks.removeIf(new Predicate<Task>() {
+                @Override
+                public boolean test(Task task) {
+                    boolean creationDateExists = task.getCreationDate() != null;
+                    boolean blockedByCredateFilter = !creationDateExists || !task.getCreationDate().equals(query.getCreationDate());
+
+                    return blockedByCredateFilter;
+                }
+            });
+
         if (query.getFinishDate() != null)
             tasks.removeIf(new Predicate<Task>() {
                 @Override
@@ -152,6 +163,17 @@ public class DatabaseConnector {
                     boolean blockedByTypeFilter = !typeExists || !task.getType().equals(query.getType());
 
                     return blockedByTypeFilter;
+                }
+            });
+
+        if (query.getVisible() != null)
+            tasks.removeIf(new Predicate<Task>() {
+                @Override
+                public boolean test(Task task) {
+                    boolean visibleExists = task.getVisible() != null;
+                    boolean blockedByVisibleFilter = !visibleExists || !task.getVisible().equals(query.getVisible());
+
+                    return blockedByVisibleFilter;
                 }
             });
 
