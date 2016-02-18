@@ -3,6 +3,7 @@ package elcom.ejbs;
 import static org.junit.Assert.assertTrue;
 
 import elcom.entities.*;
+import elcom.jpa.TasksQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,12 +60,12 @@ public class LocalDataProviderTest {
     }
     @Test
     public void getTasksWithFiltersTest() {
-        Map<String, Object> filters = new HashMap<>();
+        TasksQueryBuilder qb = new TasksQueryBuilder();
 
-        filters.put("status", dp.getStatusEntityByName("открыта"));
-        filters.put("priority", dp.getPriorityEntityByName("низкий"));
+        qb.setStatus(dp.getStatusEntityByName("открыта"));
+        qb.setPriority(dp.getPriorityEntityByName("низкий"));
 
-        List<Task> tasks = dp.getTasks(filters);
+        List<Task> tasks = dp.getTasks(qb.getQuery());
 
         assertTrue("Could not get Tasks with filters", tasks != null);
         assertTrue("Tasks filters do not work", tasks.size() < 9000 && tasks.size() > 0);

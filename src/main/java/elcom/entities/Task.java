@@ -30,6 +30,7 @@ public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
     private Contact organisation;
+    private Date creationDate;
     private Date startDate;
     private Date modificationDate;
     private Date finishDate;
@@ -40,6 +41,7 @@ public class Task implements Serializable, Cloneable {
     private Status status;
     private Task parentTask;
     private TaskType type;
+    private Boolean visible;
 
     public Task() {}
 
@@ -84,6 +86,12 @@ public class Task implements Serializable, Cloneable {
         return priority;
     }
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "cre_date")
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "beg_date")
     public Date getStartDate() {
         return startDate;
@@ -107,6 +115,11 @@ public class Task implements Serializable, Cloneable {
     @JoinColumn(name="type_id")
     public TaskType getType() {
         return type;
+    }
+    @Basic
+    @Column(name="visible")
+    public Boolean getVisible() {
+        return visible;
     }
 
     //TODO: remove isCritical plug from Task entity
@@ -153,6 +166,12 @@ public class Task implements Serializable, Cloneable {
     }
     public void setType(TaskType type) {
         this.type = type;
+    }
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
     }
 
     @Override

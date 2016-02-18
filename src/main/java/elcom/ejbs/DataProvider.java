@@ -1,6 +1,8 @@
 package elcom.ejbs;
 
 import elcom.entities.*;
+import elcom.jpa.TasksQueryBuilder;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +13,7 @@ public interface DataProvider {
     void persist(Object o);
 
     Comment getCommentEntityByContent(String content);
-    Contact getOrganisationEntityByName(String name);
+    Contact getContactEntityByName(String name);
     Employee getEmployeeEntityByName(String name);
     Group getGroupEntityByName(String name);
     Priority getPriorityEntityByName(String name);
@@ -24,11 +26,12 @@ public interface DataProvider {
     List<Comment> getAllComments();
     List<Comment> getTaskComments(Task task);
     List<Contact> getAllOrganisations();
+    List<Contact> getAllContactpersons();
     List<Employee> getAllEmployees();
     List<Group> getAllGroups();
     List<Priority> getAllPriorities();
     List<Status> getAllStatuses();
-    List<Task> getTasks(Map<String, Object> filters);
+    List<Task> getTasks(TasksQueryBuilder.TasksQuery query);
     List<Task> getAllTasks();
     List<TaskTemplate> getAllTasktemplates();
     List<TaskType> getAllTasktypes();

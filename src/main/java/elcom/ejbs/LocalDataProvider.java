@@ -2,48 +2,76 @@ package elcom.ejbs;
 
 import elcom.entities.*;
 import elcom.jpa.DatabaseConnector;
-import elcom.jpa.QueryBuilder;
+import elcom.jpa.TasksQueryBuilder;
 
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import java.util.*;
+import java.util.function.Predicate;
 
 // Handles database data retrieving
 @Singleton
 @Local(DataProvider.class)
 public class LocalDataProvider implements DataProvider {
-
     private final DatabaseConnector dbc = new DatabaseConnector();
+
+    private final List<Comment> commentsCache;
+    private final List<Contact> contactsCache;
+    private final List<Contact> organisationsCache;
+    private final List<Contact> contactpersonsCache;
+    private final List<Employee> employeesCache;
     private final List<Group> groupsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
-    private final List<Vendor> vendorsCache;
+    private final List<TaskTemplate> tasktemplatesCache;
     private final List<TaskType> tasktypesCache;
+    private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
-        prioritiesCache = dbc.getQueryResult(new QueryBuilder(Priority.class).getQuery());
-        statusesCache = dbc.getQueryResult(new QueryBuilder(Status.class).getQuery());
-        groupsCache = dbc.getQueryResult(new QueryBuilder(Group.class).getQuery());
-        vendorsCache = dbc.getQueryResult(new QueryBuilder(Vendor.class).addParameter("vendor", true).getQuery());
-        tasktypesCache = dbc.getQueryResult(new QueryBuilder(TaskType.class).getQuery());
+        commentsCache = dbc.getNamedQueryResult("select from Comment");
+        contactsCache = dbc.getNamedQueryResult("select from Contact");
+        organisationsCache = filterOrganisations();
+        contactpersonsCache = filterPersons();
+        employeesCache = filterEmployees();
+        groupsCache = dbc.getNamedQueryResult("select from Group");
+        prioritiesCache = dbc.getNamedQueryResult("select from Priority");
+        statusesCache = dbc.getNamedQueryResult("select from Status");
+        tasktemplatesCache = dbc.getNamedQueryResult("select from TaskTemplate");
+        tasktypesCache = dbc.getNamedQueryResult("select from TaskType");
+        vendorsCache = dbc.getNamedQueryResult("select from Vendor");
     }
 
-    private List<Task> selectUbiquitousTasks(List<List<Task>> taskLists) {
-        int ubiCoefficient = taskLists.size(); //guaranteed to be > 0
+    private List<Contact> filterOrganisations() {
+        List<Contact> result = new ArrayList<>();
 
-        Map<Task, Integer> taskCoefficients = new HashMap<>();
-
-        for (List<Task> taskList : taskLists)
-            for (Task task : taskList)
-                taskCoefficients.put(task, taskCoefficients.getOrDefault(task, 0) + 1);
-
-        List<Task> result = new ArrayList<>();
-        for (Map.Entry<Task, Integer> e : taskCoefficients.entrySet())
-            if (e.getValue().equals(ubiCoefficient))
-                result.add(e.getKey());
+        for (Contact c : contactsCache)
+            if (c.getOrganisation() != null && c.getOrganisation())
+                result.add(c);
 
         return result;
     }
+    private List<Contact> filterPersons() {
+        List<Contact> result = new ArrayList<>();
+
+        for (Contact c : contactsCache)
+            if (c.getPerson() != null && c.getPerson())
+                result.add(c);
+
+        return result;
+    }
+    private List<Employee> filterEmployees() {
+        List<Employee> employees = dbc.getNamedQueryResult("select from Employee");
+
+        employees.removeIf(new Predicate<Employee>() {
+            @Override
+            public boolean test(Employee employee) {
+                return (employee.getActive() == null || employee.getActive().equals(false));
+            }
+        });
+
+        return employees;
+    }
+
     private boolean tryCopyComments(Task from, Task to) {
         List<Comment> comments = getTaskComments(from);
         for (Comment c : comments) {
@@ -90,21 +118,19 @@ public class LocalDataProvider implements DataProvider {
         if (content == null)
             throw new IllegalArgumentException();
 
-        List<Comment> entities = dbc.getQueryResult(new QueryBuilder(Comment.class).addParameter("content", content).getQuery());
-
-        if (entities != null && entities.size() > 0)
-            return entities.get(0);
+        for (Comment c : commentsCache)
+            if (c.getContent().equals(content))
+                return c;
 
         return null;
     }
-    public Contact getOrganisationEntityByName(String name) {
+    public Contact getContactEntityByName(String name) {
         if (name == null)
             throw new IllegalArgumentException();
 
-        List<Contact> entities = dbc.getQueryResult(new QueryBuilder(Contact.class).addParameter("name", name).getQuery());
-
-        if (entities != null && entities.size() > 0)
-            return entities.get(0);
+        for (Contact c : contactsCache)
+            if (c.getContent().equals(name))
+                return c;
 
         return null;
     }
@@ -112,10 +138,13 @@ public class LocalDataProvider implements DataProvider {
         if (name == null)
             throw new IllegalArgumentException();
 
-        List<Employee> entities = dbc.getQueryResult(new QueryBuilder(Employee.class).addParameter("name", name).getQuery());
-
-        if (entities != null && entities.size() > 0)
-            return entities.get(0);
+        for (Employee e : employeesCache)
+            if (e.getName().equals(name))
+                return e;
+        //If no employees with given name were found, maybe 'name' is actually a nickname
+        for (Employee e : employeesCache)
+            if (e.getNickName().equals(name))
+                return e;
 
         return null;
 
@@ -151,16 +180,15 @@ public class LocalDataProvider implements DataProvider {
         return null;
     }
     public Task getTaskEntityById(long id) {
-        return dbc.find(Task.class, id);
+        return dbc.findById(Task.class, id);
     }
     public TaskTemplate getTasktemplateEntityByName(String name) {
         if (name == null)
             throw new IllegalArgumentException();
 
-        List<TaskTemplate> entities = dbc.getQueryResult(new QueryBuilder(TaskTemplate.class).addParameter("name", name).getQuery());
-
-        if (entities != null && entities.size() > 0)
-            return entities.get(0);
+        for (TaskTemplate tt : tasktemplatesCache)
+            if (tt.getName().equals(name))
+                return tt;
 
         return null;
     }
@@ -186,20 +214,28 @@ public class LocalDataProvider implements DataProvider {
     }
 
     public List<Comment> getAllComments() {
-        return dbc.getQueryResult(new QueryBuilder(Comment.class).getQuery());
+        return commentsCache;
     }
     public List<Comment> getTaskComments(Task task) {
         if (task == null)
             throw new IllegalArgumentException();
 
+        List<Comment> result = new ArrayList<>();
 
-        return dbc.getQueryResult(new QueryBuilder(Comment.class).addParameter("task", task).getQuery());
+        for (Comment c : commentsCache)
+            if (c.getTask().equals(task))
+                result.add(c);
+
+        return result;
+    }
+    public List<Contact> getAllContactpersons() {
+        return contactpersonsCache;
     }
     public List<Contact> getAllOrganisations() {
-        return dbc.getQueryResult(new QueryBuilder(Contact.class).addParameter("organisation", true).getQuery());
+        return organisationsCache;
     }
     public List<Employee> getAllEmployees() {
-        return dbc.getQueryResult(new QueryBuilder(Employee.class).getQuery());
+        return employeesCache;
     }
     public List<Group> getAllGroups() {
         return groupsCache;
@@ -211,25 +247,26 @@ public class LocalDataProvider implements DataProvider {
         return statusesCache;
     }
     public List<Task> getAllTasks() {
-        return dbc.getQueryResult(new QueryBuilder(Task.class).getQuery());
+        return getTasks(new TasksQueryBuilder().getQuery());
     }
-    public List<Task> getTasks(Map<String, Object> filters) {
-        if (filters == null || filters.size() == 0)
-            return dbc.getQueryResult(new QueryBuilder(Task.class).getQuery());
+    public List<Task> getTasks(TasksQueryBuilder.TasksQuery query) {
+        List<Task> tasks = dbc.getTasksQueryResult(query);
+        //if we get Task with null-Status, update it with cancelled status
+        for (Task t : tasks) {
+            if (t.getStatus() == null) {
+                t.setStatus(getStatusEntityByName("отменена"));
+                persist(t);
+            }
+        }
 
-        List<List<Task>> tasksLists = new ArrayList<>();
-        for (Map.Entry<String, Object> e : filters.entrySet())
-                tasksLists.add(dbc.getQueryResult(new QueryBuilder(Task.class).addParameter(e.getKey(), e.getValue()).getQuery()));
-
-        return selectUbiquitousTasks(tasksLists);
+        return dbc.getTasksQueryResult(query);
     }
     public List<TaskTemplate> getAllTasktemplates() {
-        return dbc.getQueryResult(new QueryBuilder(TaskTemplate.class).getQuery());
+        return tasktemplatesCache;
     }
     public List<TaskType> getAllTasktypes() {
         return tasktypesCache;
     }
-
     public List<Vendor> getAllVendors() {
         return vendorsCache;
     }
