@@ -9,11 +9,14 @@ import org.primefaces.component.tabview.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.ejb.EJB;
 
 // This MBean handles selection table selection logic, provides menu item options
@@ -51,7 +54,7 @@ public class TaskPresenter {
         List<Task> allTasks = dp.getAllTasks();
 
         // TODO: 13.02.16 Add liferay-bounded logic
-        user = dp.getEmployeeEntityByName("jek");
+        user = dp.getEmployeeEntityByName("bfa");
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
@@ -103,11 +106,7 @@ public class TaskPresenter {
         return tabs;
     }
 
-    // TODO: 18.02.16 Rewrite this method
     public String chooseRowColor(Task task) {
-       if (task == null || task.getStatus() == null)
-            return null;
-
        switch (task.getStatus().getName()) {
            case "открыта": return "Red";
            case "закрыта": return "Green";
@@ -219,8 +218,11 @@ public class TaskPresenter {
     public void addCorrectTab(Task content) {
         tabs.add(new CorrectTab(content));
     }
+    public void addListTab(List<Task> tasks) {
+        tabs.add(new ListTab(tasks));
+    }
     public void addListTabByFilters() {
-        tabs.add(new ListTab(dp.getTasks(parseFilters())));
+        addListTab(dp.getTasks(parseFilters()));
     }
     public Comment getNewActiveTabCommentary() {
         return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary() : null;
@@ -251,41 +253,86 @@ public class TaskPresenter {
     // TODO: 13.02.16 Add logic for pattern bar
     // Filter-pattern selection listeners
     public void selectMyTasksPattern() {
-
+        //my tasks: executor = user
+        addListTab(dp.getTasks(new TasksQueryBuilder().setExecutor(user).getQuery()));
     }
     public void selectFreeTasksPattern() {
+        //free tasks: executor = null and status = opened
+        List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
+        //we can't ask for null values in query, so we have to filter through null executors here
+       tasks.removeIf(new Predicate<Task>() {
+           @Override
+           public boolean test(Task task) {
+               return task.getExecutor() != null;
+           }
+       });
+
+        addListTab(tasks);
     }
     public void selectClosedTasksPattern() {
-
+        //closed tasks: status = closed
+        addListTab(dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("закрыта")).getQuery()));
     }
     public void selectTrackedTasksPattern() {
-
+        throw new NotImplementedException();
     }
     public void selectChangedTasksPattern() {
-
+        throw new NotImplementedException();
     }
     public void selectContractsTaskPattern() {
-
+        //contracts tasks: taskType = "договор" (contract);
+        addListTab(dp.getTasks(new TasksQueryBuilder().setType(dp.getTasktypeEntityByName("договор")).getQuery()));
     }
 
     // Filter-pattern task counts
     public int getMyCount() {
-        return 2;
+        int counter = 0;
+
+        for (Task t : dp.getAllTasks())
+            if (user.equals(t.getExecutor()))
+                counter += 1;
+
+        return counter;
     }
     public int getOpenCount() {
-        return 45;
+        int counter = 0;
+
+        Status openStatus = dp.getStatusEntityByName("открыта");
+
+        for (Task t : dp.getAllTasks())
+            if (t.getExecutor() == null && openStatus.equals(t.getStatus()))
+                counter += 1;
+
+        return counter;
     }
     public int getClosedCount() {
-        return 78;
+        int counter = 0;
+
+        Status closedStatus = dp.getStatusEntityByName("закрыта");
+
+        for (Task t : dp.getAllTasks())
+            if (closedStatus.equals(t.getStatus()))
+                counter += 1;
+
+        return counter;
     }
+    //TODO: implement patterns when user-logic gets added
     public int getTrackedCount() {
-        return 32;
+        return 1337;
     }
     public int getChangedCount() {
-        return 333;
+        return 42;
     }
     public int getContractsCount() {
-        return 1;
+        int counter = 0;
+
+        TaskType contract = dp.getTasktypeEntityByName("договор");
+
+        for (Task t : dp.getAllTasks())
+            if (contract.equals(t.getType()))
+                counter += 1;
+
+        return counter;
     }
 }
