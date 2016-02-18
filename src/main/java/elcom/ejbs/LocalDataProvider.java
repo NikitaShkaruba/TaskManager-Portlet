@@ -7,6 +7,7 @@ import elcom.jpa.TasksQueryBuilder;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import java.util.*;
+import java.util.function.Predicate;
 
 // Handles database data retrieving
 @Singleton
@@ -19,7 +20,6 @@ public class LocalDataProvider implements DataProvider {
     private final List<Contact> organisationsCache;
     private final List<Contact> contactpersonsCache;
     private final List<Employee> employeesCache;
-    private final List<Employee> workersCache;
     private final List<Group> groupsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
@@ -32,8 +32,7 @@ public class LocalDataProvider implements DataProvider {
         contactsCache = dbc.getNamedQueryResult("select from Contact");
         organisationsCache = filterOrganisations();
         contactpersonsCache = filterPersons();
-        employeesCache = dbc.getNamedQueryResult("select from Employee");
-        workersCache = filterWorkers();
+        employeesCache = filterEmployees();
         groupsCache = dbc.getNamedQueryResult("select from Group");
         prioritiesCache = dbc.getNamedQueryResult("select from Priority");
         statusesCache = dbc.getNamedQueryResult("select from Status");
@@ -60,14 +59,17 @@ public class LocalDataProvider implements DataProvider {
 
         return result;
     }
-    private List<Employee> filterWorkers() {
-        List<Employee> result = new ArrayList<>();
+    private List<Employee> filterEmployees() {
+        List<Employee> employees = dbc.getNamedQueryResult("select from Employee");
 
-        for (Employee e : employeesCache)
-            if (e.getActive() != null && e.getActive())
-                result.add(e);
+        employees.removeIf(new Predicate<Employee>() {
+            @Override
+            public boolean test(Employee employee) {
+                return (employee.getActive() == null || employee.getActive().equals(false));
+            }
+        });
 
-        return result;
+        return employees;
     }
 
     private boolean tryCopyComments(Task from, Task to) {
@@ -234,9 +236,6 @@ public class LocalDataProvider implements DataProvider {
     }
     public List<Employee> getAllEmployees() {
         return employeesCache;
-    }
-    public List<Employee> getAllWorkers() {
-        return workersCache;
     }
     public List<Group> getAllGroups() {
         return groupsCache;

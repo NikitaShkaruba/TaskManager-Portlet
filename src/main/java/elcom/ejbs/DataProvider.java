@@ -28,7 +28,6 @@ public interface DataProvider {
     List<Contact> getAllOrganisations();
     List<Contact> getAllContactpersons();
     List<Employee> getAllEmployees();
-    List<Employee> getAllWorkers();
     List<Group> getAllGroups();
     List<Priority> getAllPriorities();
     List<Status> getAllStatuses();

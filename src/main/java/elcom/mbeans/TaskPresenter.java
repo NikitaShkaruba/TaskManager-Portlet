@@ -123,6 +123,9 @@ public class TaskPresenter {
     }
 
     // Getters
+    public List<Comment> getTaskComments(Task task) {
+        return dp.getTaskComments(task);
+    }
     public String getStatusFilter() {
         return statusFilter;
     }
