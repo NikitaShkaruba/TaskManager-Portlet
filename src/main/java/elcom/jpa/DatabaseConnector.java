@@ -207,10 +207,8 @@ public class DatabaseConnector {
         em.getTransaction().begin();
 
         T result = em.find(type, id);
-
         em.getTransaction().commit();
         em.close();
-
         return result;
     }
     public List<Task> getTasksQueryResult(TasksQueryBuilder.TasksQuery query) {
