@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 public class LocalDataProvider implements DataProvider {
     private final DatabaseConnector dbc = new DatabaseConnector();
 
-    private final List<Comment> commentsCache;
     private final List<Contact> contactsCache;
     private final List<Contact> organisationsCache;
     private final List<Contact> contactpersonsCache;
@@ -28,7 +27,6 @@ public class LocalDataProvider implements DataProvider {
     private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
-        commentsCache = dbc.getNamedQueryResult("select from Comment");
         contactsCache = dbc.getNamedQueryResult("select from Contact");
         organisationsCache = filterOrganisations();
         contactpersonsCache = filterPersons();
@@ -118,7 +116,9 @@ public class LocalDataProvider implements DataProvider {
         if (content == null)
             throw new IllegalArgumentException();
 
-        for (Comment c : commentsCache)
+        List<Comment> comments = dbc.getNamedQueryResult("select from Comment");
+
+        for (Comment c : comments)
             if (c.getContent().equals(content))
                 return c;
 
@@ -214,16 +214,17 @@ public class LocalDataProvider implements DataProvider {
     }
 
     public List<Comment> getAllComments() {
-        return commentsCache;
+        return dbc.getNamedQueryResult("select from Comment");
     }
     public List<Comment> getTaskComments(Task task) {
         if (task == null)
             throw new IllegalArgumentException();
 
+        List<Comment> comments = dbc.getNamedQueryResult("select from Comment");
         List<Comment> result = new ArrayList<>();
 
-        for (Comment c : commentsCache)
-            if (c.getTask().equals(task))
+        for (Comment c : comments)
+            if (task.equals(c.getTask()))
                 result.add(c);
 
         return result;

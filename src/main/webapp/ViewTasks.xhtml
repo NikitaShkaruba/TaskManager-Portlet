@@ -12,12 +12,12 @@
     <h:form>
         <p:toolbar id="patternBar">
             <p:toolbarGroup>
-                <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}"/>
-                <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}"/>
-                <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}"/>
-                <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}"/>
-                <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}"/>
-                <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}"/>
+                <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="tabView" />
+                <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="tabView" />
+                <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="tabView" />
+                <p:commandButton value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}" update="tabView" />
+                <p:commandButton value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}" update="tabView" />
+                <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="tabView" />
             </p:toolbarGroup>
         </p:toolbar>
 
