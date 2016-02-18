@@ -26,7 +26,7 @@ public interface DataProvider {
     List<Comment> getAllComments();
     List<Comment> getTaskComments(Task task);
     List<Contact> getAllOrganisations();
-    List<Contact> getAllContactpersons();
+    List<Contact> getAllContactPersons();
     List<Employee> getAllEmployees();
     List<Group> getAllGroups();
     List<Priority> getAllPriorities();

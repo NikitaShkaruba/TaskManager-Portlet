@@ -3,7 +3,6 @@ package elcom.ejbs;
 import elcom.entities.*;
 import elcom.jpa.DatabaseConnector;
 import elcom.jpa.TasksQueryBuilder;
-
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import java.util.*;
@@ -223,12 +222,12 @@ public class LocalDataProvider implements DataProvider {
         List<Comment> result = new ArrayList<>();
 
         for (Comment c : commentsCache)
-            if (c.getTask().equals(task))
+            if (task.equals(c.getTask()))
                 result.add(c);
 
         return result;
     }
-    public List<Contact> getAllContactpersons() {
+    public List<Contact> getAllContactPersons() {
         return contactpersonsCache;
     }
     public List<Contact> getAllOrganisations() {
