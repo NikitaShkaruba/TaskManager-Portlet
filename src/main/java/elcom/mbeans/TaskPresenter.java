@@ -2,6 +2,7 @@ package elcom.mbeans;
 
 import elcom.entities.*;
 import elcom.ejbs.DataProvider;
+import elcom.jpa.TasksQueryBuilder;
 import elcom.tabs.*;
 import elcom.tabs.Tab;
 import org.primefaces.component.tabview.*;
@@ -55,43 +56,41 @@ public class TaskPresenter {
         tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
-    private Map<String, Object> parseFilters() {
-        Map<String, Object> filters = new HashMap<>();
-
-        Object entity;
+    private TasksQueryBuilder.TasksQuery parseFilters() {
+        TasksQueryBuilder qb = new TasksQueryBuilder();
 
         if (!statusFilter.equals(NO_FILTER) ) {
-            entity = dp.getStatusEntityByName(statusFilter);
-            if (entity != null)
-                filters.put("status", entity);
+            Status s = dp.getStatusEntityByName(statusFilter);
+            if (s != null)
+                qb.setStatus(s);
         }
         if (!organisationFilter.equals(NO_FILTER)) {
-            entity = dp.getOrganisationEntityByName(organisationFilter);
-            if (entity != null)
-                filters.put("organisation", entity);
+            Contact o = dp.getContactEntityByName(organisationFilter);
+            if (o != null)
+                qb.setOrganisation(o);
         }
         if (!vendorFilter.equals(NO_FILTER)) {
-            entity = dp.getOrganisationEntityByName(organisationFilter);
-            if (entity != null)
-                filters.put("vendor", vendorFilter);
+            Vendor v = dp.getVendorEntityByName(organisationFilter);
+            if (v != null);
+                //TODO: emplement Vendor filter to Task
         }
         if (!groupFilter.equals(NO_FILTER)) {
-            entity = dp.getGroupEntityByName(groupFilter);
-            if (entity != null)
-                filters.put("executorGroup", groupFilter);
+            Group g = dp.getGroupEntityByName(groupFilter);
+            if (g != null)
+                qb.setExecutorGroup(g);
         }
         if (!executorFilter.equals(NO_FILTER)) {
-            entity = dp.getEmployeeEntityByName(executorFilter);
-            if (entity != null)
-                filters.put("executor", entity);
+            Employee e = dp.getEmployeeEntityByName(executorFilter);
+            if (e != null)
+                qb.setExecutor(e);
         }
         if (!creatorFilter.equals(NO_FILTER)) {
-            entity = dp.getEmployeeEntityByName(creatorFilter);
-            if (entity != null)
-                filters.put("creator", entity);
+            Employee c = dp.getEmployeeEntityByName(creatorFilter);
+            if (c != null)
+                qb.setCreator(c);
         }
 
-        return filters;
+        return qb.getQuery();
     }
 
     // Main Logic
