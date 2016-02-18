@@ -183,6 +183,9 @@ public class TaskPresenter {
     public List<Contact> getOrganizationOptions() {
         return dp.getAllOrganisations();
     }
+    public List<Contact> getContactPersonOptions() {
+        return dp.getAllContactPersons();
+    }
     public List<Vendor> getVendorOptions() {
         return dp.getAllVendors();
     }
@@ -191,6 +194,9 @@ public class TaskPresenter {
     }
     public List<Priority> getPriorityOptions() {
         return dp.getAllPriorities();
+    }
+    public List<TaskType> getTypeOptions() {
+        return dp.getAllTasktypes();
     }
 
     // Tabs logic
@@ -233,9 +239,6 @@ public class TaskPresenter {
     }
     public void handleFileAttachment(FileUploadEvent event) {
         // TODO: 18.02.16 add logic
-    }
-    public Comment getTaskComment(Task task) {
-        return null;
     }
 
     // Proxy logic

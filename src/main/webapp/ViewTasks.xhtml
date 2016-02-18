@@ -9,18 +9,18 @@
 </h:head>
 
 <h:body>
-    <h:form>
-        <p:toolbar id="patternBar">
-            <p:toolbarGroup>
-                <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}"/>
-                <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}"/>
-                <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}"/>
-                <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}"/>
-                <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}"/>
-                <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}"/>
-            </p:toolbarGroup>
-        </p:toolbar>
+    <p:toolbar id="patternBar">
+        <p:toolbarGroup>
+            <p:commandButton type="button" value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}"/>
+            <p:commandButton type="button" value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}"/>
+            <p:commandButton type="button" value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}"/>
+            <p:commandButton type="button" value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}"/>
+            <p:commandButton type="button" value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}"/>
+            <p:commandButton type="button" value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}"/>
+        </p:toolbarGroup>
+    </p:toolbar>
 
+    <h:form>
         <p:panel header="Фильтры">
             <p:panelGrid columns="2">
                 <h:panelGrid columns="2">
@@ -141,9 +141,8 @@
 
                         <p:outputLabel value="Тип"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).type}">
-                            <f:selectItem itemLabel="Выбрать исполнителя"/>
-                            <!-- TODO: remove plug -->
-                            <f:selectItems value="plug" />
+                            <f:selectItem itemLabel="Выбрать тип"/>
+                            <f:selectItems value="#{tab.tasks.get(0).type}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Начать выполнение:"/>
@@ -159,10 +158,9 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:"/>
-                        <p:selectOneMenu>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}">
                             <f:selectItem itemLabel="Выбрать контактное лицо"/>
-                            <!-- TODO: remove plug -->
-                            <f:selectItems value="plug" />
+                            <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
@@ -201,9 +199,8 @@
 
                     <p:outputLabel value="Тип"/>
                     <p:selectOneMenu value="#{tab.tasks.get(0).type}">
-                        <f:selectItem itemLabel="Выбрать исполнителя"/>
-                        <!-- TODO: remove plug -->
-                        <f:selectItems value="plug" />
+                        <f:selectItem itemLabel="Выбрать тип"/>
+                        <f:selectItems value="#{TaskPresenter.typeOptions}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel value="Начать выполнение:"/>
@@ -219,10 +216,9 @@
                     </p:selectOneMenu>
 
                     <p:outputLabel value="Контактное лицо:"/>
-                    <p:selectOneMenu>
+                    <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}">
                         <f:selectItem itemLabel="Выбрать контактное лицо"/>
-                        <!-- TODO: remove plug -->
-                        <f:selectItems value="plug" />
+                        <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel value="Исполнитель:"/>
@@ -313,7 +309,6 @@
 
                         <p:outputLabel value="#{tab.tasks.get(0).description}"/>
 
-                        <!-- TODO: remove creation date plug -->
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Приоритет"/>
                             <p:outputLabel value="#{tab.tasks.get(0).priority}"/>
@@ -337,7 +332,7 @@
                             <p:outputLabel value="#{tab.tasks.get(0).creator}"/>
 
                             <p:outputLabel value="Задача создана"/>
-                            <p:outputLabel value="plug"/>
+                            <p:outputLabel value="#{tab.tasks.get(0).creationDate}"/>
 
                             <p:outputLabel value="Дата последней модификации"/>
                             <p:outputLabel value="#{tab.tasks.get(0).modificationDate}"/>
@@ -351,19 +346,19 @@
                 </p:panel>
 
                 <p:panel header="Комментарии">
-                    <p:dataScroller value="#{TaskPresenter.getTaskComment(tab.tasks.get(0))}" var="comment" chunkSize="5" >
-                        <h:panelGrid columns="2" style="width:100%" columnClasses="logo,detail">
-                            <p:panel header="Автор">
+                    <p:dataScroller value="#{TaskPresenter.getTaskComments(tab.tasks.get(0))}" var="comment" chunkSize="5" >
+                        <h:panelGrid columns="2" style="width:100%" >
+                            <p:panelGrid columns="1" style="width:30%">
                                 <p:graphicImage alt="АВАТАР" />
-                                <p:outputLabel value="nickname" />
-                                <p:outputLabel value="username" />
-                                <p:outputLabel value="creation date" />
-                                <p:outputLabel value="creation time" />
-                            </p:panel>
+                                <p:outputLabel value="#{comment.author}" />
+                                <p:outputLabel value="#{comment.author}" />
+                                <p:outputLabel value="#{comment.writeDate}" />
+                                <p:outputLabel value="#{comment.writeDate}" />
+                            </p:panelGrid>
 
-                            <p:panel header="Тектс" >
-                                <p:outputLabel value="Текст комментария" />
-                            </p:panel>
+                            <p:panelGrid style="width:70%" >
+                                <p:outputLabel value="#{comment.content}" escape="false" />
+                            </p:panelGrid>
                         </h:panelGrid>
                     </p:dataScroller>
                 </p:panel>

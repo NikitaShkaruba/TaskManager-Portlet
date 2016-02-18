@@ -30,6 +30,7 @@ public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
     private Contact organisation;
+    private Contact contactPerson;
     private Date creationDate;
     private Date startDate;
     private Date modificationDate;
@@ -122,6 +123,10 @@ public class Task implements Serializable, Cloneable {
     public Boolean getVisible() {
         return visible;
     }
+    @Transient
+    public Contact getContactPerson() {
+        return contactPerson;
+    }
 
     // TODO: 18.02.16 Bind it with db
     @Transient
@@ -182,6 +187,9 @@ public class Task implements Serializable, Cloneable {
     }
     public void setVisible(Boolean visible) {
         this.visible = visible;
+    }
+    public void setContactPerson(Contact person) {
+        this.contactPerson = person;
     }
 
     @Override
