@@ -43,7 +43,7 @@ public class Task implements Serializable, Cloneable {
     private Task parentTask;
     private TaskType type;
     private Boolean visible;
-    private boolean isPrivateTask;
+    private Boolean privateTask;
 
     public Task() {}
 
@@ -123,26 +123,25 @@ public class Task implements Serializable, Cloneable {
     public Boolean getVisible() {
         return visible;
     }
-    @Transient
+    @OneToOne
+    @JoinColumn(name="person_id")
     public Contact getContactPerson() {
         return contactPerson;
     }
-
-    // TODO: 18.02.16 Bind it with db
-    @Transient
-    public boolean isPrivateTask() {
-        return isPrivateTask;
+    @Basic
+    @Column(name="private_task")
+    public Boolean getPrivateTask() {
+        return privateTask;
     }
-    public void setPrivateTask(boolean isPrivate) {
-        this.isPrivateTask = isPrivate;
-    }
-
     //TODO: remove isCritical plug from Task entity
     @Transient
     public boolean isCritical() {
         return true;
     }
 
+    public void setPrivateTask(Boolean privateTask) {
+        this.privateTask = privateTask;
+    }
     public void setId(long id) {
         this.id = id;
     }

@@ -14,10 +14,6 @@ import java.util.function.Predicate;
 public class LocalDataProvider implements DataProvider {
     private final DatabaseConnector dbc = new DatabaseConnector();
 
-    private final List<Comment> commentsCache;
-    private final List<Contact> contactsCache;
-    private final List<Contact> organisationsCache;
-    private final List<Contact> contactpersonsCache;
     private final List<Employee> employeesCache;
     private final List<Group> groupsCache;
     private final List<Priority> prioritiesCache;
@@ -27,10 +23,6 @@ public class LocalDataProvider implements DataProvider {
     private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
-        commentsCache = dbc.getNamedQueryResult("select from Comment");
-        contactsCache = dbc.getNamedQueryResult("select from Contact");
-        organisationsCache = filterOrganisations();
-        contactpersonsCache = filterPersons();
         employeesCache = filterEmployees();
         groupsCache = dbc.getNamedQueryResult("select from Group");
         prioritiesCache = dbc.getNamedQueryResult("select from Priority");
@@ -40,24 +32,6 @@ public class LocalDataProvider implements DataProvider {
         vendorsCache = dbc.getNamedQueryResult("select from Vendor");
     }
 
-    private List<Contact> filterOrganisations() {
-        List<Contact> result = new ArrayList<>();
-
-        for (Contact c : contactsCache)
-            if (c.getOrganisation() != null && c.getOrganisation())
-                result.add(c);
-
-        return result;
-    }
-    private List<Contact> filterPersons() {
-        List<Contact> result = new ArrayList<>();
-
-        for (Contact c : contactsCache)
-            if (c.getPerson() != null && c.getPerson())
-                result.add(c);
-
-        return result;
-    }
     private List<Employee> filterEmployees() {
         List<Employee> employees = dbc.getNamedQueryResult("select from Employee");
 
@@ -117,7 +91,9 @@ public class LocalDataProvider implements DataProvider {
         if (content == null)
             throw new IllegalArgumentException();
 
-        for (Comment c : commentsCache)
+        List<Comment> comments = dbc.getNamedQueryResult("select from Comment");
+
+        for (Comment c : comments)
             if (c.getContent().equals(content))
                 return c;
 
@@ -127,7 +103,9 @@ public class LocalDataProvider implements DataProvider {
         if (name == null)
             throw new IllegalArgumentException();
 
-        for (Contact c : contactsCache)
+        List<Contact> contacts = dbc.getNamedQueryResult("select from Contact");
+
+        for (Contact c : contacts)
             if (c.getContent().equals(name))
                 return c;
 
@@ -213,25 +191,26 @@ public class LocalDataProvider implements DataProvider {
     }
 
     public List<Comment> getAllComments() {
-        return commentsCache;
+        return dbc.getNamedQueryResult("select from Comment");
     }
     public List<Comment> getTaskComments(Task task) {
         if (task == null)
             throw new IllegalArgumentException();
 
+        List<Comment> comments = dbc.getNamedQueryResult("select from Comment");
         List<Comment> result = new ArrayList<>();
 
-        for (Comment c : commentsCache)
+        for (Comment c : comments)
             if (task.equals(c.getTask()))
                 result.add(c);
 
         return result;
     }
     public List<Contact> getAllContactPersons() {
-        return contactpersonsCache;
+        return dbc.getNamedQueryResult("select from Contact with person");
     }
     public List<Contact> getAllOrganisations() {
-        return organisationsCache;
+        return dbc.getNamedQueryResult("select from Contact with organisation");
     }
     public List<Employee> getAllEmployees() {
         return employeesCache;

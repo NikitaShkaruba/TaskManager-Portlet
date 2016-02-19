@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.ejb.EJB;
+import javax.faces.event.ActionEvent;
 
 // This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
@@ -77,7 +78,7 @@ public class TaskPresenter {
         if (!vendorFilter.equals(NO_FILTER)) {
             Vendor v = dp.getVendorEntityByName(organisationFilter);
             if (v != null);
-                //TODO: implement Vendor filter to Task
+                //TODO: implement Vendor filter to Task???
         }
         if (!groupFilter.equals(NO_FILTER)) {
             Group g = dp.getGroupEntityByName(groupFilter);
@@ -107,7 +108,10 @@ public class TaskPresenter {
     }
 
     public String chooseRowColor(Task task) {
-       switch (task.getStatus().getName()) {
+        if (task == null || task.getStatus() == null)
+            return "null";
+
+        switch (task.getStatus().getName()) {
            case "открыта": return "Red";
            case "закрыта": return "Green";
            case "отменена": return "Green";
@@ -253,13 +257,12 @@ public class TaskPresenter {
             ((TaskSelector)tabs.get(activeTabIndex)).setSelectedTask(selectedTask);
     }
 
-    // TODO: 13.02.16 Add logic for pattern bar
     // Filter-pattern selection listeners
-    public void selectMyTasksPattern() {
+    public void selectMyTasksPattern(ActionEvent event) {
         //my tasks: executor = user
         addListTab(dp.getTasks(new TasksQueryBuilder().setExecutor(user).getQuery()));
     }
-    public void selectFreeTasksPattern() {
+    public void selectFreeTasksPattern(ActionEvent event) {
         //free tasks: executor = null and status = opened
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
@@ -273,17 +276,17 @@ public class TaskPresenter {
 
         addListTab(tasks);
     }
-    public void selectClosedTasksPattern() {
+    public void selectClosedTasksPattern(ActionEvent event) {
         //closed tasks: status = closed
         addListTab(dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("закрыта")).getQuery()));
     }
-    public void selectTrackedTasksPattern() {
+    public void selectTrackedTasksPattern(ActionEvent event) {
         throw new NotImplementedException();
     }
-    public void selectChangedTasksPattern() {
+    public void selectChangedTasksPattern(ActionEvent event) {
         throw new NotImplementedException();
     }
-    public void selectContractsTaskPattern() {
+    public void selectContractsTaskPattern(ActionEvent event) {
         //contracts tasks: taskType = "договор" (contract);
         addListTab(dp.getTasks(new TasksQueryBuilder().setType(dp.getTasktypeEntityByName("договор")).getQuery()));
     }

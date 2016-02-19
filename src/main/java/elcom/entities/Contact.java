@@ -8,10 +8,10 @@ import java.util.List;
 @Table(name="contact")
 @NamedQueries({
         @NamedQuery(name="select from Contact with organisation",
-                    query="select c from Contact c where c.organisation = :organisation"),
+                    query="select c from Contact c where c.organisation = true"),
 
         @NamedQuery(name="select from Contact with person",
-                    query="select c from Contact c where c.person = :person"),
+                    query="select c from Contact c where c.person = true"),
 
         @NamedQuery(name="select from Contact",
                     query="select c from Contact c"),
