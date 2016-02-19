@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="wfgroup")
-@NamedQuery(name="select from Group", query="select g from Group g")
 public class Group implements Serializable {
     private long id;
     private String name;

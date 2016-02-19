@@ -6,19 +6,6 @@ import java.util.List;
 
 @Entity
 @Table(name="contact")
-@NamedQueries({
-        @NamedQuery(name="select from Contact with organisation",
-                    query="select c from Contact c where c.organisation = true"),
-
-        @NamedQuery(name="select from Contact with person",
-                    query="select c from Contact c where c.person = true"),
-
-        @NamedQuery(name="select from Contact",
-                    query="select c from Contact c"),
-
-        @NamedQuery(name="select from Contact with name",
-                    query="select c from Contact c where c.content = :name")
-})
 public class Contact implements Serializable {
     private long id;
     private String content;

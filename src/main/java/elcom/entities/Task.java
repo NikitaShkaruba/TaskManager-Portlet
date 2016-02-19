@@ -6,26 +6,6 @@ import java.util.Date;
 
 @Entity
 @Table(name="task")
-@NamedQueries({
-        @NamedQuery(name = "select from Task",
-                    query = "select t from Task t"),
-
-        @NamedQuery(name = "select from Task with executor",
-                query = "select t from Task t where t.executor = :executor"),
-
-        @NamedQuery(name = "select from Task with status",
-                    query = "select t from Task t where t.status = :status"),
-
-        @NamedQuery(name = "select from Task with creator",
-                    query = "select t from Task t where t.creator = :creator"),
-
-        @NamedQuery(name = "select from Task with executorGroup",
-                    query = "select t from Task t where t.executorGroup = :executorGroup"),
-
-        @NamedQuery(name = "select from Task with priority",
-                    query = "select t from Task t where t.priority = :priority")
-
-})
 public class Task implements Serializable, Cloneable {
     private long id;
     private String description;

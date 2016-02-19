@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="tasktemplates")
-@NamedQuery(name="select from TaskTemplate", query="select t from TaskTemplate t")
 public class TaskTemplate implements Serializable{
     private long id;
     private String name;

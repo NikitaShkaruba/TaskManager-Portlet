@@ -5,13 +5,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="wfuser")
-@NamedQueries({
-        @NamedQuery(name = "select from Employee",
-                    query = "select e from Employee e"),
-
-        @NamedQuery(name = "select from Employee with name",
-                    query = "select e from Employee e where e.name = :name")
-})
 public class Employee implements Serializable {
     private long id;
     private String name;

@@ -36,4 +36,6 @@ public interface DataProvider {
     List<TaskTemplate> getAllTasktemplates();
     List<TaskType> getAllTasktypes();
     List<Vendor> getAllVendors();
+
+    public long countTasks();
 }

@@ -9,6 +9,7 @@ public class TasksQueryBuilder {
         private long id;
         private String description;
         private Contact organisation;
+        private Contact contactPerson;
         private Date creationDate;
         private Date startDate;
         private Date modificationDate;
@@ -21,6 +22,7 @@ public class TasksQueryBuilder {
         private Task parentTask;
         private TaskType type;
         private Boolean visible;
+        private Boolean privateTask;
 
         private TasksQuery(){}
 
@@ -69,6 +71,12 @@ public class TasksQueryBuilder {
         }
         Boolean getVisible() {
             return visible;
+        }
+        Contact getContactPerson() {
+            return contactPerson;
+        }
+        Boolean getPrivateTask() {
+            return privateTask;
         }
     }
 
@@ -152,8 +160,14 @@ public class TasksQueryBuilder {
 
         return this;
     }
-    public TasksQueryBuilder setVisible(Boolean visible) {
-        query.visible = visible;
+
+    public TasksQueryBuilder setPrivateTask(Boolean privateTask) {
+        query.privateTask = privateTask;
+
+        return this;
+    }
+    public TasksQueryBuilder setContactPerson(Contact contactPerson) {
+        query.contactPerson = contactPerson;
 
         return this;
     }

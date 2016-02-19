@@ -30,7 +30,7 @@ public class TaskPresenter {
     @EJB
     private DataProvider dp;
 
-    private static final String NO_FILTER = "-- все --";
+    private static final String NO_FILTER = "-- Все --";
 
     private String statusFilter;
     private String organisationFilter;
@@ -59,7 +59,6 @@ public class TaskPresenter {
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
-        tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
     private TasksQueryBuilder.TasksQuery parseFilters() {

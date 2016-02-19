@@ -6,13 +6,6 @@ import java.util.Date;
 
 @Entity
 @Table(name="descriptions")
-@NamedQueries({
-        @NamedQuery(name = "select from Comment with task",
-                    query = "select c from Comment c where c.task = :task"),
-
-        @NamedQuery(name = "select from Comment",
-                    query = "select c from Comment c")
-})
 public class Comment implements Serializable {
     private long id;
     private Task task;
