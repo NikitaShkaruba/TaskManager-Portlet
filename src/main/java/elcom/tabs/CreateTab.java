@@ -9,6 +9,13 @@ public class CreateTab extends Tab {
 
         tasks.add(new Task());
     }
+    public CreateTab(Task parent) {
+        this.tasks = new ArrayList();
+
+        Task child= new Task();
+        child.setParentTask(parent);
+        tasks.add(child);
+    }
 
     @Override
     public String getTitle() {
