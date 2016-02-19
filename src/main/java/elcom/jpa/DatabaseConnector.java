@@ -74,11 +74,11 @@ public class DatabaseConnector {
         em.close();
     }
 
-    public List getNamedQueryResult(String query) {
+    public List getQueryResult(String query) {
         em = emf.createEntityManager();
         em.getTransaction().begin();
 
-        List result = em.createNamedQuery(query).getResultList();
+        List result = em.createQuery(query).getResultList();
 
         em.getTransaction().commit();
         em.close();

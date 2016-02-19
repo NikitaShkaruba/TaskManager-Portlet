@@ -6,14 +6,6 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="statuses")
-@NamedQueries({
-        @NamedQuery(name = "select from Status",
-                    query = "select s from Status s"),
-
-        @NamedQuery(name = "select from Status with name",
-                    query = "select s from Status s where s.name = :name")
-
-})
 public class Status implements Serializable {
     private long id;
     private String name;
