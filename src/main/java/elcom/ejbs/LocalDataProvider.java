@@ -6,7 +6,6 @@ import elcom.jpa.TasksQueryBuilder;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import java.util.*;
-import java.util.function.Predicate;
 
 // Handles database data retrieving
 @Singleton

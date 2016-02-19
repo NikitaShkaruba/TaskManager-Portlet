@@ -15,8 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 
@@ -266,12 +266,10 @@ public class TaskPresenter {
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
         //we can't ask for null values in query, so we have to filter through null executors here
-       tasks.removeIf(new Predicate<Task>() {
-           @Override
-           public boolean test(Task task) {
-               return task.getExecutor() != null;
-           }
-       });
+        Iterator<Task> i = tasks.iterator();
+        while (i.hasNext())
+            if (i.next().getExecutor() != null)
+                i.remove();
 
         addListTab(tasks);
     }

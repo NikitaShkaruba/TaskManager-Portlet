@@ -5,7 +5,6 @@ import elcom.entities.Task;
 import javax.persistence.*;
 import javax.persistence.Query;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class DatabaseConnector {
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
@@ -37,12 +36,11 @@ public class DatabaseConnector {
 
         Set<Map.Entry<String, Object>> result = filters.entrySet();
 
-        result.removeIf(new Predicate<Map.Entry<String, Object>>() {
-            @Override
-            public boolean test(Map.Entry<String, Object> stringObjectEntry) {
-                return stringObjectEntry.getValue() == null;
-            }
-        });
+        Iterator<Map.Entry<String, Object>> entryPointer = result.iterator();
+        while (entryPointer.hasNext()) {
+            if (entryPointer.next().getValue() == null)
+                entryPointer.remove();
+        }
 
         return result;
     }

@@ -18,8 +18,6 @@ public class LocalDataProviderTest {
         dp = new LocalDataProvider();
     }
 
-    //Untested — getTaskComments(), instantiateTaskByTemplate
-
     @Test
     public void tryPersistTest() {
         Task t = dp.getAllTasks().get(0);
@@ -28,10 +26,10 @@ public class LocalDataProviderTest {
     }
     @Test
     public void getUncachedEntityTest() {
-        Employee e = dp.getEmployeeEntityByName("Evgenij Tsopa");
+        Employee e = dp.getEmployeeEntityByName("bfa");
 
         assertTrue("Could not get uncached entity by name", e != null);
-        assertTrue("Got wrong entity (uncached test)", e.getNickName().equals("jek"));
+        assertTrue("Got wrong entity (uncached test)", e.getNickName().equals("bfa"));
     }
     @Test
     public void getCachedEntityTest() {
