@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.ejb.EJB;
@@ -99,13 +100,9 @@ public class TaskPresenter {
     }
 
     // Main Logic
-    public List<Task> getTasks() {
-        return tabs.get(0).getTasks();
-    }
     public List<Tab> getTabs() {
         return tabs;
     }
-
     public String chooseRowColor(Task task) {
         if (task == null || task.getStatus() == null)
             return "null";
@@ -206,12 +203,14 @@ public class TaskPresenter {
     public void onTabClose(TabCloseEvent event) {
         if (tabs.size() == 1) {
             tabs.remove(0);
+
             activeTabIndex = -1;
         } else {
             TabView tabView = (TabView) event.getComponent();
             activeTabIndex = tabView.getIndex();
-
             tabs.remove(activeTabIndex);
+
+            activeTabIndex--;
         }
     }
     public void onTabChange(TabChangeEvent event) {
@@ -223,6 +222,10 @@ public class TaskPresenter {
     }
     public void addCreateTab() {
         tabs.add(new CreateTab());
+    }
+    public void addCreateTab(Task task) {
+        // For creation inherited tasks
+        tabs.add(new CreateTab(task));
     }
     public void addCorrectTab(Task content) {
         tabs.add(new CorrectTab(content));
@@ -240,8 +243,59 @@ public class TaskPresenter {
         if (tabs.get(activeTabIndex) instanceof Commentable)
             ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(comment);
     }
+
+    // CRUD buttons
     public void handleFileAttachment(FileUploadEvent event) {
         // TODO: 18.02.16 add logic
+    }
+    public void createNewTask(Task task) {
+        // TODO: 19.02.16 add logic
+        try {
+            dp.persist(task);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void updateTask(Task task) {
+        try {
+            dp.persist(task);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void giveTaskToCurrentUser(Task task){
+        task.setExecutor(user);
+        task.setStatus(dp.getStatusEntityByName("выполняется"));
+
+        try {
+            dp.persist(task);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void closeTask(Task task) {
+        task.setStatus(dp.getStatusEntityByName("закрыта"));
+        updateTask(task);
+    }
+    public void createChildTask(Task task) {
+        addCreateTab(task);
+    }
+    public void createTaskFromTemplate(Task task) {
+        // TODO: 19.02.16 add logic
+        throw new NotImplementedException();
+    }
+    public void addComment(Task task, String content) {
+        Comment comment = new Comment();
+        comment.setAuthor(user);
+        comment.setContent(content);
+        comment.setTask(task);
+        comment.setWriteDate(new Date());
+
+        try {
+            dp.persist(comment);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     // Proxy logic

@@ -14,7 +14,6 @@ public class ListTab extends Tab implements TaskSelector {
     public String getTitle() {
         return "Список задач";
     }
-
     @Override
     public Task getSelectedTask() {
         return selectedTask;
