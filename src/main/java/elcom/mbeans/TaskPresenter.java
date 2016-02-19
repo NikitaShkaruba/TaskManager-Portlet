@@ -266,12 +266,12 @@ public class TaskPresenter {
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
         //we can't ask for null values in query, so we have to filter through null executors here
-       tasks.removeIf(new Predicate<Task>() {
-           @Override
-           public boolean test(Task task) {
-               return task.getExecutor() != null;
-           }
-       });
+        tasks.removeIf(new Predicate<Task>() {
+            @Override
+            public boolean test(Task task) {
+                return task.getExecutor() != null;
+            }
+        });
 
         addListTab(tasks);
     }
