@@ -3,8 +3,8 @@ package elcom.jpa;
 import elcom.entities.Task;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.Query;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class DatabaseConnector {
@@ -14,170 +14,54 @@ public class DatabaseConnector {
 
     public DatabaseConnector(){}
 
-    private List<Task> filterTasks(List<Task> tasks, TasksQueryBuilder.TasksQuery query) {
-        if (query.getId() != 0)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    return task.getId() != query.getId();
-                }
-            });
+    private Set<Map.Entry<String, Object>> parseTaskQueryFilters(TasksQueryBuilder.TasksQuery query) {
+        Map<String, Object> filters = new HashMap<>();
 
-        if (query.getDescription() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean descriptionExists = task.getDescription() != null;
-                    boolean blockedByDescriptionFilter = !descriptionExists || !task.getDescription().equals(query.getDescription());
+        //filters.put("id", query.getId()); Id filtering is turned off
+        filters.put("description", query.getDescription());
+        filters.put("organisation", query.getOrganisation());
+        filters.put("contactPerson", query.getContactPerson());
+        filters.put("creationDate", query.getCreationDate());
+        filters.put("startDate", query.getStartDate());
+        filters.put("modificationDate", query.getModificationDate());
+        filters.put("finishDate", query.getFinishDate());
+        filters.put("executorGroup", query.getExecutorGroup());
+        filters.put("creator", query.getCreator());
+        filters.put("executor", query.getExecutor());
+        filters.put("priority", query.getPriority());
+        filters.put("status", query.getStatus());
+        filters.put("parentTask", query.getParentTask());
+        filters.put("type", query.getType());
+        filters.put("visible", query.getVisible());
+        filters.put("privateTask", query.getPrivateTask());
 
-                    return blockedByDescriptionFilter;
-                }
-            });
+        Set<Map.Entry<String, Object>> result = filters.entrySet();
 
-        if (query.getCreator() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean creatorExists = task.getCreator() != null;
-                    boolean blockedByCreatorFilter = !creatorExists || !task.getCreator().equals(query.getCreator());
+        result.removeIf(new Predicate<Map.Entry<String, Object>>() {
+            @Override
+            public boolean test(Map.Entry<String, Object> stringObjectEntry) {
+                return stringObjectEntry.getValue() == null;
+            }
+        });
 
-                    return blockedByCreatorFilter;
-                }
-            });
+        return result;
+    }
+    private String composeQueryString(Set<Map.Entry<String, Object>> filters) {
+        StringBuilder qs = new StringBuilder("select t from Task t");
 
-        if (query.getExecutor() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean executorExists = task.getExecutor() != null;
-                    boolean blockedByExecutorFilter = !executorExists || !task.getExecutor().equals(query.getExecutor());
+        if (filters.isEmpty())
+            return qs.toString();
 
-                    return blockedByExecutorFilter;
-                }
-            });
+        List<Map.Entry<String, Object>> filterList = new ArrayList();
+        for (Map.Entry<String, Object> e : filters)
+            filterList.add(e);
 
-        if (query.getExecutorGroup() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean groupExists = task.getExecutorGroup() != null;
-                    boolean blockedByGroupFilter = !groupExists || !task.getExecutorGroup().equals(query.getExecutorGroup());
+        qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey());
 
-                    return blockedByGroupFilter;
-                }
-            });
+        for (byte i = 1; i < filterList.size(); i += 1)
+            qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey());
 
-        if (query.getCreationDate() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean creationDateExists = task.getCreationDate() != null;
-                    boolean blockedByCredateFilter = !creationDateExists || !task.getCreationDate().equals(query.getCreationDate());
-
-                    return blockedByCredateFilter;
-                }
-            });
-
-        if (query.getFinishDate() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean finishDateExists = task.getFinishDate() != null;
-                    boolean blockedByFindateFilter = !finishDateExists || !task.getFinishDate().equals(query.getFinishDate());
-
-                    return blockedByFindateFilter;
-                }
-            });
-
-        if (query.getModificationDate() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean modifDateExists = task.getModificationDate() != null;
-                    boolean blockedByModdateFilter = !modifDateExists || !task.getModificationDate().equals(query.getModificationDate());
-
-                    return blockedByModdateFilter;
-                }
-            });
-
-        if (query.getOrganisation() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean organisationsExists = task.getOrganisation() != null;
-                    boolean blockedByOrganisationFilter = !organisationsExists || !task.getOrganisation().equals(query.getOrganisation());
-
-                    return blockedByOrganisationFilter;
-                }
-            });
-
-        if (query.getParentTask() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean parentExists = task.getParentTask() != null;
-                    boolean blockedByParentFilter = !parentExists || !task.getParentTask().equals(query.getParentTask());
-
-                    return blockedByParentFilter;
-                }
-            });
-
-        if (query.getPriority() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean priorityExists = task.getPriority() != null;
-                    boolean blockedByPriorityFilter = !priorityExists || !task.getPriority().equals(query.getPriority());
-
-                    return blockedByPriorityFilter;
-                }
-            });
-
-        if (query.getStartDate() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean startDateExists = task.getStartDate() != null;
-                    boolean blockedByStartdateFilter = !startDateExists || !task.getStartDate().equals(query.getStartDate());
-
-                    return blockedByStartdateFilter;
-                }
-            });
-
-        if (query.getStatus() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean statusExists = task.getStatus() != null;
-                    boolean blockedByStatusFilter = !statusExists || !task.getStatus().equals(query.getStatus());
-
-                    return blockedByStatusFilter;
-                }
-            });
-
-        if (query.getType() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean typeExists = task.getType() != null;
-                    boolean blockedByTypeFilter = !typeExists || !task.getType().equals(query.getType());
-
-                    return blockedByTypeFilter;
-                }
-            });
-
-        if (query.getVisible() != null)
-            tasks.removeIf(new Predicate<Task>() {
-                @Override
-                public boolean test(Task task) {
-                    boolean visibleExists = task.getVisible() != null;
-                    boolean blockedByVisibleFilter = !visibleExists || !task.getVisible().equals(query.getVisible());
-
-                    return blockedByVisibleFilter;
-                }
-            });
-
-        return tasks;
+        return qs.toString();
     }
 
     public void persist(Object o) {
@@ -211,12 +95,24 @@ public class DatabaseConnector {
         em.close();
         return result;
     }
+
     public List<Task> getTasksQueryResult(TasksQueryBuilder.TasksQuery query) {
-        List<Task> tasks = getNamedQueryResult("select from Task");
+        Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
+        String queryString = composeQueryString(filters);
 
-        tasks = filterTasks(tasks, query);
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
 
-        return tasks;
+        Query q = em.createQuery(queryString);
 
+        for (Map.Entry<String, Object> e : filters)
+            q.setParameter(e.getKey(), e.getValue());
+
+        List<Task> result = q.getResultList();
+
+        em.getTransaction().commit();
+        em.close();
+
+        return result;
     }
 }

@@ -59,7 +59,6 @@ public class TaskPresenter {
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
-        tabs.add(new CorrectTab(allTasks.get(0)));
     }
 
     private TasksQueryBuilder.TasksQuery parseFilters() {
