@@ -86,7 +86,7 @@ public class LocalDataProvider implements DataProvider {
         if (name == null)
             throw new IllegalArgumentException();
 
-        List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = " + name);
+        List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = '" + name + "'");
 
         return contacts.get(0);
     }
@@ -103,7 +103,6 @@ public class LocalDataProvider implements DataProvider {
                 return e;
 
         return null;
-
     }
     public Group getGroupEntityByName(String name) {
         if (name == null)

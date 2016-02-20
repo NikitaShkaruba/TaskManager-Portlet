@@ -78,7 +78,7 @@ public class Contact implements Serializable {
         if (this.id != other.id) return false;
         if (!(this.content.equals(other.content))) return false;
         if (!(this.organisation.equals(other.organisation))) return false;
-        if (!(this.person.equals(other.organisation))) return false;
+        if (!(this.person.equals(other.person))) return false;
 
         return true;
     }

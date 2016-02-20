@@ -10,7 +10,6 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -31,24 +30,22 @@ public class TaskPresenter {
     @EJB
     private DataProvider dp;
 
-    private static final String NO_FILTER = "-- Все --";
-
-    private String statusFilter;
-    private String organisationFilter;
-    private String vendorFilter;
-    private String groupFilter;
-    private String executorFilter;
-    private String creatorFilter;
+    private Status statusFilter;
+    private Contact organisationFilter;
+    private Vendor vendorFilter;
+    private Group groupFilter;
+    private Employee executorFilter;
+    private Employee creatorFilter;
     private String descriptionFilter;
 
     public TaskPresenter() {
-        statusFilter = NO_FILTER;
-        organisationFilter = NO_FILTER;
-        vendorFilter = NO_FILTER;
-        groupFilter = NO_FILTER;
-        executorFilter = NO_FILTER;
-        creatorFilter = NO_FILTER;
-        descriptionFilter = NO_FILTER;
+        statusFilter = null;
+        organisationFilter = null;
+        vendorFilter = null;
+        groupFilter = null;
+        executorFilter = null;
+        creatorFilter = null;
+        descriptionFilter = null;
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
@@ -65,36 +62,18 @@ public class TaskPresenter {
     private TasksQueryBuilder.TasksQuery parseFilters() {
         TasksQueryBuilder qb = new TasksQueryBuilder();
 
-        if (!statusFilter.equals(NO_FILTER) ) {
-            Status s = dp.getStatusEntityByName(statusFilter);
-            if (s != null)
-                qb.setStatus(s);
-        }
-        if (!organisationFilter.equals(NO_FILTER)) {
-            Contact o = dp.getContactEntityByName(organisationFilter);
-            if (o != null)
-                qb.setOrganisation(o);
-        }
-        if (!vendorFilter.equals(NO_FILTER)) {
-            Vendor v = dp.getVendorEntityByName(organisationFilter);
-            if (v != null);
-                //TODO: implement Vendor filter to Task???
-        }
-        if (!groupFilter.equals(NO_FILTER)) {
-            Group g = dp.getGroupEntityByName(groupFilter);
-            if (g != null)
-                qb.setExecutorGroup(g);
-        }
-        if (!executorFilter.equals(NO_FILTER)) {
-            Employee e = dp.getEmployeeEntityByName(executorFilter);
-            if (e != null)
-                qb.setExecutor(e);
-        }
-        if (!creatorFilter.equals(NO_FILTER)) {
-            Employee c = dp.getEmployeeEntityByName(creatorFilter);
-            if (c != null)
-                qb.setCreator(c);
-        }
+            if (statusFilter != null)
+                qb.setStatus(statusFilter);
+            if (organisationFilter != null)
+                qb.setOrganisation(organisationFilter);
+            //TODO: implement Vendor filter to Task???
+            if (vendorFilter != null);
+            if (groupFilter != null)
+                qb.setExecutorGroup(groupFilter);
+            if (executorFilter != null)
+                qb.setExecutor(executorFilter);
+            if (creatorFilter != null)
+                qb.setCreator(creatorFilter);
 
         return qb.getQuery();
     }
@@ -128,22 +107,22 @@ public class TaskPresenter {
     public List<Comment> getTaskComments(Task task) {
         return dp.getTaskComments(task);
     }
-    public String getStatusFilter() {
+    public Status getStatusFilter() {
         return statusFilter;
     }
-    public String getOrganisationFilter() {
+    public Contact getOrganisationFilter() {
         return organisationFilter;
     }
-    public String getVendorFilter() {
+    public Vendor getVendorFilter() {
         return vendorFilter;
     }
-    public String getGroupFilter() {
+    public Group getGroupFilter() {
         return groupFilter;
     }
-    public String getExecutorFilter() {
+    public Employee getExecutorFilter() {
         return executorFilter;
     }
-    public String getCreatorFilter() {
+    public Employee getCreatorFilter() {
         return creatorFilter;
     }
     public String getDescriptionFilter() {
@@ -151,22 +130,22 @@ public class TaskPresenter {
     }
 
     // Setters
-    public void setStatusFilter(String filter) {
+    public void setStatusFilter(Status filter) {
         this.statusFilter = filter;
     }
-    public void setOrganisationFilter(String organisationFilter) {
+    public void setOrganisationFilter(Contact organisationFilter) {
         this.organisationFilter = organisationFilter;
     }
-    public void setVendorFilter(String vendorFilter) {
+    public void setVendorFilter(Vendor vendorFilter) {
         this.vendorFilter = vendorFilter;
     }
-    public void setGroupFilter(String groupFilter) {
+    public void setGroupFilter(Group groupFilter) {
         this.groupFilter = groupFilter;
     }
-    public void setExecutorFilter(String executorFilter) {
+    public void setExecutorFilter(Employee executorFilter) {
         this.executorFilter = executorFilter;
     }
-    public void setCreatorFilter(String creatorFilter) {
+    public void setCreatorFilter(Employee creatorFilter) {
         this.creatorFilter = creatorFilter;
     }
     public void setDescriptionFilter(String descriptionFilter) {

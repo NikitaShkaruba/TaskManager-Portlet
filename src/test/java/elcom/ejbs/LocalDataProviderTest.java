@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LocalDataProviderTest {
-    LocalDataProvider dp;
+    private LocalDataProvider dp;
     @Before
     public void SetupDataProvider() {
         dp = new LocalDataProvider();
