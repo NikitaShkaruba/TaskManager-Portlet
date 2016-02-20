@@ -4,7 +4,6 @@ import elcom.entities.*;
 import elcom.jpa.TasksQueryBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 // Handles database data retrieving
 public interface DataProvider {

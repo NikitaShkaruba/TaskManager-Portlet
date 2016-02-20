@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name="producers")
+@org.hibernate.annotations.Where(clause = "vendor is not null")
 public class Vendor implements Serializable {
     private long id;
     private String name;

@@ -7,9 +7,7 @@ import elcom.jpa.TasksQueryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class LocalDataProviderTest {
     LocalDataProvider dp;
@@ -23,13 +21,6 @@ public class LocalDataProviderTest {
         Task t = dp.getAllTasks().get(0);
 
         dp.persist(t);
-    }
-    @Test
-    public void getUncachedEntityTest() {
-        Employee e = dp.getEmployeeEntityByName("bfa");
-
-        assertTrue("Could not get uncached entity by name", e != null);
-        assertTrue("Got wrong entity (uncached test)", e.getNickName().equals("bfa"));
     }
     @Test
     public void getCachedEntityTest() {

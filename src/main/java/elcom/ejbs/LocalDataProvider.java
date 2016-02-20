@@ -22,7 +22,7 @@ public class LocalDataProvider implements DataProvider {
     private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
-        employeesCache = dbc.getQueryResult("select e from Employee e where e.active = true");
+        employeesCache = dbc.getQueryResult("select e from Employee e");
         groupsCache = dbc.getQueryResult("select g from Group g");
         prioritiesCache = dbc.getQueryResult("select p from Priority p");
         statusesCache = dbc.getQueryResult("select s from Status s");
@@ -95,10 +95,6 @@ public class LocalDataProvider implements DataProvider {
 
         for (Employee e : employeesCache)
             if (name.equals(e.getName()))
-                return e;
-        //If no employees with given name were found, maybe 'name' is actually a nickname
-        for (Employee e : employeesCache)
-            if (name.equals(e.getNickName()))
                 return e;
 
         return null;

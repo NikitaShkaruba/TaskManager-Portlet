@@ -1,5 +1,7 @@
 package elcom.entities;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,10 +11,10 @@ import java.util.Date;
 public class Comment implements Serializable {
     private long id;
     private Task task;
-    private Employee author;
     private String content;
     private Date writeDate;
     private Boolean publicComment;
+    private wfuser wfAuthor;
 
     @Id
     @GeneratedValue
@@ -24,10 +26,9 @@ public class Comment implements Serializable {
     public Task getTask() {
         return task;
     }
-    @OneToOne
-    @JoinColumn(name="user_id")
+    @Transient
     public Employee getAuthor() {
-        return author;
+        return wfAuthor != null ? wfAuthor.employee : null;
     }
     @Basic
     @Column(name="name")
@@ -44,6 +45,11 @@ public class Comment implements Serializable {
     public Boolean getPublicComment() {
         return publicComment;
     }
+    @OneToOne
+    @JoinColumn(name="user_id")
+    public wfuser getWfAuthor() {
+        return wfAuthor;
+    }
 
     public void setId(long id) {
         this.id = id;
@@ -52,7 +58,7 @@ public class Comment implements Serializable {
         this.task = task;
     }
     public void setAuthor(Employee author) {
-        this.author = author;
+        this.wfAuthor.employee = author;
     }
     public void setContent(String content) {
         this.content = content;
@@ -63,12 +69,15 @@ public class Comment implements Serializable {
     public void setPublicComment(Boolean publicComment) {
         this.publicComment = publicComment;
     }
+    public void setWfAuthor(wfuser wfAuthor) {
+        this.wfAuthor = wfAuthor;
+    }
 
     @Override
     public int hashCode() {
         int hash = (int)id * 83 + (publicComment ? 1 : 0);
         hash += 31 * task.hashCode() + 18;
-        hash += 31 * author.hashCode() + 18;
+        hash += 31 * wfAuthor.hashCode() + 18;
         hash += 31 * content.hashCode() + 18;
 
         return hash;
@@ -83,7 +92,7 @@ public class Comment implements Serializable {
 
         if (this.id != other.id) return false;
         if (!(this.task.equals(other.task))) return false;
-        if (!(this.author.equals(other.author))) return false;
+        if (!(this.wfAuthor.equals(other.wfAuthor))) return false;
         if (!(this.content.equals(other.content))) return false;
         if (!(this.publicComment.equals(other.publicComment))) return false;
 

@@ -55,7 +55,7 @@ public class TaskPresenter {
         List<Task> allTasks = dp.getAllTasks();
 
         // TODO: 13.02.16 Add liferay-bounded logic
-        user = dp.getEmployeeEntityByName("bfa");
+        user = dp.getEmployeeEntityByName("Evgenij Tsopa");
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));

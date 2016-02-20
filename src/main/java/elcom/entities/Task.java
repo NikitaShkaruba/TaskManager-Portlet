@@ -1,11 +1,14 @@
 package elcom.entities;
 
+import org.hibernate.annotations.Formula;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name="task")
+@org.hibernate.annotations.Where(clause = "status_id is not null")
 public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
@@ -16,14 +19,14 @@ public class Task implements Serializable, Cloneable {
     private Date modificationDate;
     private Date finishDate;
     private Group executorGroup;
-    private Employee creator;
-    private Employee executor;
     private Priority priority;
     private Status status;
     private Task parentTask;
     private TaskType type;
     private Boolean visible;
     private Boolean privateTask;
+    private wfuser wfCreator;
+    private wfuser wfExecutor;
 
     public Task() {}
 
@@ -52,15 +55,13 @@ public class Task implements Serializable, Cloneable {
     public Group getExecutorGroup() {
         return executorGroup;
     }
-    @OneToOne
-    @JoinColumn(name="owner_id")
+    @Transient
     public Employee getCreator() {
-        return creator;
+        return wfCreator != null ? wfCreator.employee : null;
     }
-    @OneToOne
-    @JoinColumn(name="performer_id")
+    @Transient
     public Employee getExecutor() {
-        return executor;
+        return wfExecutor != null ? wfExecutor.employee : null;
     }
     @OneToOne
     @JoinColumn(name="priority_id")
@@ -72,7 +73,6 @@ public class Task implements Serializable, Cloneable {
     public Date getCreationDate() {
         return creationDate;
     }
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "beg_date")
     public Date getStartDate() {
@@ -113,6 +113,17 @@ public class Task implements Serializable, Cloneable {
     public Boolean getPrivateTask() {
         return privateTask;
     }
+    @OneToOne
+    @JoinColumn(name="owner_id")
+    public wfuser getWfCreator() {
+        return wfCreator;
+    }
+    @OneToOne
+    @JoinColumn(name="performer_id")
+    public wfuser getWfExecutor() {
+        return wfExecutor;
+    }
+
     //TODO: remove isCritical plug from Task entity
     @Transient
     public boolean isCritical() {
@@ -135,10 +146,10 @@ public class Task implements Serializable, Cloneable {
         this.executorGroup = executorGroup;
     }
     public void setCreator(Employee creator) {
-        this.creator = creator;
+        this.wfCreator.employee = creator;
     }
     public void setExecutor(Employee executor) {
-        this.executor = executor;
+        this.wfExecutor.employee = executor;
     }
     public void setPriority(Priority priority) {
         this.priority = priority;
@@ -170,27 +181,64 @@ public class Task implements Serializable, Cloneable {
     public void setContactPerson(Contact person) {
         this.contactPerson = person;
     }
+    public void setWfCreator(wfuser wfCreator) {
+        this.wfCreator = wfCreator;
+    }
+    public void setWfExecutor(wfuser wfExecutor) {
+        this.wfExecutor = wfExecutor;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+
+        Task task = (Task) o;
+
+        if (id != task.id) return false;
+        if (!description.equals(task.description)) return false;
+        if (organisation != null ? !organisation.equals(task.organisation) : task.organisation != null) return false;
+        if (contactPerson != null ? !contactPerson.equals(task.contactPerson) : task.contactPerson != null)
+            return false;
+        if (creationDate != null ? !creationDate.equals(task.creationDate) : task.creationDate != null) return false;
+        if (!startDate.equals(task.startDate)) return false;
+        if (modificationDate != null ? !modificationDate.equals(task.modificationDate) : task.modificationDate != null)
+            return false;
+        if (!finishDate.equals(task.finishDate)) return false;
+        if (executorGroup != null ? !executorGroup.equals(task.executorGroup) : task.executorGroup != null)
+            return false;
+        if (priority != null ? !priority.equals(task.priority) : task.priority != null) return false;
+        if (!status.equals(task.status)) return false;
+        if (parentTask != null ? !parentTask.equals(task.parentTask) : task.parentTask != null) return false;
+        if (type != null ? !type.equals(task.type) : task.type != null) return false;
+        if (visible != null ? !visible.equals(task.visible) : task.visible != null) return false;
+        if (privateTask != null ? !privateTask.equals(task.privateTask) : task.privateTask != null) return false;
+        if (wfCreator != null ? !wfCreator.equals(task.wfCreator) : task.wfCreator != null) return false;
+        return wfExecutor != null ? wfExecutor.equals(task.wfExecutor) : task.wfExecutor == null;
+
+    }
     @Override
     public int hashCode() {
-        int hash = (int)id * 51 / 17 + 322;
-        hash += description != null ? description.hashCode() : id;
-        hash += executor != null ? executor.hashCode() : id;
-        hash += status != null ? status.hashCode() : id;
-        hash += priority != null ? priority.hashCode() : id;
-        hash += startDate != null ? startDate.hashCode() : id;
-        hash += finishDate != null ? finishDate.hashCode() : id;
-
-        return hash;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + description.hashCode();
+        result = 31 * result + (organisation != null ? organisation.hashCode() : 0);
+        result = 31 * result + (contactPerson != null ? contactPerson.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + startDate.hashCode();
+        result = 31 * result + (modificationDate != null ? modificationDate.hashCode() : 0);
+        result = 31 * result + finishDate.hashCode();
+        result = 31 * result + (executorGroup != null ? executorGroup.hashCode() : 0);
+        result = 31 * result + (priority != null ? priority.hashCode() : 0);
+        result = 31 * result + status.hashCode();
+        result = 31 * result + (parentTask != null ? parentTask.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (visible != null ? visible.hashCode() : 0);
+        result = 31 * result + (privateTask != null ? privateTask.hashCode() : 0);
+        result = 31 * result + (wfCreator != null ? wfCreator.hashCode() : 0);
+        result = 31 * result + (wfExecutor != null ? wfExecutor.hashCode() : 0);
+        return result;
     }
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Task))
-            return false;
 
-        Task other = (Task) object;
-        return (this.id == other.id);
-    }
     @Override
     public String toString() {
         return getClass().getCanonicalName()
