@@ -13,8 +13,10 @@ import java.util.*;
 public class LocalDataProvider implements DataProvider {
     private final DatabaseConnector dbc = new DatabaseConnector();
 
+    private final List<ContactPerson> contactPersonsCache;
     private final List<Employee> employeesCache;
     private final List<Group> groupsCache;
+    private final List<Organisation> organisationsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
     private final List<TaskTemplate> tasktemplatesCache;
@@ -22,8 +24,10 @@ public class LocalDataProvider implements DataProvider {
     private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
+        contactPersonsCache = dbc.getQueryResult("select c from ContactPerson c where c.person = true");
         employeesCache = dbc.getQueryResult("select e from Employee e");
         groupsCache = dbc.getQueryResult("select g from Group g");
+        organisationsCache = dbc.getQueryResult("select o from Organisation o where o.organisation = true");
         prioritiesCache = dbc.getQueryResult("select p from Priority p");
         statusesCache = dbc.getQueryResult("select s from Status s");
         tasktemplatesCache = dbc.getQueryResult("select t from TaskTemplate t");
@@ -81,14 +85,28 @@ public class LocalDataProvider implements DataProvider {
 
         return comments.get(0);
     }
-    public Contact getContactEntityByName(String name) {
+
+    public ContactPerson getContactPersonEntityByName(String name) {
         if (name == null)
-            throw new IllegalArgumentException();
+            return null;
 
-        List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = " + name);
+        for (ContactPerson cp : contactPersonsCache)
+            if (name.equals(cp.getName()))
+                return cp;
 
-        return contacts.get(0);
+        return null;
     }
+    public Organisation getOrganisationEntityByName(String name) {
+        if (name == null)
+            return null;
+
+        for (Organisation o : organisationsCache)
+            if (name.equals(o.getName()))
+                return o;
+
+        return null;
+    }
+
     public Employee getEmployeeEntityByName(String name) {
         if (name == null)
             throw new IllegalArgumentException();
@@ -175,11 +193,11 @@ public class LocalDataProvider implements DataProvider {
 
         return comments;
     }
-    public List<Contact> getAllContactPersons() {
-        return dbc.getQueryResult("select c from Contact c where c.person = true");
+    public List<ContactPerson> getAllContactPersons() {
+        return contactPersonsCache;
     }
-    public List<Contact> getAllOrganisations() {
-        return dbc.getQueryResult("select c from Contact c where c.organisation = true");
+    public List<Organisation> getAllOrganisations() {
+        return organisationsCache;
     }
     public List<Employee> getAllEmployees() {
         return employeesCache;
@@ -197,8 +215,6 @@ public class LocalDataProvider implements DataProvider {
         return getTasks(new TasksQueryBuilder().getQuery());
     }
     public List<Task> getTasks(TasksQueryBuilder.TasksQuery query) {
-        List<Task> tasks = dbc.getTasksQueryResult(query);
-
         return dbc.getTasksQueryResult(query);
     }
     public List<TaskTemplate> getAllTasktemplates() {

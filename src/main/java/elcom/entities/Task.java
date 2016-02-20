@@ -1,7 +1,5 @@
 package elcom.entities;
 
-import org.hibernate.annotations.Formula;
-
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
@@ -12,8 +10,8 @@ import java.util.Date;
 public class Task implements Serializable, Cloneable {
     private long id;
     private String description;
-    private Contact organisation;
-    private Contact contactPerson;
+    private Organisation organisation;
+    private ContactPerson contactPerson;
     private Date creationDate;
     private Date startDate;
     private Date modificationDate;
@@ -42,7 +40,7 @@ public class Task implements Serializable, Cloneable {
     }
     @OneToOne
     @JoinColumn(name="org_id")
-    public Contact getOrganisation() {
+    public Organisation getOrganisation() {
         return organisation;
     }
     @OneToOne
@@ -105,7 +103,7 @@ public class Task implements Serializable, Cloneable {
     }
     @OneToOne
     @JoinColumn(name="person_id")
-    public Contact getContactPerson() {
+    public ContactPerson getContactPerson() {
         return contactPerson;
     }
     @Basic
@@ -160,7 +158,7 @@ public class Task implements Serializable, Cloneable {
     public void setFinishDate(Date date) {
         this.finishDate = date;
     }
-    public void setOrganisation(Contact organisation) {
+    public void setOrganisation(Organisation organisation) {
         this.organisation = organisation;
     }
     public void setModificationDate(Date modificationDate) {
@@ -178,7 +176,7 @@ public class Task implements Serializable, Cloneable {
     public void setVisible(Boolean visible) {
         this.visible = visible;
     }
-    public void setContactPerson(Contact person) {
+    public void setContactPerson(ContactPerson person) {
         this.contactPerson = person;
     }
     public void setWfCreator(wfuser wfCreator) {

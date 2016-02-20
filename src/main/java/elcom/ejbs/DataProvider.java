@@ -12,9 +12,10 @@ public interface DataProvider {
     void persist(Object o);
 
     Comment getCommentEntityByContent(String content);
-    Contact getContactEntityByName(String name);
+    ContactPerson getContactPersonEntityByName(String name);
     Employee getEmployeeEntityByName(String name);
     Group getGroupEntityByName(String name);
+    Organisation getOrganisationEntityByName(String name);
     Priority getPriorityEntityByName(String name);
     Status getStatusEntityByName(String name);
     Task getTaskEntityById(long id);
@@ -24,10 +25,10 @@ public interface DataProvider {
 
     List<Comment> getAllComments();
     List<Comment> getTaskComments(Task task);
-    List<Contact> getAllOrganisations();
-    List<Contact> getAllContactPersons();
+    List<ContactPerson> getAllContactPersons();
     List<Employee> getAllEmployees();
     List<Group> getAllGroups();
+    List<Organisation> getAllOrganisations();
     List<Priority> getAllPriorities();
     List<Status> getAllStatuses();
     List<Task> getTasks(TasksQueryBuilder.TasksQuery query);

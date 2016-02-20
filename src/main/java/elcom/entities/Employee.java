@@ -10,6 +10,7 @@ import java.util.List;
 public class Employee implements Serializable {
     private long id;
     private String name;
+    private List<Contact> contacts;
 
     @Id
     @GeneratedValue
@@ -21,12 +22,20 @@ public class Employee implements Serializable {
     public String getName() {
         return name;
     }
+    @OneToMany
+    @JoinTable
+    public List<Contact> getContacts() {
+        return contacts;
+    }
 
     public void setId(long id) {
         this.id = id;
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
     }
 
     @Override

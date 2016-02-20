@@ -70,7 +70,7 @@ public class TaskPresenter {
                 qb.setStatus(s);
         }
         if (!organisationFilter.equals(NO_FILTER)) {
-            Contact o = dp.getContactEntityByName(organisationFilter);
+            Organisation o = dp.getOrganisationEntityByName(organisationFilter);
             if (o != null)
                 qb.setOrganisation(o);
         }
@@ -183,10 +183,10 @@ public class TaskPresenter {
     public List<Status> getStatusOptions() {
         return dp.getAllStatuses();
     }
-    public List<Contact> getOrganizationOptions() {
+    public List<Organisation> getOrganizationOptions() {
         return dp.getAllOrganisations();
     }
-    public List<Contact> getContactPersonOptions() {
+    public List<ContactPerson> getContactPersonOptions() {
         return dp.getAllContactPersons();
     }
     public List<Vendor> getVendorOptions() {
