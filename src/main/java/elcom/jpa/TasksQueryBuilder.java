@@ -96,7 +96,10 @@ public class TasksQueryBuilder {
         return this;
     }
     public TasksQueryBuilder setDescription(String description) {
-        query.description = description;
+        if (description != null)
+            query.description = '%'+ description.toLowerCase() + '%';
+        else
+            query.description = null;
 
         return this;
     }

@@ -47,7 +47,7 @@ public class TaskPresenter {
         groupFilter = NO_FILTER;
         executorFilter = NO_FILTER;
         creatorFilter = NO_FILTER;
-        descriptionFilter = NO_FILTER;
+        descriptionFilter = "";
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
@@ -94,6 +94,9 @@ public class TaskPresenter {
             if (c != null)
                 qb.setCreator(c);
         }
+
+        if (!descriptionFilter.equals(""))
+            qb.setDescription(descriptionFilter);
 
         return qb.getQuery();
     }

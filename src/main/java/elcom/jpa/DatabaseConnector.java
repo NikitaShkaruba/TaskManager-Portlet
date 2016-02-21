@@ -45,20 +45,29 @@ public class DatabaseConnector {
 
         return result;
     }
+    private StringBuilder changeDescFilterFromEqualsToContains(StringBuilder sb) {
+        int index = sb.indexOf("t.description = :description");
+        if (index > -1)
+            sb.replace(index, index+28, "lower(t.description) like :description");
+
+        return sb;
+    }
     private String composeQueryString(Set<Map.Entry<String, Object>> filters) {
         StringBuilder qs = new StringBuilder("select t from Task t");
-
+        //If there are no filters, just return plain 'select all';
         if (filters.isEmpty())
             return qs.toString();
-
+        // First, Convert Map to List
         List<Map.Entry<String, Object>> filterList = new ArrayList();
         for (Map.Entry<String, Object> e : filters)
             filterList.add(e);
-
+        //First filter is always applied with 'where' clause
         qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
-
+        //All subsequent filters append prev. filter with 'and' clause
         for (byte i = 1; i < filterList.size(); i += 1)
             qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
+
+        qs = changeDescFilterFromEqualsToContains(qs);
 
         return qs.toString();
     }
