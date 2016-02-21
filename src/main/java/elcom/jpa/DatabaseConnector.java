@@ -8,6 +8,7 @@ import java.util.*;
 
 public class DatabaseConnector {
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+    private static final char CLASS_FIELD_QUERY_DELIMITER = '_';
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private EntityManager em;
 
@@ -25,8 +26,8 @@ public class DatabaseConnector {
         filters.put("modificationDate", query.getModificationDate());
         filters.put("finishDate", query.getFinishDate());
         filters.put("executorGroup", query.getExecutorGroup());
-        filters.put("creator", query.getCreator());
-        filters.put("executor", query.getExecutor());
+        filters.put("wfCreator.employee", query.getCreator());
+        filters.put("wfExecutor.employee", query.getExecutor());
         filters.put("priority", query.getPriority());
         filters.put("status", query.getStatus());
         filters.put("parentTask", query.getParentTask());
@@ -54,10 +55,10 @@ public class DatabaseConnector {
         for (Map.Entry<String, Object> e : filters)
             filterList.add(e);
 
-        qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey());
+        qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
 
         for (byte i = 1; i < filterList.size(); i += 1)
-            qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey());
+            qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
 
         return qs.toString();
     }
@@ -104,7 +105,7 @@ public class DatabaseConnector {
         Query q = em.createQuery(queryString);
 
         for (Map.Entry<String, Object> e : filters)
-            q.setParameter(e.getKey(), e.getValue());
+            q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
 
         List<Task> result = q.getResultList();
 
