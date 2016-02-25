@@ -227,7 +227,33 @@ public class LocalDataProvider implements DataProvider {
         return vendorsCache;
     }
 
-    public long countTasks() {
-        return (Long)dbc.getQueryResult("count Tasks").get(0);
+    public int countAllTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().getQuery());
+    }
+    public int countUserTasks(Employee user) {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setExecutor(user).getQuery());
+    }
+    public int countWatchedTasks(Employee user) {
+        return -322;
+    }
+    public int countModifiedTasks(Employee user) {
+        return -265;
+    }
+    public int countFreeTasks() {
+        List<Task> tasks = dbc.getTasksQueryResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("открыта")).getQuery());
+
+        int counter = 0;
+
+        for (Task t : tasks)
+            if (t.getExecutor() == null)
+                counter += 1;
+
+        return counter;
+        }
+    public int countClosedTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("закрыта")).getQuery());
+    }
+    public int countContractTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setType(getTasktypeEntityByName("договор")).getQuery());
     }
 }

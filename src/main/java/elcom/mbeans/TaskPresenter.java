@@ -293,13 +293,7 @@ public class TaskPresenter {
 
     // Filter-pattern task counts
     public int getMyCount() {
-        int counter = 0;
-
-        for (Task t : dp.getAllTasks())
-            if (user.equals(t.getExecutor()))
-                counter += 1;
-
-        return counter;
+        return dp.countUserTasks(user);
     }
     public int getOpenCount() {
         int counter = 0;
@@ -325,10 +319,10 @@ public class TaskPresenter {
     }
     //TODO: implement patterns when user-logic gets added
     public int getTrackedCount() {
-        return 1337;
+        return 123456;
     }
     public int getChangedCount() {
-        return 42;
+        return 123456;
     }
     public int getContractsCount() {
         int counter = 0;

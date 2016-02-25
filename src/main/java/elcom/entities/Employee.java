@@ -22,8 +22,10 @@ public class Employee implements Serializable {
     public String getName() {
         return name;
     }
-    @OneToMany
-    @JoinTable
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "contact_links",
+                joinColumns = @JoinColumn(name="parent_contact_id"),
+                inverseJoinColumns = @JoinColumn(name="child_contact_id"))
     public List<Contact> getContacts() {
         return contacts;
     }

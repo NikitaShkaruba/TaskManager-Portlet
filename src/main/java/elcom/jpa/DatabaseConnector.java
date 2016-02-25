@@ -1,6 +1,9 @@
 package elcom.jpa;
 
+import elcom.entities.Employee;
+import elcom.entities.Status;
 import elcom.entities.Task;
+import elcom.entities.TaskType;
 
 import javax.persistence.*;
 import javax.persistence.Query;
@@ -8,7 +11,7 @@ import java.util.*;
 
 public class DatabaseConnector {
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
-    private static final char CLASS_FIELD_QUERY_DELIMITER = '_';
+    private static final char CLASS_FIELD_QUERY_DELIMITER = 'o';
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private EntityManager em;
 
@@ -52,8 +55,12 @@ public class DatabaseConnector {
 
         return sb;
     }
-    private String composeQueryString(Set<Map.Entry<String, Object>> filters) {
-        StringBuilder qs = new StringBuilder("select t from Task t");
+    private String composeQueryString(Set<Map.Entry<String, Object>> filters, Boolean countQuery) {
+        StringBuilder qs;
+        if (countQuery)
+            qs = new StringBuilder("select count(t) from Task t");
+        else
+            qs = new StringBuilder("select t from Task t");
         //If there are no filters, just return plain 'select all';
         if (filters.isEmpty())
             return qs.toString();
@@ -93,6 +100,25 @@ public class DatabaseConnector {
 
         return result;
     }
+    public int getTasksCountResult(TasksQueryBuilder.TasksQuery query) {
+        Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
+        String queryString = composeQueryString(filters, true);
+
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+
+        Query q = em.createQuery(queryString);
+
+        for (Map.Entry<String, Object> e : filters)
+            q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
+
+        long result = (Long)q.getSingleResult();
+
+        em.getTransaction().commit();
+        em.close();
+
+        return (int)result;
+    }
 
     public <T> T findById(Class<T> type, long id) {
         em = emf.createEntityManager();
@@ -106,7 +132,7 @@ public class DatabaseConnector {
 
     public List<Task> getTasksQueryResult(TasksQueryBuilder.TasksQuery query) {
         Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
-        String queryString = composeQueryString(filters);
+        String queryString = composeQueryString(filters, false);
 
         em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -116,7 +142,7 @@ public class DatabaseConnector {
         for (Map.Entry<String, Object> e : filters)
             q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
 
-        List<Task> result = q.getResultList();
+        List result = q.getResultList();
 
         em.getTransaction().commit();
         em.close();

@@ -37,5 +37,12 @@ public interface DataProvider {
     List<TaskType> getAllTasktypes();
     List<Vendor> getAllVendors();
 
-    public long countTasks();
+    public int countAllTasks();
+    public int countUserTasks(Employee user);
+    public int countWatchedTasks(Employee user);
+    public int countModifiedTasks(Employee user);
+    public int countFreeTasks();
+    public int countClosedTasks();
+    public int countContractTasks();
+
 }
