@@ -16,8 +16,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
 
@@ -48,7 +48,7 @@ public class TaskPresenter {
         groupFilter = NO_FILTER;
         executorFilter = NO_FILTER;
         creatorFilter = NO_FILTER;
-        descriptionFilter = NO_FILTER;
+        descriptionFilter = "";
     }
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
@@ -56,7 +56,7 @@ public class TaskPresenter {
         List<Task> allTasks = dp.getAllTasks();
 
         // TODO: 13.02.16 Add liferay-bounded logic
-        user = dp.getEmployeeEntityByName("bfa");
+        user = dp.getEmployeeEntityByName("Evgenij Tsopa");
 
         tabs = new ArrayList();
         tabs.add(new ListTab(allTasks));
@@ -71,7 +71,7 @@ public class TaskPresenter {
                 qb.setStatus(s);
         }
         if (!organisationFilter.equals(NO_FILTER)) {
-            Contact o = dp.getContactEntityByName(organisationFilter);
+            Organisation o = dp.getOrganisationEntityByName(organisationFilter);
             if (o != null)
                 qb.setOrganisation(o);
         }
@@ -95,6 +95,9 @@ public class TaskPresenter {
             if (c != null)
                 qb.setCreator(c);
         }
+
+        if (!descriptionFilter.equals(""))
+            qb.setDescription(descriptionFilter);
 
         return qb.getQuery();
     }
@@ -180,10 +183,10 @@ public class TaskPresenter {
     public List<Status> getStatusOptions() {
         return dp.getAllStatuses();
     }
-    public List<Contact> getOrganizationOptions() {
+    public List<Organisation> getOrganizationOptions() {
         return dp.getAllOrganisations();
     }
-    public List<Contact> getContactPersonOptions() {
+    public List<ContactPerson> getContactPersonOptions() {
         return dp.getAllContactPersons();
     }
     public List<Vendor> getVendorOptions() {
@@ -320,12 +323,10 @@ public class TaskPresenter {
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
         //we can't ask for null values in query, so we have to filter through null executors here
-       tasks.removeIf(new Predicate<Task>() {
-           @Override
-           public boolean test(Task task) {
-               return task.getExecutor() != null;
-           }
-       });
+        Iterator<Task> i = tasks.iterator();
+        while (i.hasNext())
+            if (i.next().getExecutor() != null)
+                i.remove();
 
         addListTab(tasks);
     }
@@ -346,13 +347,7 @@ public class TaskPresenter {
 
     // Filter-pattern task counts
     public int getMyCount() {
-        int counter = 0;
-
-        for (Task t : dp.getAllTasks())
-            if (user.equals(t.getExecutor()))
-                counter += 1;
-
-        return counter;
+        return dp.countUserTasks(user);
     }
     public int getOpenCount() {
         int counter = 0;
@@ -378,10 +373,10 @@ public class TaskPresenter {
     }
     //TODO: implement patterns when user-logic gets added
     public int getTrackedCount() {
-        return 1337;
+        return 123456;
     }
     public int getChangedCount() {
-        return 42;
+        return 123456;
     }
     public int getContractsCount() {
         int counter = 0;

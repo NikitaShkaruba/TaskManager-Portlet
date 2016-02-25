@@ -1,14 +1,17 @@
 package elcom.jpa;
 
+import elcom.entities.Employee;
+import elcom.entities.Status;
 import elcom.entities.Task;
+import elcom.entities.TaskType;
 
 import javax.persistence.*;
 import javax.persistence.Query;
 import java.util.*;
-import java.util.function.Predicate;
 
 public class DatabaseConnector {
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
+    private static final char CLASS_FIELD_QUERY_DELIMITER = 'o';
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private EntityManager em;
 
@@ -26,8 +29,8 @@ public class DatabaseConnector {
         filters.put("modificationDate", query.getModificationDate());
         filters.put("finishDate", query.getFinishDate());
         filters.put("executorGroup", query.getExecutorGroup());
-        filters.put("creator", query.getCreator());
-        filters.put("executor", query.getExecutor());
+        filters.put("wfCreator.employee", query.getCreator());
+        filters.put("wfExecutor.employee", query.getExecutor());
         filters.put("priority", query.getPriority());
         filters.put("status", query.getStatus());
         filters.put("parentTask", query.getParentTask());
@@ -37,29 +40,41 @@ public class DatabaseConnector {
 
         Set<Map.Entry<String, Object>> result = filters.entrySet();
 
-        result.removeIf(new Predicate<Map.Entry<String, Object>>() {
-            @Override
-            public boolean test(Map.Entry<String, Object> stringObjectEntry) {
-                return stringObjectEntry.getValue() == null;
-            }
-        });
+        Iterator<Map.Entry<String, Object>> entryPointer = result.iterator();
+        while (entryPointer.hasNext()) {
+            if (entryPointer.next().getValue() == null)
+                entryPointer.remove();
+        }
 
         return result;
     }
-    private String composeQueryString(Set<Map.Entry<String, Object>> filters) {
-        StringBuilder qs = new StringBuilder("select t from Task t");
+    private StringBuilder changeDescFilterFromEqualsToContains(StringBuilder sb) {
+        int index = sb.indexOf("t.description = :description");
+        if (index > -1)
+            sb.replace(index, index+28, "lower(t.description) like :description");
 
+        return sb;
+    }
+    private String composeQueryString(Set<Map.Entry<String, Object>> filters, Boolean countQuery) {
+        StringBuilder qs;
+        if (countQuery)
+            qs = new StringBuilder("select count(t) from Task t");
+        else
+            qs = new StringBuilder("select t from Task t");
+        //If there are no filters, just return plain 'select all';
         if (filters.isEmpty())
             return qs.toString();
-
+        // First, Convert Map to List
         List<Map.Entry<String, Object>> filterList = new ArrayList();
         for (Map.Entry<String, Object> e : filters)
             filterList.add(e);
-
-        qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey());
-
+        //First filter is always applied with 'where' clause
+        qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
+        //All subsequent filters append prev. filter with 'and' clause
         for (byte i = 1; i < filterList.size(); i += 1)
-            qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey());
+            qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
+
+        qs = changeDescFilterFromEqualsToContains(qs);
 
         return qs.toString();
     }
@@ -85,6 +100,25 @@ public class DatabaseConnector {
 
         return result;
     }
+    public int getTasksCountResult(TasksQueryBuilder.TasksQuery query) {
+        Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
+        String queryString = composeQueryString(filters, true);
+
+        em = emf.createEntityManager();
+        em.getTransaction().begin();
+
+        Query q = em.createQuery(queryString);
+
+        for (Map.Entry<String, Object> e : filters)
+            q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
+
+        long result = (Long)q.getSingleResult();
+
+        em.getTransaction().commit();
+        em.close();
+
+        return (int)result;
+    }
 
     public <T> T findById(Class<T> type, long id) {
         em = emf.createEntityManager();
@@ -98,7 +132,7 @@ public class DatabaseConnector {
 
     public List<Task> getTasksQueryResult(TasksQueryBuilder.TasksQuery query) {
         Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
-        String queryString = composeQueryString(filters);
+        String queryString = composeQueryString(filters, false);
 
         em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -106,9 +140,9 @@ public class DatabaseConnector {
         Query q = em.createQuery(queryString);
 
         for (Map.Entry<String, Object> e : filters)
-            q.setParameter(e.getKey(), e.getValue());
+            q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
 
-        List<Task> result = q.getResultList();
+        List result = q.getResultList();
 
         em.getTransaction().commit();
         em.close();

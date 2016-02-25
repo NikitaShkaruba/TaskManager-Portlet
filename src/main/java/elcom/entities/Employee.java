@@ -2,16 +2,15 @@ package elcom.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
-@Table(name="wfuser")
+@Table(name="contact")
+@org.hibernate.annotations.Where(clause = "id in (select w.person_id from wfuser w)")
 public class Employee implements Serializable {
     private long id;
     private String name;
-    private String nickName;
-    private Boolean active;
-
-    public Employee(){}
+    private List<Contact> contacts;
 
     @Id
     @GeneratedValue
@@ -19,19 +18,16 @@ public class Employee implements Serializable {
         return id;
     }
     @Basic
-    @Column(name="fullname")
+    @Column(name="value")
     public String getName() {
         return name;
     }
-    @Basic
-    @Column(name="name")
-    public String getNickName() {
-        return nickName;
-    }
-    @Basic
-    @Column(name="active")
-    public Boolean getActive() {
-        return active;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "contact_links",
+                joinColumns = @JoinColumn(name="parent_contact_id"),
+                inverseJoinColumns = @JoinColumn(name="child_contact_id"))
+    public List<Contact> getContacts() {
+        return contacts;
     }
 
     public void setId(long id) {
@@ -40,35 +36,26 @@ public class Employee implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public void setNickName(String fullName) {
-        this.nickName = fullName;
-    }
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+
+        Employee employee = (Employee) o;
+
+        if (id != employee.id) return false;
+        return name.equals(employee.name);
+
+    }
     @Override
     public int hashCode() {
-        int hash = (int)id;
-        hash += name.hashCode();
-        hash += nickName.hashCode();
-        hash += active.hashCode();
-
-        return hash;
-    }
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Employee))
-            return false;
-
-        Employee other = (Employee) obj;
-
-        if (this.id != other.id) return false;
-        if (!(this.name.equals(other.name))) return false;
-        if (!(this.nickName.equals(other.nickName))) return false;
-        if (!(this.active.equals(other.active))) return false;
-
-        return true;
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + name.hashCode();
+        return result;
     }
     @Override
     public String toString() {

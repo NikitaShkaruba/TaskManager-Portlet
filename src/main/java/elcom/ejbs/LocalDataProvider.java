@@ -6,7 +6,6 @@ import elcom.jpa.TasksQueryBuilder;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import java.util.*;
-import java.util.function.Predicate;
 
 // Handles database data retrieving
 @Singleton
@@ -14,8 +13,10 @@ import java.util.function.Predicate;
 public class LocalDataProvider implements DataProvider {
     private final DatabaseConnector dbc = new DatabaseConnector();
 
+    private final List<ContactPerson> contactPersonsCache;
     private final List<Employee> employeesCache;
     private final List<Group> groupsCache;
+    private final List<Organisation> organisationsCache;
     private final List<Priority> prioritiesCache;
     private final List<Status> statusesCache;
     private final List<TaskTemplate> tasktemplatesCache;
@@ -23,8 +24,10 @@ public class LocalDataProvider implements DataProvider {
     private final List<Vendor> vendorsCache;
 
     public LocalDataProvider() {
-        employeesCache = dbc.getQueryResult("select e from Employee e where e.active = true");
+        contactPersonsCache = dbc.getQueryResult("select c from ContactPerson c where c.person = true");
+        employeesCache = dbc.getQueryResult("select e from Employee e");
         groupsCache = dbc.getQueryResult("select g from Group g");
+        organisationsCache = dbc.getQueryResult("select o from Organisation o where o.organisation = true");
         prioritiesCache = dbc.getQueryResult("select p from Priority p");
         statusesCache = dbc.getQueryResult("select s from Status s");
         tasktemplatesCache = dbc.getQueryResult("select t from TaskTemplate t");
@@ -82,13 +85,33 @@ public class LocalDataProvider implements DataProvider {
 
         return comments.get(0);
     }
-    public Contact getContactEntityByName(String name) {
-        if (name == null)
+    public Contact getContactEntityByContent(String content) {
+        if (content == null)
             throw new IllegalArgumentException();
 
-        List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = " + name);
+        List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = " + content);
 
         return contacts.get(0);
+    }
+    public ContactPerson getContactPersonEntityByName(String name) {
+        if (name == null)
+            return null;
+
+        for (ContactPerson cp : contactPersonsCache)
+            if (name.equals(cp.getName()))
+                return cp;
+
+        return null;
+    }
+    public Organisation getOrganisationEntityByName(String name) {
+        if (name == null)
+            return null;
+
+        for (Organisation o : organisationsCache)
+            if (name.equals(o.getName()))
+                return o;
+
+        return null;
     }
     public Employee getEmployeeEntityByName(String name) {
         if (name == null)
@@ -96,10 +119,6 @@ public class LocalDataProvider implements DataProvider {
 
         for (Employee e : employeesCache)
             if (name.equals(e.getName()))
-                return e;
-        //If no employees with given name were found, maybe 'name' is actually a nickname
-        for (Employee e : employeesCache)
-            if (name.equals(e.getNickName()))
                 return e;
 
         return null;
@@ -180,11 +199,11 @@ public class LocalDataProvider implements DataProvider {
 
         return comments;
     }
-    public List<Contact> getAllContactPersons() {
-        return dbc.getQueryResult("select c from Contact c where c.person = true");
+    public List<ContactPerson> getAllContactPersons() {
+        return contactPersonsCache;
     }
-    public List<Contact> getAllOrganisations() {
-        return dbc.getQueryResult("select c from Contact c where c.organisation = true");
+    public List<Organisation> getAllOrganisations() {
+        return organisationsCache;
     }
     public List<Employee> getAllEmployees() {
         return employeesCache;
@@ -202,8 +221,6 @@ public class LocalDataProvider implements DataProvider {
         return getTasks(new TasksQueryBuilder().getQuery());
     }
     public List<Task> getTasks(TasksQueryBuilder.TasksQuery query) {
-        List<Task> tasks = dbc.getTasksQueryResult(query);
-
         return dbc.getTasksQueryResult(query);
     }
     public List<TaskTemplate> getAllTasktemplates() {
@@ -216,7 +233,33 @@ public class LocalDataProvider implements DataProvider {
         return vendorsCache;
     }
 
-    public long countTasks() {
-        return (Long)dbc.getQueryResult("count Tasks").get(0);
+    public int countAllTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().getQuery());
+    }
+    public int countUserTasks(Employee user) {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setExecutor(user).getQuery());
+    }
+    public int countWatchedTasks(Employee user) {
+        return -322;
+    }
+    public int countModifiedTasks(Employee user) {
+        return -265;
+    }
+    public int countFreeTasks() {
+        List<Task> tasks = dbc.getTasksQueryResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("открыта")).getQuery());
+
+        int counter = 0;
+
+        for (Task t : tasks)
+            if (t.getExecutor() == null)
+                counter += 1;
+
+        return counter;
+        }
+    public int countClosedTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("закрыта")).getQuery());
+    }
+    public int countContractTasks() {
+        return dbc.getTasksCountResult(new TasksQueryBuilder().setType(getTasktypeEntityByName("договор")).getQuery());
     }
 }

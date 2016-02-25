@@ -15,7 +15,7 @@ public class ContactEntityConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
-        return (s != null)? dp.getContactEntityByName(s) : null;
+        return (s != null)? dp.getContactEntityByContent(s) : null;
     }
 
     @Override

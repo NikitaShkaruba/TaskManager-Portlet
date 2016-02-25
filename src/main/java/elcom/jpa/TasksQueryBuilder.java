@@ -8,8 +8,8 @@ public class TasksQueryBuilder {
     public class TasksQuery {
         private long id;
         private String description;
-        private Contact organisation;
-        private Contact contactPerson;
+        private Organisation organisation;
+        private ContactPerson contactPerson;
         private Date creationDate;
         private Date startDate;
         private Date modificationDate;
@@ -33,7 +33,7 @@ public class TasksQueryBuilder {
         String getDescription() {
             return description;
         }
-        Contact getOrganisation() {
+        Organisation getOrganisation() {
             return organisation;
         }
         Date getCreationDate() {
@@ -72,7 +72,7 @@ public class TasksQueryBuilder {
         Boolean getVisible() {
             return visible;
         }
-        Contact getContactPerson() {
+        ContactPerson getContactPerson() {
             return contactPerson;
         }
         Boolean getPrivateTask() {
@@ -96,11 +96,14 @@ public class TasksQueryBuilder {
         return this;
     }
     public TasksQueryBuilder setDescription(String description) {
-        query.description = description;
+        if (description != null)
+            query.description = '%'+ description.toLowerCase() + '%';
+        else
+            query.description = null;
 
         return this;
     }
-    public TasksQueryBuilder setOrganisation(Contact organisation) {
+    public TasksQueryBuilder setOrganisation(Organisation organisation) {
         query.organisation = organisation;
 
         return this;
@@ -160,13 +163,12 @@ public class TasksQueryBuilder {
 
         return this;
     }
-
     public TasksQueryBuilder setPrivateTask(Boolean privateTask) {
         query.privateTask = privateTask;
 
         return this;
     }
-    public TasksQueryBuilder setContactPerson(Contact contactPerson) {
+    public TasksQueryBuilder setContactPerson(ContactPerson contactPerson) {
         query.contactPerson = contactPerson;
 
         return this;
