@@ -27,53 +27,53 @@
             <p:panelGrid columns="2">
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Краткое описание"/>
-                    <p:inputText value="#{TaskPresenter.descriptionFilter}" />
+                    <p:inputText id="es" value="#{TaskPresenter.descriptionFilter}" />
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Продавец"/>
-                    <p:selectOneMenu value="#{TaskPresenter.vendorFilter}" converter="VendorEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="vendor" value="#{TaskPresenter.vendorFilter}" converter="#{vendorEntityConverter}">
+                        <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
                         <f:selectItems value="#{TaskPresenter.vendorOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Создатель"/>
-                    <p:selectOneMenu value="#{TaskPresenter.creatorFilter}" converter="EmployeeEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="creator" value="#{TaskPresenter.creatorFilter}" converter="#{employeeEntityConverter}">
+                        <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
                         <f:selectItems value="#{TaskPresenter.employeeOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Организация"/>
-                    <p:selectOneMenu value="#{TaskPresenter.organisationFilter}" converer="ContactEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="organization" value="#{TaskPresenter.organisationFilter}" converter="#{contactEntityConverter}" >
+                        <f:selectItem itemLabel="-- Все --" noSelectionOption="true"  />
                         <f:selectItems value="#{TaskPresenter.organizationOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Исполнитель"/>
-                    <p:selectOneMenu value="#{TaskPresenter.executorFilter}" converter="EmployeeEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="executor" value="#{TaskPresenter.executorFilter}" converter="#{employeeEntityConverter}">
+                        <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
                         <f:selectItems value="#{TaskPresenter.employeeOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Группа"/>
-                    <p:selectOneMenu value="#{TaskPresenter.groupFilter}" converter="GroupEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="group" value="#{TaskPresenter.groupFilter}" converter="#{groupEntityConverter}">
+                        <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
                         <f:selectItems value="#{TaskPresenter.groupOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Статус"/>
-                    <p:selectOneMenu value="#{TaskPresenter.statusFilter}" converter="StatusEntityConverter">
-                        <f:selectItem itemLabel="-- Все --" itemValue="-- Все --"/>
+                    <p:selectOneMenu id="status" value="#{TaskPresenter.statusFilter}" converter="#{statusEntityConverter}">
+                        <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
                         <f:selectItems value="#{TaskPresenter.statusOptions}"/>
                     </p:selectOneMenu>
                 </h:panelGrid>
@@ -140,7 +140,7 @@
                         <p:inputTextarea value="#{tab.tasks.get(0).description}"/>
 
                         <p:outputLabel value="Тип"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="TypeEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
                             <f:selectItem itemLabel="Выбрать тип"/>
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
@@ -152,31 +152,31 @@
                         <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="ContactEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{contactEntityConverter}">
                             <f:selectItem itemLabel="Выбрать организацию"/>
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="ContactEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactEntityConverter}">
                             <f:selectItem itemLabel="Выбрать контактное лицо"/>
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="EmployeeEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
                             <f:selectItem itemLabel="Выбрать исполнителя"/>
                             <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="StatusEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
                             <f:selectItem itemLabel="Выбрать статус"/>
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="PriorityEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
                             <f:selectItem itemLabel="Выбрать приоритет"/>
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
@@ -197,7 +197,7 @@
                         <p:inputTextarea value="#{tab.tasks.get(0).description}"/>
 
                         <p:outputLabel value="Тип"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="TypeEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
                             <f:selectItem itemLabel="Выбрать тип"/>
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
@@ -209,31 +209,31 @@
                         <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="ContactEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{contactEntityConverter}">
                             <f:selectItem itemLabel="Выбрать организацию"/>
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:" />
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" contact="ContactEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactEntityConverter}">
                             <f:selectItem itemLabel="Выбрать контактное лицо"/>
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="EmployeeEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
                             <f:selectItem itemLabel="Выбрать исполнителя"/>
                             <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="StatusEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
                             <f:selectItem itemLabel="Выбрать статус"/>
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="PriorityEntityConverter">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
                             <f:selectItem itemLabel="Выбрать приоритет"/>
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>

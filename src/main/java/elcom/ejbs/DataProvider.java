@@ -45,5 +45,4 @@ public interface DataProvider {
     public int countFreeTasks();
     public int countClosedTasks();
     public int countContractTasks();
-
 }

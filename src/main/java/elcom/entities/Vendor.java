@@ -45,8 +45,10 @@ public class Vendor implements Serializable {
         Vendor other = (Vendor) obj;
 
         if (this.id != other.id) return false;
-        if (!(this.name.equals(other.name))) return false;
-        if (!(this.vendor.equals(other.vendor))) return false;
+        if ((this.name.equals(other.name)))
+            return true;
+        // TODO: 20.02.16 There was a bug
+        // if (!(this.vendor.equals(other.vendor))) return false;
 
         return true;
     }

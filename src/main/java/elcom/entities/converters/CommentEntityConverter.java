@@ -1,6 +1,6 @@
 package elcom.entities.converters;
-import elcom.ejbs.DataProvider;
 
+import elcom.ejbs.DataProvider;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -10,23 +10,17 @@ import javax.faces.convert.Converter;
 
 @ManagedBean
 @RequestScoped
-public class StatusEntityConverter implements Converter, defaultFilterable {
-    private String noFilterOption = "-- Все --";
+public class CommentEntityConverter implements Converter {
     @EJB
     DataProvider dp;
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String s) {
-        return (s != null && !isNoFilterOption(s))? dp.getStatusEntityByName(s) : null;
+        return (s != null)? dp.getCommentEntityByContent(s) : null;
     }
 
     @Override
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object o) {
         return (o != null)? o.toString() : null;
-    }
-
-    @Override
-    public boolean isNoFilterOption(String stringFilter) {
-        return noFilterOption.equals(stringFilter);
     }
 }

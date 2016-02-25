@@ -10,7 +10,7 @@ import org.junit.Test;
 import java.util.List;
 
 public class LocalDataProviderTest {
-    LocalDataProvider dp;
+    private LocalDataProvider dp;
     @Before
     public void SetupDataProvider() {
         dp = new LocalDataProvider();
