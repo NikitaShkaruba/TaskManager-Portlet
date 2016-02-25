@@ -12,4 +12,10 @@ public class wfuser {
     @JoinColumn(name="person_id")
     public Employee employee;
 
+    public String getName() {
+        return employee.getName();
+    }
+    public void setName(String name) {
+        employee.setName(name);
+    }
 }

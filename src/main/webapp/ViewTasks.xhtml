@@ -349,12 +349,12 @@
                     <p:dataScroller value="#{TaskPresenter.getTaskComments(tab.tasks.get(0))}" var="comment" chunkSize="5" >
                         <h:panelGrid columns="2" style="width:100%" >
                             <p:panelGrid columns="1" style="width:30%">
+                                <!-- TODO: remove comments -->
                                 <p:graphicImage alt="АВАТАР" />
-                                <p:outputLabel value="#{comment.author.nickName}" />
-                                <p:outputLabel value="#{comment.author.name}" />
+                                <p:outputLabel value="#{comment.authorName}" />
+                                <!-- p:outputLabel value="#{comment.wfAuthor.name}" /-->
                                 <p:outputLabel value="#{comment.writeDate}" />
-                                <!-- TODO: remove plug -->
-                                <p:outputLabel value="#{comment.writeDate}" />
+                                <!--p:outputLabel value="#{comment.writeDate}" /-->
                             </p:panelGrid>
 
                             <p:panelGrid style="width:70%; border-style: solid; border-bottom-width: thick" >
