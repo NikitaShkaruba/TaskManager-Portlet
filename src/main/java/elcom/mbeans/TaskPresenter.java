@@ -13,6 +13,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ public class TaskPresenter {
     private DataProvider dp;
 
     private Status statusFilter;
-    private Contact organisationFilter;
+    private Organisation organisationFilter;
     private Vendor vendorFilter;
     private Group groupFilter;
     private Employee executorFilter;
@@ -112,7 +113,7 @@ public class TaskPresenter {
     public Status getStatusFilter() {
         return statusFilter;
     }
-    public Contact getOrganisationFilter() {
+    public Organisation getOrganisationFilter() {
         return organisationFilter;
     }
     public Vendor getVendorFilter() {
@@ -135,7 +136,7 @@ public class TaskPresenter {
     public void setStatusFilter(Status filter) {
         this.statusFilter = filter;
     }
-    public void setOrganisationFilter(Contact organisationFilter) {
+    public void setOrganisationFilter(Organisation organisationFilter) {
         this.organisationFilter = organisationFilter;
     }
     public void setVendorFilter(Vendor vendorFilter) {

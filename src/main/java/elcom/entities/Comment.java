@@ -27,8 +27,8 @@ public class Comment implements Serializable {
         return task;
     }
     @Transient
-    public Employee getAuthor() {
-        return wfAuthor != null ? wfAuthor.employee : null;
+    public String getAuthorName() {
+        return wfAuthor != null ? wfAuthor.employee.getName() : null;
     }
     @Basic
     @Column(name="name")
