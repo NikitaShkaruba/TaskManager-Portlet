@@ -89,17 +89,23 @@ public class TaskPresenter {
         if (task == null || task.getStatus() == null)
             return "null";
 
-        switch (task.getStatus().getName()) {
-           case "открыта": return "Red";
-           case "закрыта": return "Green";
-           case "отменена": return "Green";
-           case "отложена": return "Blue";
-           case "шаблон": return "Black";
-           case "выполнена": return "Green";
-           case "выполняется": return "Brown";
-
-           default: return null;
-       }
+        if (task.getStatus().getName().equals("открыта")) {
+            return "Red";
+        } else if (task.getStatus().getName().equals("закрыта")) {
+            return "Green";
+        } else if (task.getStatus().getName().equals("отменена")) {
+            return "Green";
+        } else if (task.getStatus().getName().equals("отложена")) {
+            return "Blue";
+        } else if (task.getStatus().getName().equals("шаблон")) {
+            return "Black";
+        } else if (task.getStatus().getName().equals("выполнена")) {
+            return "Green";
+        } else if (task.getStatus().getName().equals("выполняется")) {
+            return "Brown";
+        } else {
+            return null;
+        }
     }
     public boolean isNewToUser(Task task) {
         // TODO: 13.02.16 add liferay-bounded logic
@@ -243,6 +249,7 @@ public class TaskPresenter {
             dp.persist(task);
         } catch (Exception ex) {
             ex.printStackTrace();
+
         }
     }
     public void giveTaskToCurrentUser(Task task){

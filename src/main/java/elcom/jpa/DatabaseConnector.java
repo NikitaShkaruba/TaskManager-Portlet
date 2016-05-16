@@ -18,7 +18,7 @@ public class DatabaseConnector {
     public DatabaseConnector(){}
 
     private Set<Map.Entry<String, Object>> parseTaskQueryFilters(TasksQueryBuilder.TasksQuery query) {
-        Map<String, Object> filters = new HashMap<>();
+        Map<String, Object> filters = new HashMap<String, Object>();
 
         //filters.put("id", query.getId()); Id filtering is turned off
         filters.put("description", query.getDescription());
