@@ -1,10 +1,6 @@
 package elcom.jpa;
 
-import elcom.entities.Employee;
-import elcom.entities.Status;
 import elcom.entities.Task;
-import elcom.entities.TaskType;
-
 import javax.persistence.*;
 import javax.persistence.Query;
 import java.util.*;
@@ -142,7 +138,9 @@ public class DatabaseConnector {
         for (Map.Entry<String, Object> e : filters)
             q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
 
-        List result = q.getResultList();
+        // TODO: remove setMaxResults(20)
+        // We have this because of bad optimization
+        List result = q.setMaxResults(20).getResultList();
 
         em.getTransaction().commit();
         em.close();

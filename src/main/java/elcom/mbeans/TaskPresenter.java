@@ -191,8 +191,7 @@ public class TaskPresenter {
     public void onTabClose(TabCloseEvent event) {
         if (tabs.size() == 1) {
             tabs.remove(0);
-
-            activeTabIndex = -1;
+            // Active tab index is still 0, because it's feature - it's part of dynamic tabView.
         } else {
             TabView tabView = (TabView) event.getComponent();
             activeTabIndex = tabView.getIndex();
@@ -228,6 +227,7 @@ public class TaskPresenter {
         return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary() : null;
     }
     public void setNewActiveTabCommentary(Comment comment) {
+        // TODO: This method is not firing
         if (tabs.get(activeTabIndex) instanceof Commentable)
             ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(comment);
     }
@@ -237,7 +237,7 @@ public class TaskPresenter {
         // TODO: 18.02.16 add logic
     }
     public void createNewTask(Task task) {
-        // TODO: 19.02.16 add logic
+        // TODO: This method is not firing
         try {
             dp.persist(task);
         } catch (Exception ex) {

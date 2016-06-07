@@ -91,7 +91,7 @@ public class LocalDataProvider implements DataProvider {
 
         List<Contact> contacts = dbc.getQueryResult("select c from Contact c where c.content = '" + content + "'");
 
-        return contacts.get(0);
+        return contacts == null? null : contacts.get(0);
     }
     public ContactPerson getContactPersonEntityByName(String name) {
         if (name == null)

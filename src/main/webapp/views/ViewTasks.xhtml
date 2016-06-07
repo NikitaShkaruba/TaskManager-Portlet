@@ -12,12 +12,12 @@
     <h:form>
         <p:toolbar id="patternBar">
             <p:toolbarGroup>
-                <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="tabView" />
-                <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="tabView" />
-                <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="tabView" />
-                <p:commandButton value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}" update="tabView" />
-                <p:commandButton value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}" update="tabView" />
-                <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="tabView" />
+                <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
             </p:toolbarGroup>
         </p:toolbar>
     </h:form>
@@ -48,7 +48,7 @@
 
                 <h:panelGrid columns="2">
                     <p:outputLabel value="Организация"/>
-                    <p:selectOneMenu id="organization" value="#{TaskPresenter.organisationFilter}" converter="#{contactEntityConverter}" >
+                    <p:selectOneMenu id="organization" value="#{TaskPresenter.organisationFilter}" converter="#{organizationConverter}" >
                         <f:selectItem itemLabel="-- Все --" noSelectionOption="true"  />
                         <f:selectItems value="#{TaskPresenter.organizationOptions}"/>
                     </p:selectOneMenu>
@@ -79,8 +79,8 @@
                 </h:panelGrid>
             </p:panelGrid>
 
-            <p:commandButton value="Показать заявки по фильтрам" actionListener="#{TaskPresenter.addListTabByFilters}" update="tabView"/>
-            <p:commandButton value="Добавить новую" actionListener="#{TaskPresenter.addCreateTab}" update="tabView"/>
+            <p:commandButton value="Показать заявки по фильтрам" actionListener="#{TaskPresenter.addListTabByFilters}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
+            <p:commandButton value="Добавить новую" actionListener="#{TaskPresenter.addCreateTab}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
         </p:panel>
     </h:form>
 
@@ -91,7 +91,7 @@
         <p:ajax event="tabChange" listener="#{TaskPresenter.onTabChange}"/>
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
 
-        <p:tab title="#{tab.title}" closable="true">
+        <p:tab title="#{tab.title == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
 
             <!-- Case list tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
@@ -102,7 +102,7 @@
                                  paginator="true" rows="20"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  rowsPerPageTemplate="20, 40, 60" rowStyleClass="${TaskPresenter.chooseRowColor(task)}">
-                        <p:ajax event="rowSelect" listener="#{TaskPresenter.addMoreTab(TaskPresenter.selectedTask)}" update="tabView"/>
+                        <p:ajax event="rowSelect" listener="#{TaskPresenter.addMoreTab(TaskPresenter.selectedTask)}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
 
                         <p:column headerText="Статус" style="width:10%">
                             <h:outputText value="#{task.status}"/>
@@ -141,7 +141,7 @@
 
                         <p:outputLabel value="Тип"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать тип"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать тип" />
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
 
@@ -152,32 +152,32 @@
                         <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{contactEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать организацию"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{organizationConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать организацию" />
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать контактное лицо"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactPersonConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать контактное лицо" />
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать исполнителя"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя" />
                             <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать статус"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать статус" />
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать приоритет"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет" />
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
 
@@ -185,7 +185,7 @@
                         <p:selectBooleanCheckbox value="#{tab.tasks.get(0).privateTask}" />
                     </p:panelGrid>
 
-                    <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" />
+                    <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
                 </h:form>
             </p:panel>
 
@@ -198,7 +198,7 @@
 
                         <p:outputLabel value="Тип"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать тип"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать тип"/>
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
 
@@ -209,32 +209,32 @@
                         <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{contactEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать организацию"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{organizationConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать организацию"/>
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:" />
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать контактное лицо"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactPersonConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать контактное лицо"/>
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать исполнителя"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя"/>
                             <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать статус"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать статус"/>
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
-                            <f:selectItem itemLabel="Выбрать приоритет"/>
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет"/>
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
 
@@ -242,7 +242,7 @@
                         <p:selectBooleanCheckbox value="#{tab.tasks.get(0).privateTask}" />
                     </h:panelGrid>
 
-                    <p:commandButton value="Подтвердить изменения" actionListener="#{TaskPresenter.updateTask(tab.tasks.get(0))}" update="tabView"/>
+                    <p:commandButton value="Подтвердить изменения" actionListener="#{TaskPresenter.updateTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
                 </h:form>
             </p:panel>
 
@@ -258,7 +258,7 @@
                                      paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="20, 40, 60"
                                      rowStyleClass="${TaskPresenter.chooseRowColor(task)}">
-                            <p:ajax event="rowSelect" listener="#{TaskPresenter.addMoreTab(TaskPresenter.selectedTask)}" update="tabView"/>
+                            <p:ajax event="rowSelect" listener="#{TaskPresenter.addMoreTab(TaskPresenter.selectedTask)}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
 
                             <p:column headerText="Статус" style="width:10%">
                                 <h:outputText value="#{task.status}"/>
@@ -291,27 +291,27 @@
                 <h:form>
                     <p:toolbar>
                         <p:toolbarGroup>
-                            <p:commandButton value="Править задачу" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="tabView" />
-                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="tabView" />
-                            <p:commandButton value="Закрыть задачу" actionListener="#{TaskPresenter.closeTask(tab.tasks.get(0))}" update="tabView" />
-                            <p:commandButton value="Создать подзадачу" actionListener="#{TaskPresenter.createChildTask(tab.tasks.get(0))}" update="tabView" />
-                            <p:commandButton value="Создать шаблон из текущей задачи" actionListener="#{TaskPresenter.createTaskFromTemplate(tab.tasks.get(0))}" update="tabView" />
+                            <p:commandButton value="Править задачу" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Закрыть задачу" actionListener="#{TaskPresenter.closeTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Создать подзадачу" actionListener="#{TaskPresenter.createChildTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Создать шаблон из текущей задачи" actionListener="#{TaskPresenter.createTaskFromTemplate(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                         </p:toolbarGroup>
                     </p:toolbar>
                 </h:form>
 
                 <p:panel header="Подробнее о задаче">
                     <p:panelGrid columns="1">
-
                         <p:outputLabel value="Задача № #{tab.tasks.get(0).id}"/>
-
                         <p:outputLabel value="#{tab.tasks.get(0).status}"/>
-
                         <p:outputLabel value="#{tab.tasks.get(0).description}"/>
 
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Приоритет"/>
                             <p:outputLabel value="#{tab.tasks.get(0).priority}"/>
+
+                            <p:outputLabel value="Тип заявки"/>
+                            <p:outputLabel value="#{tab.tasks.get(0).type}"/>
 
                             <p:outputLabel value="Группа исполнителя"/>
                             <p:outputLabel value="#{tab.tasks.get(0).executorGroup}"/>
@@ -324,6 +324,9 @@
 
                             <p:outputLabel value="Организация"/>
                             <p:outputLabel value="#{tab.tasks.get(0).organisation}"/>
+
+                            <p:outputLabel value="Контактное лицо"/>
+                            <p:outputLabel value="#{tab.tasks.get(0).contactPerson}"/>
 
                             <p:outputLabel value="Начать выполнение"/>
                             <p:outputLabel value="#{tab.tasks.get(0).startDate}"/>
@@ -352,9 +355,7 @@
                                 <!-- TODO: remove comments -->
                                 <p:graphicImage alt="АВАТАР" />
                                 <p:outputLabel value="#{comment.authorName}" />
-                                <!-- p:outputLabel value="#{comment.wfAuthor.name}" /-->
                                 <p:outputLabel value="#{comment.writeDate}" />
-                                <!--p:outputLabel value="#{comment.writeDate}" /-->
                             </p:panelGrid>
 
                             <p:panelGrid style="width:70%; border-style: solid; border-bottom-width: thick" >
@@ -367,11 +368,10 @@
                 <p:panel header="Новый комментарий">
                     <h:form>
                         <p:editor id="editor" widgetVar="editorWidget" value="#{TaskPresenter.newActiveTabCommentary}" width="600"/>
-                        <p:commandButton value="Добавить" actionListener="#{TaskPresenter.addComment(tab.tasks.get(0), TaskPresenter.newActiveTabCommentary)}" update="tabView" />
+                        <p:commandButton value="Добавить" actionListener="#{TaskPresenter.addComment(tab.tasks.get(0), TaskPresenter.newActiveTabCommentary)}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                     </h:form>
                 </p:panel>
             </p:panel>
-
         </p:tab>
     </p:tabView>
 </h:body>
