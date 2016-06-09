@@ -261,17 +261,14 @@ public class TaskPresenter {
         }
     }
     public void updateTask(Task task) {
-        task.setModificationDate(new Date());
-
-        wfuser prototype = dp.getWfuserEntityByName(task.getWfExecutor().getName());
-        if (!task.getWfExecutor().employee.equals(prototype.employee)) {
-            for (wfuser w : dp.getAllWfusers()) {
-                if (task.getExecutor().equals(w.employee)) {
-                    task.setWfExecutor(w);
-                    break;
-                }
+        for (wfuser w : dp.getAllWfusers()) {
+            if (task.getExecutor().equals(w.employee)) {
+                task.setWfExecutor(w);
+                break;
             }
         }
+
+        task.setModificationDate(new Date());
 
         try {
             dp.persist(task);

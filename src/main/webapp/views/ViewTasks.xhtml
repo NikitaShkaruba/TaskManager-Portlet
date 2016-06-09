@@ -55,7 +55,7 @@
                     <p:outputLabel value="Исполнитель"/>
                     <p:selectOneMenu id="executor" value="#{TaskPresenter.executorFilter}" converter="#{employeeEntityConverter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
-                        <f:selectItems value="#{TaskPresenter.employeeOptions}"/>
+                        <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -63,7 +63,7 @@
                     <p:outputLabel value="Группа"/>
                     <p:selectOneMenu id="group" value="#{TaskPresenter.groupFilter}" converter="#{groupEntityConverter}">
                         <f:selectItem itemLabel="-- Все --" itemValue="#{null}" />
-                        <f:selectItems value="#{TaskPresenter.groupOptions}"/>
+                        <f:selectItems value="#{TaskPresenter.groupOptions}" />
                     </p:selectOneMenu>
                 </h:panelGrid>
 
@@ -89,7 +89,6 @@
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
 
         <p:tab title="#{tab.title == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
-
             <!-- Case list tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
                 <h:form>
@@ -131,51 +130,50 @@
                 <h:form>
                     <p:panelGrid columns="2" cellpadding="5">
                         <p:outputLabel value="Краткое описание"/>
-                        <p:inputTextarea value="#{tab.tasks.get(0).description}"/>
+                        <p:inputTextarea value="#{tab.tasks.get(0).description}" required="true"/>
 
                         <p:outputLabel value="Тип"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" required="true" converter="#{typeEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать тип" />
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Начать выполнение:"/>
-                        <p:calendar value="#{tab.tasks.get(0).startDate}"/>
+                        <p:calendar value="#{tab.tasks.get(0).startDate}" required="true"/>
 
                         <p:outputLabel value="Выполнить до:"/>
-                        <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
+                        <p:calendar value="#{tab.tasks.get(0).finishDate}" required="true"/>
+
+                        <p:outputLabel value="Исполнитель:"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" required="true" converter="#{employeeEntityConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя" />
+                            <f:selectItems value="#{TaskPresenter.employeeOptions}" />
+                        </p:selectOneMenu>
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{organizationConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" required="true" converter="#{organizationConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать организацию" />
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactPersonConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" required="true" converter="#{contactPersonConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать контактное лицо" />
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" required="true" converter="#{statusEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать статус" />
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" required="true" converter="#{priorityEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет" />
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
                     </p:panelGrid>
-
-                        <!--p:outputLabel value="Исполнитель:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
-                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя" />
-                            <f:selectItems value="#{TaskPresenter.employeeOptions}" />
-                        </p:selectOneMenu-->
-
 
                     <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
                 </h:form>
@@ -184,48 +182,48 @@
             <!-- Case change tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'CorrectTab'}">
                 <h:form>
-                    <h:panelGrid columns="2" cellpadding="5">
+                    <h:panelGrid columns="2" cellpadding="5" style="border-style: none">
                         <p:outputLabel value="Краткое описание"/>
-                        <p:inputTextarea value="#{tab.tasks.get(0).description}"/>
+                        <p:inputTextarea value="#{tab.tasks.get(0).description}" required="true" requiredMessage="Please select a description"/>
 
                         <p:outputLabel value="Тип"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" converter="#{typeEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).type}" required="true" requiredMessage="Please select a Type !" converter="#{typeEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать тип"/>
                             <f:selectItems value="#{TaskPresenter.typeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Начать выполнение:"/>
-                        <p:calendar value="#{tab.tasks.get(0).startDate}"/>
+                        <p:calendar value="#{tab.tasks.get(0).startDate}" required="true" requiredMessage="Please select a start date !" />
 
                         <p:outputLabel value="Выполнить до"/>
-                        <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
+                        <p:calendar value="#{tab.tasks.get(0).finishDate}" required="true" requiredMessage="Please select an end date!" />
 
                         <p:outputLabel value="Организация:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" converter="#{organizationConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).organisation}" required="true" requiredMessage="Please select a Organization !" converter="#{organizationConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать организацию"/>
                             <f:selectItems value="#{TaskPresenter.organizationOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Контактное лицо:" />
-                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" converter="#{contactPersonConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).contactPerson}" required="true" requiredMessage="Please select a Contact person!" converter="#{contactPersonConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать контактное лицо"/>
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Исполнитель:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" required="true" requiredMessage="Please select a Executor!" converter="#{employeeEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя"/>
                             <f:selectItems value="#{TaskPresenter.employeeOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Статус"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).status}" required="true" requiredMessage="Please select a status!" converter="#{statusEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать статус"/>
                             <f:selectItems value="#{TaskPresenter.statusOptions}" />
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Приоритет:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" converter="#{priorityEntityConverter}">
+                        <p:selectOneMenu value="#{tab.tasks.get(0).priority}" required="true" requiredMessage="Please select a Priority!" converter="#{priorityEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет"/>
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
@@ -237,52 +235,47 @@
 
             <!-- Case more tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'MoreTab'}">
-                <p:panel header="Подробнее о задаче">
-                    <p:outputPanel>
-                        <h3>Описание: </h3>
-                        <p:outputLabel value="#{tab.tasks.get(0).description}"/>
+                <p:outputPanel>
+                    <h3>Описание: </h3>
+                    <p:outputLabel value="#{tab.tasks.get(0).description}"/>
 
-                        <p:outputLabel value="Задача c id: #{tab.tasks.get(0).id}"/>
-                        <p:outputLabel value="Статус: #{tab.tasks.get(0).status}"/>
-                    </p:outputPanel>
+                    <p:outputLabel value="Задача c id: #{tab.tasks.get(0).id}"/>
+                    <p:outputLabel value="Статус: #{tab.tasks.get(0).status}"/>
+                </p:outputPanel>
 
-                    <p:panelGrid columns="1">
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="Приоритет"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).priority}"/>
+                <p:panelGrid columns="1" style="border-style: none">
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Приоритет" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).priority}"/>
 
-                            <p:outputLabel value="Тип заявки"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).type}"/>
+                        <p:outputLabel value="Тип заявки" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).type}"/>
 
-                            <p:outputLabel value="Группа исполнителя"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).executorGroup}"/>
+                        <p:outputLabel value="Исполнитель" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).executor}"/>
 
-                            <p:outputLabel value="Исполнитель"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).executor}"/>
+                        <p:outputLabel value="Создатель" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).creator}"/>
 
-                            <p:outputLabel value="Создатель"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).creator}"/>
+                        <p:outputLabel value="Организация" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).organisation}"/>
 
-                            <p:outputLabel value="Организация"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).organisation}"/>
+                        <p:outputLabel value="Контактное лицо" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).contactPerson}"/>
 
-                            <p:outputLabel value="Контактное лицо"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).contactPerson}"/>
+                        <p:outputLabel value="Начать выполнение" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).startDate}"/>
 
-                            <p:outputLabel value="Начать выполнение"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).startDate}"/>
+                        <p:outputLabel value="Выполнить до" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).finishDate}"/>
 
-                            <p:outputLabel value="Выполнить до"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).finishDate}"/>
+                        <p:outputLabel value="Задача создана" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).creationDate}"/>
 
-                            <p:outputLabel value="Задача создана"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).creationDate}"/>
-
-                            <p:outputLabel value="Дата последней модификации"/>
-                            <p:outputLabel value="#{tab.tasks.get(0).modificationDate}"/>
-                        </p:panelGrid>
+                        <p:outputLabel value="Дата последней модификации" style="font-weight:bold" />
+                        <p:outputLabel value="#{tab.tasks.get(0).modificationDate}"/>
                     </p:panelGrid>
-                </p:panel>
+                </p:panelGrid>
 
                 <h:form>
                     <p:toolbar>
