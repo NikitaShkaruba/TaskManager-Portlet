@@ -28,6 +28,6 @@ public class EmployeeEntityConverter implements Converter, defaultFilterable {
 
     @Override
     public boolean isNoFilterOption(String stringFilter) {
-         return stringFilter.equals(noFilterOption);
+         return noFilterOption.equals(stringFilter);
     }
 }

@@ -140,7 +140,7 @@ public class DatabaseConnector {
 
         // TODO: remove setMaxResults(20)
         // We have this because of bad optimization
-        List result = q.setMaxResults(20).getResultList();
+        List result = q.getResultList();
 
         em.getTransaction().commit();
         em.close();

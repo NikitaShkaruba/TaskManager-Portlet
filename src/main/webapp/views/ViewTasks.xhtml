@@ -4,7 +4,6 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <!-- TODO: Add some beauty to this page -->
     <h:outputStylesheet name="css/TableRows.css"/>
 </h:head>
 
@@ -15,8 +14,6 @@
                 <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                 <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                 <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Отслеживаемые #{TaskPresenter.trackedCount}" actionListener="#{TaskPresenter.selectTrackedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Измененные #{TaskPresenter.changedCount}" actionListener="#{TaskPresenter.selectChangedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                 <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
             </p:toolbarGroup>
         </p:toolbar>
@@ -26,7 +23,7 @@
         <p:panel header="Фильтры">
             <p:panelGrid columns="2">
                 <h:panelGrid columns="2">
-                    <p:outputLabel value="Краткое описание"/>
+                    <p:outputLabel value="Ключевые слова"/>
                     <p:inputText id="es" value="#{TaskPresenter.descriptionFilter}" />
                 </h:panelGrid>
 
@@ -107,22 +104,19 @@
                         <p:column headerText="Статус" style="width:10%">
                             <h:outputText value="#{task.status}"/>
                         </p:column>
-                        <p:column headerText="!?" style="width:2%">
-                            <p:graphicImage rendered="#{TaskPresenter.isNewToUser(task)}" name="images/warning-sign.png"/>
-                        </p:column>
-                        <p:column headerText="id" style="width:10%">
+                        <p:column headerText="id" style="width:5%">
                             <h:outputText value="#{task.id}"/>
                         </p:column>
-                        <p:column headerText="Компания" style="width:10%">
-                            <h:outputText value="#{task.organisation}"/>
-                        </p:column>
-                        <p:column headerText="Создатель" style="width:10%">
+                        <p:column headerText="Создатель" style="width:12%">
                             <h:outputText value="#{task.creator}"/>
                         </p:column>
-                        <p:column headerText="Исполнитель" style="width:10%">
+                        <p:column headerText="Исполнитель" style="width:12%">
                             <h:outputText value="#{task.executor}"/>
                         </p:column>
-                        <p:column headerText="Дата" style="width:10%">
+                        <p:column headerText="Компания" style="width:12%">
+                            <h:outputText value="#{task.organisation}"/>
+                        </p:column>
+                        <p:column headerText="Дата" style="width:12%">
                             <h:outputText value="#{task.startDate}"/>
                         </p:column>
                         <p:column headerText="Описание" style="width:37%">
@@ -148,7 +142,7 @@
                         <p:outputLabel value="Начать выполнение:"/>
                         <p:calendar value="#{tab.tasks.get(0).startDate}"/>
 
-                        <p:outputLabel value="Выполнить до"/>
+                        <p:outputLabel value="Выполнить до:"/>
                         <p:calendar value="#{tab.tasks.get(0).finishDate}"/>
 
                         <p:outputLabel value="Организация:"/>
@@ -163,12 +157,6 @@
                             <f:selectItems value="#{TaskPresenter.contactPersonOptions}" />
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Исполнитель:"/>
-                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
-                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя" />
-                            <f:selectItems value="#{TaskPresenter.employeeOptions}" />
-                        </p:selectOneMenu>
-
                         <p:outputLabel value="Статус"/>
                         <p:selectOneMenu value="#{tab.tasks.get(0).status}" converter="#{statusEntityConverter}">
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать статус" />
@@ -180,10 +168,14 @@
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет" />
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
-
-                        <p:outputLabel value="Скрытая задача:"/>
-                        <p:selectBooleanCheckbox value="#{tab.tasks.get(0).privateTask}" />
                     </p:panelGrid>
+
+                        <!--p:outputLabel value="Исполнитель:"/>
+                        <p:selectOneMenu value="#{tab.tasks.get(0).executor}" converter="#{employeeEntityConverter}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Выбрать исполнителя" />
+                            <f:selectItems value="#{TaskPresenter.employeeOptions}" />
+                        </p:selectOneMenu-->
+
 
                     <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
                 </h:form>
@@ -237,9 +229,6 @@
                             <f:selectItem itemValue="#{null}" itemLabel="Выбрать приоритет"/>
                             <f:selectItems value="#{TaskPresenter.priorityOptions}" />
                         </p:selectOneMenu>
-
-                        <p:outputLabel value="Скрытая задача:"/>
-                        <p:selectBooleanCheckbox value="#{tab.tasks.get(0).privateTask}" />
                     </h:panelGrid>
 
                     <p:commandButton value="Подтвердить изменения" actionListener="#{TaskPresenter.updateTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
@@ -248,64 +237,16 @@
 
             <!-- Case more tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'MoreTab'}">
-                <p:panel header="Связи между задачами">
-                    <h:form>
-                        <p:dataTable value="#{tab.tasks}" var="task"
-                                     resizableColumns="true"
-                                     selectionMode="single" selection="#{TaskPresenter.selectedTask}"
-                                     rowKey="#{task.id}"
-                                     paginator="true" rows="20"
-                                     paginatorTemplate="{PreviousPageLink} {PageLinks} {NextPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="20, 40, 60"
-                                     rowStyleClass="${TaskPresenter.chooseRowColor(task)}">
-                            <p:ajax event="rowSelect" listener="#{TaskPresenter.addMoreTab(TaskPresenter.selectedTask)}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
-
-                            <p:column headerText="Статус" style="width:10%">
-                                <h:outputText value="#{task.status}"/>
-                            </p:column>
-                            <p:column headerText="!?" style="width:2%">
-                                <p:graphicImage rendered="#{TaskPresenter.isNewToUser(task)}" name="images/warning-sign.png" />
-                            </p:column>
-                            <p:column headerText="id" style="width:10%">
-                                <h:outputText value="#{task.id}"/>
-                            </p:column>
-                            <p:column headerText="Организация" style="width:10%">
-                                <h:outputText value="#{task.organisation}"/>
-                            </p:column>
-                            <p:column headerText="Создатель" style="width:10%">
-                                <h:outputText value="#{task.creator}"/>
-                            </p:column>
-                            <p:column headerText="Исполнитель" style="width:10%">
-                                <h:outputText value="#{task.executor}"/>
-                            </p:column>
-                            <p:column headerText="Дата" style="width:10%">
-                                <h:outputText value="#{task.startDate}"/>
-                            </p:column>
-                            <p:column headerText="Описание" style="width:37%">
-                                <h:outputText value="#{task.description}"/>
-                            </p:column>
-                        </p:dataTable>
-                    </h:form>
-                </p:panel>
-
-                <h:form>
-                    <p:toolbar>
-                        <p:toolbarGroup>
-                            <p:commandButton value="Править задачу" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                            <p:commandButton value="Закрыть задачу" actionListener="#{TaskPresenter.closeTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                            <p:commandButton value="Создать подзадачу" actionListener="#{TaskPresenter.createChildTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                            <p:commandButton value="Создать шаблон из текущей задачи" actionListener="#{TaskPresenter.createTaskFromTemplate(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                        </p:toolbarGroup>
-                    </p:toolbar>
-                </h:form>
-
                 <p:panel header="Подробнее о задаче">
-                    <p:panelGrid columns="1">
-                        <p:outputLabel value="Задача № #{tab.tasks.get(0).id}"/>
-                        <p:outputLabel value="#{tab.tasks.get(0).status}"/>
+                    <p:outputPanel>
+                        <h3>Описание: </h3>
                         <p:outputLabel value="#{tab.tasks.get(0).description}"/>
 
+                        <p:outputLabel value="Задача c id: #{tab.tasks.get(0).id}"/>
+                        <p:outputLabel value="Статус: #{tab.tasks.get(0).status}"/>
+                    </p:outputPanel>
+
+                    <p:panelGrid columns="1">
                         <p:panelGrid columns="2">
                             <p:outputLabel value="Приоритет"/>
                             <p:outputLabel value="#{tab.tasks.get(0).priority}"/>
@@ -316,7 +257,7 @@
                             <p:outputLabel value="Группа исполнителя"/>
                             <p:outputLabel value="#{tab.tasks.get(0).executorGroup}"/>
 
-                            <p:outputLabel value="Исолнитель"/>
+                            <p:outputLabel value="Исполнитель"/>
                             <p:outputLabel value="#{tab.tasks.get(0).executor}"/>
 
                             <p:outputLabel value="Создатель"/>
@@ -343,33 +284,34 @@
                     </p:panelGrid>
                 </p:panel>
 
+                <h:form>
+                    <p:toolbar>
+                        <p:toolbarGroup>
+                            <p:commandButton value="Править задачу" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Закрыть задачу" actionListener="#{TaskPresenter.closeTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                        </p:toolbarGroup>
+                    </p:toolbar>
+                </h:form>
+
                 <p:panel header="Прикреплённые фаилы">
                     <p:fileUpload fileUploadListener="#{TaskPresenter.handleFileAttachment}" mode="advanced" dragDropSupport="true"
                                   sizeLimit="1000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
                 </p:panel>
 
-                <p:panel header="Комментарии">
+                <p:panel header="Комментарии" rendered="#{TaskPresenter.getTaskComments(tab.tasks.get(0)).size() != 0}">
                     <p:dataScroller value="#{TaskPresenter.getTaskComments(tab.tasks.get(0))}" var="comment" chunkSize="5" >
                         <h:panelGrid columns="2" style="width:100%" >
                             <p:panelGrid columns="1" style="width:30%">
-                                <!-- TODO: remove comments -->
-                                <p:graphicImage alt="АВАТАР" />
                                 <p:outputLabel value="#{comment.authorName}" />
                                 <p:outputLabel value="#{comment.writeDate}" />
                             </p:panelGrid>
 
                             <p:panelGrid style="width:70%; border-style: solid; border-bottom-width: thick" >
-                                <p:outputLabel value="#{comment.content}" escape="false" />
+                                <p:outputLabel value="#{comment.content}" escape="true" />
                             </p:panelGrid>
                         </h:panelGrid>
                     </p:dataScroller>
-                </p:panel>
-
-                <p:panel header="Новый комментарий">
-                    <h:form>
-                        <p:editor id="editor" widgetVar="editorWidget" value="#{TaskPresenter.newActiveTabCommentary}" width="600"/>
-                        <p:commandButton value="Добавить" actionListener="#{TaskPresenter.addComment(tab.tasks.get(0), TaskPresenter.newActiveTabCommentary)}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                    </h:form>
                 </p:panel>
             </p:panel>
         </p:tab>

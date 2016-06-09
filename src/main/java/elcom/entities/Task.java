@@ -122,12 +122,6 @@ public class Task implements Serializable, Cloneable {
         return wfExecutor;
     }
 
-    //TODO: remove isCritical plug from Task entity
-    @Transient
-    public boolean isCritical() {
-        return true;
-    }
-
     public void setPrivateTask(Boolean privateTask) {
         this.privateTask = privateTask;
     }
@@ -144,9 +138,17 @@ public class Task implements Serializable, Cloneable {
         this.executorGroup = executorGroup;
     }
     public void setCreator(Employee creator) {
+        // #!
+        if (this.wfCreator == null)
+            this.wfCreator = new wfuser();
+
         this.wfCreator.employee = creator;
     }
     public void setExecutor(Employee executor) {
+        // #!
+        if (this.wfExecutor == null)
+            this.wfExecutor = new wfuser();
+
         this.wfExecutor.employee = executor;
     }
     public void setPriority(Priority priority) {

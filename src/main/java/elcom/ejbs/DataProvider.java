@@ -23,6 +23,7 @@ public interface DataProvider {
     TaskTemplate getTasktemplateEntityByName(String name);
     TaskType getTasktypeEntityByName(String name);
     Vendor getVendorEntityByName(String name);
+    wfuser getWfuserEntityByName(String name);
 
     List<Comment> getAllComments();
     List<Comment> getTaskComments(Task task);
@@ -37,6 +38,7 @@ public interface DataProvider {
     List<TaskTemplate> getAllTasktemplates();
     List<TaskType> getAllTasktypes();
     List<Vendor> getAllVendors();
+    List<wfuser> getAllWfusers();
 
     public int countAllTasks();
     public int countUserTasks(Employee user);

@@ -13,10 +13,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.event.ActionEvent;
@@ -51,13 +49,11 @@ public class TaskPresenter {
     // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
     @PostConstruct
     public void init() {
-        List<Task> allTasks = dp.getAllTasks();
+        List<Task> firstHundredTasks = dp.getAllTasks();
 
-        // TODO: 13.02.16 Add liferay-bounded logic
         user = dp.getEmployeeEntityByName("Evgenij Tsopa");
-
         tabs = new ArrayList();
-        tabs.add(new ListTab(allTasks));
+        tabs.add(new ListTab(firstHundredTasks));
     }
 
     private TasksQueryBuilder.TasksQuery parseFilters() {
@@ -237,7 +233,27 @@ public class TaskPresenter {
         // TODO: 18.02.16 add logic
     }
     public void createNewTask(Task task) {
-        // TODO: This method is not firing
+        // Fill missing properties
+        Date currentDate = new Date();
+
+        // task.setCreator();
+        for (wfuser w : dp.getAllWfusers()) {
+            if (user.equals(w.employee)) {
+                task.setWfCreator(w);
+                break;
+            }
+        }
+        // task.setExecutor();
+        for (wfuser w : dp.getAllWfusers()) {
+            if (task.getExecutor().equals(w.employee)) {
+                task.setWfExecutor(w);
+                break;
+            }
+        }
+
+        task.setCreationDate(currentDate);
+        task.setModificationDate(currentDate);
+
         try {
             dp.persist(task);
         } catch (Exception ex) {
@@ -245,6 +261,18 @@ public class TaskPresenter {
         }
     }
     public void updateTask(Task task) {
+        task.setModificationDate(new Date());
+
+        wfuser prototype = dp.getWfuserEntityByName(task.getWfExecutor().getName());
+        if (!task.getWfExecutor().employee.equals(prototype.employee)) {
+            for (wfuser w : dp.getAllWfusers()) {
+                if (task.getExecutor().equals(w.employee)) {
+                    task.setWfExecutor(w);
+                    break;
+                }
+            }
+        }
+
         try {
             dp.persist(task);
         } catch (Exception ex) {
@@ -301,18 +329,18 @@ public class TaskPresenter {
 
     // Filter-pattern selection listeners
     public void selectMyTasksPattern(ActionEvent event) {
-        //my tasks: executor = user
+        // my tasks: executor = user
         addListTab(dp.getTasks(new TasksQueryBuilder().setExecutor(user).getQuery()));
     }
     public void selectFreeTasksPattern(ActionEvent event) {
-        //free tasks: executor = null and status = opened
+        // free tasks: executor = null and status = opened
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
 
-        //we can't ask for null values in query, so we have to filter through null executors here
-        Iterator<Task> i = tasks.iterator();
-        while (i.hasNext())
-            if (i.next().getExecutor() != null)
-                i.remove();
+        // we can't ask for null values in query, so we have to filter through null executors here
+        //Iterator<Task> i = tasks.iterator();
+        //while (i.hasNext())
+        //    if (i.next().getExecutor() != null)
+        //        i.remove();
 
         addListTab(tasks);
     }
@@ -336,43 +364,12 @@ public class TaskPresenter {
         return dp.countUserTasks(user);
     }
     public int getOpenCount() {
-        int counter = 0;
-
-        Status openStatus = dp.getStatusEntityByName("открыта");
-
-        for (Task t : dp.getAllTasks())
-            if (t.getExecutor() == null && openStatus.equals(t.getStatus()))
-                counter += 1;
-
-        return counter;
+        return dp.countFreeTasks();
     }
     public int getClosedCount() {
-        int counter = 0;
-
-        Status closedStatus = dp.getStatusEntityByName("закрыта");
-
-        for (Task t : dp.getAllTasks())
-            if (closedStatus.equals(t.getStatus()))
-                counter += 1;
-
-        return counter;
-    }
-    //TODO: implement patterns when user-logic gets added
-    public int getTrackedCount() {
-        return 123456;
-    }
-    public int getChangedCount() {
-        return 123456;
+        return dp.countClosedTasks();
     }
     public int getContractsCount() {
-        int counter = 0;
-
-        TaskType contract = dp.getTasktypeEntityByName("договор");
-
-        for (Task t : dp.getAllTasks())
-            if (contract.equals(t.getType()))
-                counter += 1;
-
-        return counter;
+        return dp.countContractTasks();
     }
 }

@@ -15,6 +15,7 @@ public class LocalDataProvider implements DataProvider {
 
     private final List<ContactPerson> contactPersonsCache;
     private final List<Employee> employeesCache;
+    private final List<wfuser> wfusersCache;
     private final List<Group> groupsCache;
     private final List<Organisation> organisationsCache;
     private final List<Priority> prioritiesCache;
@@ -26,6 +27,7 @@ public class LocalDataProvider implements DataProvider {
     public LocalDataProvider() {
         contactPersonsCache = dbc.getQueryResult("select c from ContactPerson c where c.person = true");
         employeesCache = dbc.getQueryResult("select e from Employee e");
+        wfusersCache = dbc.getQueryResult("select w from wfuser w");
         groupsCache = dbc.getQueryResult("select g from Group g");
         organisationsCache = dbc.getQueryResult("select o from Organisation o where o.organisation = true");
         prioritiesCache = dbc.getQueryResult("select p from Priority p");
@@ -186,6 +188,16 @@ public class LocalDataProvider implements DataProvider {
 
         return null;
     }
+    public wfuser getWfuserEntityByName(String name){
+        if (name == null)
+            throw new IllegalArgumentException();
+
+        for (wfuser w : wfusersCache)
+            if (name.equals(w.getName()))
+                return w;
+
+        return null;
+    }
 
     public List<Comment> getAllComments() {
         return dbc.getQueryResult("select c from Comment c");
@@ -230,6 +242,9 @@ public class LocalDataProvider implements DataProvider {
     }
     public List<Vendor> getAllVendors() {
         return vendorsCache;
+    }
+    public List<wfuser> getAllWfusers() {
+        return wfusersCache;
     }
 
     public int countAllTasks() {
