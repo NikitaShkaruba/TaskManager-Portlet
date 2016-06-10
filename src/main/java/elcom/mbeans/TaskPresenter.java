@@ -1,5 +1,8 @@
 package elcom.mbeans;
 
+import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.model.User;
+import com.liferay.portal.theme.ThemeDisplay;
 import elcom.entities.*;
 import elcom.ejbs.DataProvider;
 import elcom.jpa.TasksQueryBuilder;
@@ -17,15 +20,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 // This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
+    private Employee user;
     private List<Tab> tabs;
     private int activeTabIndex;
-    private Employee user;
+
     @EJB
     private DataProvider dp;
 
@@ -51,7 +56,7 @@ public class TaskPresenter {
     public void init() {
         List<Task> firstHundredTasks = dp.getAllTasks();
 
-        user = dp.getEmployeeEntityByName("Evgenij Tsopa");
+        user = getCurrentUser();
         tabs = new ArrayList();
         tabs.add(new ListTab(firstHundredTasks));
     }
@@ -219,13 +224,14 @@ public class TaskPresenter {
     public void addListTabByFilters() {
         addListTab(dp.getTasks(parseFilters()));
     }
-    public Comment getNewActiveTabCommentary() {
-        return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary() : null;
+    public String getNewActiveTabCommentary() {
+        return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary().getContent() : null;
     }
-    public void setNewActiveTabCommentary(Comment comment) {
-        // TODO: This method is not firing
-        if (tabs.get(activeTabIndex) instanceof Commentable)
-            ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(comment);
+    public void setNewActiveTabCommentary(String content) {
+        if (tabs.get(activeTabIndex) instanceof Commentable) {
+            addComment(tabs.get(activeTabIndex).getTasks().get(0), content);
+            ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(new Comment());
+        }
     }
 
     // CRUD buttons
@@ -278,7 +284,12 @@ public class TaskPresenter {
         }
     }
     public void giveTaskToCurrentUser(Task task){
-        task.setExecutor(user);
+        for (wfuser w : dp.getAllWfusers()) {
+            if (user.equals(w.employee)) {
+                task.setWfExecutor(w);
+                break;
+            }
+        }
         task.setStatus(dp.getStatusEntityByName("выполняется"));
 
         try {
@@ -314,6 +325,10 @@ public class TaskPresenter {
 
     // Proxy logic
     public Task getSelectedTask() {
+        // Plug to deny tabView without tabs
+        if (activeTabIndex < 0)
+            activeTabIndex = 0;
+
         if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
             return ((TaskSelector)tabs.get(activeTabIndex)).getSelectedTask();
         else
@@ -368,5 +383,12 @@ public class TaskPresenter {
     }
     public int getContractsCount() {
         return dp.countContractTasks();
+    }
+
+    public Employee getCurrentUser() {
+        // Liferay User
+        User u = ((ThemeDisplay) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(WebKeys.THEME_DISPLAY)).getUser();
+
+        return dp.getEmployeeEntityByName(u.getFullName());
     }
 }

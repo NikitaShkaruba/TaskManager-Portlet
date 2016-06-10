@@ -1,10 +1,10 @@
 package elcom.ejbs;
 
-import elcom.entities.*;
 import elcom.jpa.DatabaseConnector;
 import elcom.jpa.TasksQueryBuilder;
-import javax.ejb.Local;
 import javax.ejb.Singleton;
+import elcom.entities.*;
+import javax.ejb.Local;
 import java.util.*;
 
 // Handles database data retrieving
@@ -48,7 +48,6 @@ public class LocalDataProvider implements DataProvider {
 
         return true;
     }
-
     public Task instantiateTaskByTemplate(TaskTemplate tt) {
         Task newborn = new Task();
 

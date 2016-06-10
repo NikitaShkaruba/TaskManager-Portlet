@@ -20,11 +20,11 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
     public String getTitle() {
         return "Заявка №" + tasks.get(0).getId();
     }
+
     @Override
     public Task getSelectedTask() {
         return selectedTask;
     }
-
     @Override
     public void setSelectedTask(Task selectedTask) {
         this.selectedTask = selectedTask;
@@ -34,7 +34,6 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
     public Comment getNewCommentary() {
         return newComment;
     }
-
     @Override
     public void setNewCommentary(Comment commentary) {
         this.newComment = commentary;
