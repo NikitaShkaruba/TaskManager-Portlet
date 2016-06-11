@@ -78,12 +78,6 @@ public class LocalDataProvider implements DataProvider {
         dbc.persist(o);
     }
 
-    public List<TaskFile> getTaskFilesByTask(Task task) {
-        if (task == null)
-        throw new IllegalArgumentException();
-
-        return dbc.getQueryResult("select f from TaskFile f where f.task = " + task);
-    }
     public Comment getCommentEntityByContent(String content) {
         if (content == null)
             throw new IllegalArgumentException();
@@ -214,6 +208,14 @@ public class LocalDataProvider implements DataProvider {
         List<Comment> comments = dbc.getQueryResult("select c from Comment c where c.task.id = " + task.getId());
 
         return comments;
+    }
+    public List<TaskFile> getTaskFiles(Task task) {
+        if (task == null)
+            throw new IllegalArgumentException();
+
+        List<TaskFile> files = dbc.getQueryResult("select f from TaskFile f where f.task.id = " + task.getId());
+
+        return files;
     }
     public List<ContactPerson> getAllContactPersons() {
         return contactPersonsCache;
