@@ -48,16 +48,13 @@ public class Organisation {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Organisation)) return false;
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Organisation))
+            return false;
 
-        Organisation that = (Organisation) o;
+        Organisation that = (Organisation) obj;
 
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return contacts != null ? contacts.equals(that.contacts) : that.contacts == null;
-
+        return this.id == that.id && this.name.equals(that.name);
     }
 
     @Override

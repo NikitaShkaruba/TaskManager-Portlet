@@ -64,9 +64,12 @@ public class Status implements Serializable {
 
         Status other = (Status) obj;
 
-        if (this.id != other.id) return false;
-        if (!(this.name.equals(other.name))) return false;
-        if (!(this.color.equals(other.color))) return false;
+        if (this.id != other.id)
+            return false;
+        if (!(this.name.equals(other.name)))
+            return false;
+        if (!(this.color.equals(other.color)))
+            return false;
 
         return true;
     }
