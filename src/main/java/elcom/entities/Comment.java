@@ -1,7 +1,5 @@
 package elcom.entities;
 
-import org.hibernate.annotations.Formula;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -98,7 +96,6 @@ public class Comment implements Serializable {
 
         return true;
     }
-
     @Override
     public String toString() {
         return content != null ? content : "null";

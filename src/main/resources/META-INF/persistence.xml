@@ -13,6 +13,7 @@
         <class>elcom.entities.TaskTemplate</class>
         <class>elcom.entities.Vendor</class>
         <class>elcom.entities.wfuser</class>
+        <class>elcom.entities.TaskFile</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:postgresql://sunshine.elcom.spb.ru:5432/wf"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL81Dialect"/>

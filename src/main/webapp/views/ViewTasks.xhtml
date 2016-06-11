@@ -309,8 +309,18 @@
 
                 <!-- TODO: decide if we need Attachments -->
                 <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
-                <p:fileUpload fileUploadListener="#{TaskPresenter.handleFileAttachment}" mode="advanced" dragDropSupport="true"
+                <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" dragDropSupport="true"
                               sizeLimit="1000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                <h:form>
+                    <p:dataList value="#{TaskPresenter.getTaskFiles(tab.tasks.get(0))}" var="file" type="ordered" >
+                        <f:facet name="header">
+                            Attachments
+                        </f:facet>
+                        <p:commandButton value="#{file.name}" ajax="false" icon="ui-icon-arrowthick-1-s">
+                            <p:fileDownload value="#{file.stream}" />
+                        </p:commandButton>
+                    </p:dataList>
+                </h:form>
                 <br/>
 
                 <h:form>
@@ -319,7 +329,6 @@
                     <p:commandButton value="Добавить комментарий" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" icon="ui-icon-disk" />
                 </h:form>
                 <br/>
-
                 <h:outputText value="Комментарии:" style="font-weight: bold"/>
                 <p:dataScroller value="#{TaskPresenter.getTaskComments(tab.tasks.get(0))}" var="comment" chunkSize="5" >
                     <p:outputPanel>

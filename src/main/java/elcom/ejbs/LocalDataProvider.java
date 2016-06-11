@@ -78,6 +78,12 @@ public class LocalDataProvider implements DataProvider {
         dbc.persist(o);
     }
 
+    public List<TaskFile> getTaskFilesByTask(Task task) {
+        if (task == null)
+        throw new IllegalArgumentException();
+
+        return dbc.getQueryResult("select f from TaskFile f where f.task = " + task);
+    }
     public Comment getCommentEntityByContent(String content) {
         if (content == null)
             throw new IllegalArgumentException();

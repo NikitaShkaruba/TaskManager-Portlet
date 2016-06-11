@@ -2,11 +2,16 @@ package elcom.tabs;
 
 import elcom.entities.Comment;
 import elcom.entities.Task;
+import elcom.entities.TaskFile;
+import org.primefaces.model.UploadedFile;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MoreTab extends Tab implements TaskSelector, Commentable {
     private Task selectedTask;
     private Comment newComment;
+    private List<TaskFile> attachedFiles;
+    private UploadedFile newAttachment;
 
     public MoreTab(Task task) {
         this.tasks = new ArrayList();
@@ -37,5 +42,19 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
     @Override
     public void setNewCommentary(Comment commentary) {
         this.newComment = commentary;
+    }
+
+    public List<TaskFile> getAttachedFiles() {
+        return attachedFiles;
+    }
+    public void setAttachedFiles(List<TaskFile> attachments) {
+        this.attachedFiles = attachments;
+    }
+
+    public UploadedFile getNewAttachment() {
+        return newAttachment;
+    }
+    public void setNewAttachment(UploadedFile newAttachment) {
+        this.newAttachment = newAttachment;
     }
 }

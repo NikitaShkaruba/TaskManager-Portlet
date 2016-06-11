@@ -12,10 +12,12 @@ import org.primefaces.component.tabview.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
+import org.primefaces.model.UploadedFile;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +118,9 @@ public class TaskPresenter {
     // Getters
     public List<Comment> getTaskComments(Task task) {
         return dp.getTaskComments(task);
+    }
+    public List<TaskFile> getTaskFiles(Task task) {
+        return dp.getTaskFilesByTask(task);
     }
     public Status getStatusFilter() {
         return statusFilter;
@@ -235,8 +240,21 @@ public class TaskPresenter {
     }
 
     // CRUD buttons
-    public void handleFileAttachment(FileUploadEvent event) {
-        // TODO: 18.02.16 add logic
+    public void attachNewFile(FileUploadEvent event) {
+        UploadedFile file = event.getFile();
+
+        TaskFile taskFile = new TaskFile();
+        taskFile.setTask(tabs.get(activeTabIndex).getTasks().get(0));
+        taskFile.setName(file.getFileName());
+        taskFile.setSize(file.getSize());
+        taskFile.setType(file.getContentType());
+
+        try {
+            taskFile.setBytes(new String(file.getContents(), "UTF-8"));
+            dp.persist(taskFile);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
     public void createNewTask(Task task) {
         // Fill missing properties
