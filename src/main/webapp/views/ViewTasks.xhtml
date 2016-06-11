@@ -87,7 +87,6 @@
     <p:tabView id="tabView" scrollable="true" value="#{TaskPresenter.tabs}" var="tab">
         <p:ajax event="tabChange" listener="#{TaskPresenter.onTabChange}"/>
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
-        <!-- TODO: Remove this debug piece -->
         <p:tab title="#{tab.title == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
             <!-- Case list tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
