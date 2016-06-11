@@ -29,14 +29,12 @@ public class TaskType implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TaskType)) return false;
+        if (!(o instanceof TaskType))
+            return false;
 
-        TaskType taskType = (TaskType) o;
+        TaskType that = (TaskType) o;
 
-        if (id != taskType.id) return false;
-        return name.equals(taskType.name);
-
+        return this.id == that.id && this.name.equals(that.name);
     }
     @Override
     public int hashCode() {

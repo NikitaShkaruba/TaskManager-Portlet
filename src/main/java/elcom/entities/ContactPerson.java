@@ -50,15 +50,12 @@ public class ContactPerson {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ContactPerson)) return false;
+        if (!(o instanceof ContactPerson))
+            return false;
 
         ContactPerson that = (ContactPerson) o;
 
-        if (id != that.id) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        return contacts != null ? contacts.equals(that.contacts) : that.contacts == null;
-
+        return this.id == that.id && this.name.equals(that.name);
     }
 
     @Override

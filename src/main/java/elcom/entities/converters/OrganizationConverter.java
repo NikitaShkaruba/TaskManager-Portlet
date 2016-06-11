@@ -1,7 +1,6 @@
 package elcom.entities.converters;
 
 import elcom.ejbs.DataProvider;
-
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;

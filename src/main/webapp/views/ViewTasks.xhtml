@@ -88,7 +88,7 @@
         <p:ajax event="tabChange" listener="#{TaskPresenter.onTabChange}"/>
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
 
-        <p:tab title="#{tab.title == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
+        <p:tab title="#{tab == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
             <!-- Case list tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
                 <h:form>
@@ -184,7 +184,7 @@
                         </p:selectOneMenu>
                     </p:panelGrid>
 
-                    <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
+                    <p:commandButton value="Создать заявку" actionListener="#{TaskPresenter.createNewTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_"/>
                 </h:form>
             </p:panel>
 
@@ -238,7 +238,7 @@
                         </p:selectOneMenu>
                     </h:panelGrid>
 
-                    <p:commandButton value="Подтвердить изменения" actionListener="#{TaskPresenter.updateTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"/>
+                    <p:commandButton value="Подтвердить изменения" actionListener="#{TaskPresenter.updateTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_"/>
                 </h:form>
             </p:panel>
 
@@ -300,7 +300,7 @@
                     <p:toolbar>
                         <p:toolbarGroup>
                             <p:commandButton value="Править задачу" actionListener="#{TaskPresenter.addCorrectTab(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                            <p:commandButton value="Взять задачу" actionListener="#{TaskPresenter.giveTaskToCurrentUser(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_" />
                             <p:commandButton value="Закрыть задачу" actionListener="#{TaskPresenter.closeTask(tab.tasks.get(0))}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
                         </p:toolbarGroup>
                     </p:toolbar>
