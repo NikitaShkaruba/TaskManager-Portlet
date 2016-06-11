@@ -87,7 +87,7 @@
     <p:tabView id="tabView" scrollable="true" value="#{TaskPresenter.tabs}" var="tab">
         <p:ajax event="tabChange" listener="#{TaskPresenter.onTabChange}"/>
         <p:ajax event="tabClose" listener="#{TaskPresenter.onTabClose}"/>
-
+        <!-- TODO: Remove this debug piece -->
         <p:tab title="#{tab.title == null? 'NULL, THERE IS NULL, BUT HOW???' : tab.title}" closable="true">
             <!-- Case list tab -->
             <p:panel rendered="#{tab.getClass().getSimpleName() == 'ListTab'}">
@@ -315,8 +315,7 @@
 
                 <h:form>
                     <p:editor id="editor" widgetVar="editorWidget" value="#{TaskPresenter.newActiveTabCommentary}"/>
-
-                    <p:commandButton value="Добавить комментарий" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" icon="ui-icon-disk" />
+                    <p:commandButton value="Добавить комментарий" actionListener="#{TaskPresenter.addComment(tab.tasks.get(0), TaskPresenter.getNewActiveTabCommentary())}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" icon="ui-icon-disk" />
                 </h:form>
                 <br/>
 

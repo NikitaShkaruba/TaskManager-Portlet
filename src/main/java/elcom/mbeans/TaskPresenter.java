@@ -225,12 +225,12 @@ public class TaskPresenter {
         addListTab(dp.getTasks(parseFilters()));
     }
     public String getNewActiveTabCommentary() {
-        return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary().getContent() : null;
+        return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary().getContent() : "";
     }
     public void setNewActiveTabCommentary(String content) {
+
         if (tabs.get(activeTabIndex) instanceof Commentable) {
-            addComment(tabs.get(activeTabIndex).getTasks().get(0), content);
-            ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(new Comment());
+            ((Commentable) tabs.get(activeTabIndex)).getNewCommentary().setContent(content);
         }
     }
 
@@ -311,6 +311,12 @@ public class TaskPresenter {
     }
     public void addComment(Task task, String content) {
         Comment comment = new Comment();
+        for (wfuser w : dp.getAllWfusers()) {
+            if (user.equals(w.employee)) {
+                comment.setWfAuthor(w);
+                break;
+            }
+        }
         comment.setAuthor(user);
         comment.setContent(content);
         comment.setTask(task);
@@ -322,7 +328,6 @@ public class TaskPresenter {
             ex.printStackTrace();
         }
     }
-
     // Proxy logic
     public Task getSelectedTask() {
         // Plug to deny tabView without tabs
