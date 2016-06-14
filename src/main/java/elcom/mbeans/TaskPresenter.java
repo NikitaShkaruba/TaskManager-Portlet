@@ -15,6 +15,7 @@ import org.primefaces.event.TabCloseEvent;
 import org.primefaces.model.UploadedFile;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
 import java.io.UnsupportedEncodingException;
@@ -332,11 +333,11 @@ public class TaskPresenter {
         taskFile.setName(file.getFileName());
         taskFile.setSize(file.getSize());
         taskFile.setType(file.getContentType());
+        taskFile.setCreationDate(new Date());
 
         try {
             taskFile.setBytes(new String(file.getContents(), "UTF-8"));
             dp.persist(taskFile);
-            int j = 1/0;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Entity
 @Table(name="taskfiles")
@@ -17,6 +18,7 @@ public class TaskFile {
     private String bytes;
     private String type;
     private long size;
+    private Date creationDate;
 
     @Id
     @GeneratedValue
@@ -51,8 +53,13 @@ public class TaskFile {
     }
     @Transient
     public StreamedContent getStream() {
-        InputStream stream = new ByteArrayInputStream(bytes.getBytes(StandardCharsets.UTF_8));
+        InputStream stream = new ByteArrayInputStream(bytes.getBytes());
         return new DefaultStreamedContent(stream, type, name);
+    }
+    @Basic
+    @Column(name="created")
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     public void setId(long id) {
@@ -72,6 +79,9 @@ public class TaskFile {
     }
     public void setType(String type) {
         this.type = type;
+    }
+    public void setCreationDate(Date date) {
+        this.creationDate = date;
     }
     @Override
     public int hashCode() {

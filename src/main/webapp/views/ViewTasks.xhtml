@@ -307,15 +307,19 @@
                 </h:form>
                 <br/>
 
-                <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
-                <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" update="_TaskManager_WAR_TaskManager10SNAPSHOT_"
-                              auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png)$/" />
+                <h:form>
+                    <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
+                    <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"
+                              auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png|html)$/" />
+                </h:form>
                 <h:form>
                     <p:dataList value="#{TaskPresenter.getTaskFiles(tab.tasks.get(0))}" var="file" type="ordered" >
                         <f:facet name="header">
                             Attachments
                         </f:facet>
-                        #{file.name}
+                        <p:commandLink value="#{file.name}" ajax="false">
+                            <p:fileDownload value="#{file.stream}" />
+                        </p:commandLink>
                     </p:dataList>
                 </h:form>
                 <br/>
