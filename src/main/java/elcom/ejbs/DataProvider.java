@@ -1,14 +1,11 @@
 package elcom.ejbs;
 
-import elcom.entities.*;
 import elcom.jpa.TasksQueryBuilder;
-
+import elcom.entities.*;
 import java.util.List;
 
-// Handles database data retrieving
+// High level DatabaseConnector wrapper
 public interface DataProvider {
-    Task instantiateTaskByTemplate(TaskTemplate tt);
-
     void persist(Object o);
 
     Comment getCommentEntityByContent(String content);

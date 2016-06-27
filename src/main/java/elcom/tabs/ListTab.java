@@ -3,6 +3,7 @@ package elcom.tabs;
 import elcom.entities.Task;
 import java.util.List;
 
+// Tab for viewing multiple tasks
 public class ListTab extends Tab implements TaskSelector {
     private Task selectedTask;
 
@@ -14,6 +15,8 @@ public class ListTab extends Tab implements TaskSelector {
     public String getTitle() {
         return "Список задач";
     }
+
+    // Proxy logic for TaskPresenter
     @Override
     public Task getSelectedTask() {
         return selectedTask;

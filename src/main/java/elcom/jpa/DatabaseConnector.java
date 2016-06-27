@@ -1,14 +1,15 @@
 package elcom.jpa;
 
+import javax.persistence.Query;
 import elcom.entities.Task;
 import javax.persistence.*;
-import javax.persistence.Query;
 import java.util.*;
 
+// Database Access Object
 public class DatabaseConnector {
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private static final String PERSISTENCE_UNIT_NAME = "MainPersistenceUnit";
     private static final char CLASS_FIELD_QUERY_DELIMITER = 'o';
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     private EntityManager em;
 
     public DatabaseConnector(){}
@@ -16,7 +17,6 @@ public class DatabaseConnector {
     private Set<Map.Entry<String, Object>> parseTaskQueryFilters(TasksQueryBuilder.TasksQuery query) {
         Map<String, Object> filters = new HashMap<String, Object>();
 
-        //filters.put("id", query.getId()); Id filtering is turned off
         filters.put("description", query.getDescription());
         filters.put("organisation", query.getOrganisation());
         filters.put("contactPerson", query.getContactPerson());
@@ -31,7 +31,6 @@ public class DatabaseConnector {
         filters.put("status", query.getStatus());
         filters.put("parentTask", query.getParentTask());
         filters.put("type", query.getType());
-        filters.put("visible", query.getVisible());
         filters.put("privateTask", query.getPrivateTask());
 
         Set<Map.Entry<String, Object>> result = filters.entrySet();
@@ -45,6 +44,7 @@ public class DatabaseConnector {
         return result;
     }
     private StringBuilder changeDescFilterFromEqualsToContains(StringBuilder sb) {
+        // Is needed when task description includes description filter, not just full equality
         int index = sb.indexOf("t.description = :description");
         if (index > -1)
             sb.replace(index, index+28, "lower(t.description) like :description");
@@ -53,20 +53,25 @@ public class DatabaseConnector {
     }
     private String composeQueryString(Set<Map.Entry<String, Object>> filters, Boolean countQuery) {
         StringBuilder qs;
+
         if (countQuery)
             qs = new StringBuilder("select count(t) from Task t");
         else
             qs = new StringBuilder("select t from Task t");
-        //If there are no filters, just return plain 'select all';
+
+        // If there are no filters, just return plain 'select all';
         if (filters.isEmpty())
             return qs.toString();
+
         // First, Convert Map to List
         List<Map.Entry<String, Object>> filterList = new ArrayList();
         for (Map.Entry<String, Object> e : filters)
             filterList.add(e);
-        //First filter is always applied with 'where' clause
+
+        // First filter is always applied with 'where' clause
         qs.append(" where t.").append(filterList.get(0).getKey()).append(" = :").append(filterList.get(0).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
-        //All subsequent filters append prev. filter with 'and' clause
+
+        // All subsequent filters append prev. filter with 'and' clause
         for (byte i = 1; i < filterList.size(); i += 1)
             qs.append(" and t.").append(filterList.get(i).getKey()).append(" = :").append(filterList.get(i).getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER));
 
@@ -75,6 +80,7 @@ public class DatabaseConnector {
         return qs.toString();
     }
 
+    // Can persist everything!
     public void persist(Object o) {
         em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -96,7 +102,7 @@ public class DatabaseConnector {
 
         return result;
     }
-    public int getTasksCountResult(TasksQueryBuilder.TasksQuery query) {
+    public int getTasksAmountResult(TasksQueryBuilder.TasksQuery query) {
         Set<Map.Entry<String, Object>> filters = parseTaskQueryFilters(query);
         String queryString = composeQueryString(filters, true);
 
@@ -121,6 +127,7 @@ public class DatabaseConnector {
         em.getTransaction().begin();
 
         T result = em.find(type, id);
+
         em.getTransaction().commit();
         em.close();
         return result;
@@ -138,8 +145,6 @@ public class DatabaseConnector {
         for (Map.Entry<String, Object> e : filters)
             q.setParameter(e.getKey().replace('.',CLASS_FIELD_QUERY_DELIMITER), e.getValue());
 
-        // TODO: remove setMaxResults(20)
-        // We have this because of bad optimization
         List result = q.getResultList();
 
         em.getTransaction().commit();

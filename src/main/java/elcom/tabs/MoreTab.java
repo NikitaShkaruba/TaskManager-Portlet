@@ -2,16 +2,12 @@ package elcom.tabs;
 
 import elcom.entities.Comment;
 import elcom.entities.Task;
-import elcom.entities.TaskFile;
-import org.primefaces.model.UploadedFile;
 import java.util.ArrayList;
-import java.util.List;
 
+// Tab for Viewing detailed information about task, also for commenting and file attachments
 public class MoreTab extends Tab implements TaskSelector, Commentable {
     private Task selectedTask;
     private Comment newComment;
-    private List<TaskFile> attachedFiles;
-    private UploadedFile newAttachment;
 
     public MoreTab(Task task) {
         this.tasks = new ArrayList();
@@ -26,6 +22,7 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
         return "Заявка №" + tasks.get(0).getId();
     }
 
+    // Proxy logic for TaskPresenter
     @Override
     public Task getSelectedTask() {
         return selectedTask;
@@ -34,7 +31,6 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
     public void setSelectedTask(Task selectedTask) {
         this.selectedTask = selectedTask;
     }
-
     @Override
     public Comment getNewCommentary() {
         return newComment;
@@ -42,19 +38,5 @@ public class MoreTab extends Tab implements TaskSelector, Commentable {
     @Override
     public void setNewCommentary(Comment commentary) {
         this.newComment = commentary;
-    }
-
-    public List<TaskFile> getAttachedFiles() {
-        return attachedFiles;
-    }
-    public void setAttachedFiles(List<TaskFile> attachments) {
-        this.attachedFiles = attachments;
-    }
-
-    public UploadedFile getNewAttachment() {
-        return newAttachment;
-    }
-    public void setNewAttachment(UploadedFile newAttachment) {
-        this.newAttachment = newAttachment;
     }
 }

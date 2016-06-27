@@ -1,7 +1,7 @@
 package elcom.entities;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
 
 @Entity
 @Table(name="producers")
@@ -47,8 +47,6 @@ public class Vendor implements Serializable {
         if (this.id != other.id) return false;
         if ((this.name.equals(other.name)))
             return true;
-        // TODO: 20.02.16 There was a bug
-        // if (!(this.vendor.equals(other.vendor))) return false;
 
         return true;
     }

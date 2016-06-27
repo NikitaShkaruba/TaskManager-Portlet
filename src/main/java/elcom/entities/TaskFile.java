@@ -2,11 +2,9 @@ package elcom.entities;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
-import javax.persistence.*;
 import java.io.ByteArrayInputStream;
+import javax.persistence.*;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Entity

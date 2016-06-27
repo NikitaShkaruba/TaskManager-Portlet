@@ -1,9 +1,9 @@
 package elcom.jpa;
 
 import elcom.entities.*;
-
 import java.util.*;
 
+// Composes Query for tasks
 public class TasksQueryBuilder {
     public class TasksQuery {
         private long id;
@@ -19,10 +19,7 @@ public class TasksQueryBuilder {
         private Employee executor;
         private Priority priority;
         private Status status;
-        private Task parentTask;
         private TaskType type;
-        private Boolean visible;
-        private Boolean privateTask;
 
         private TasksQuery(){}
 
@@ -63,20 +60,11 @@ public class TasksQueryBuilder {
         Status getStatus() {
             return status;
         }
-        Task getParentTask() {
-            return parentTask;
-        }
         TaskType getType() {
             return type;
         }
-        Boolean getVisible() {
-            return visible;
-        }
         ContactPerson getContactPerson() {
             return contactPerson;
-        }
-        Boolean getPrivateTask() {
-            return privateTask;
         }
     }
 
@@ -153,18 +141,8 @@ public class TasksQueryBuilder {
 
         return this;
     }
-    public TasksQueryBuilder setParentTask(Task parentTask) {
-        query.parentTask = parentTask;
-
-        return this;
-    }
     public TasksQueryBuilder setType(TaskType type) {
         query.type = type;
-
-        return this;
-    }
-    public TasksQueryBuilder setPrivateTask(Boolean privateTask) {
-        query.privateTask = privateTask;
 
         return this;
     }

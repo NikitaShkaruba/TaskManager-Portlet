@@ -1,13 +1,12 @@
 package elcom.entities.converters;
 
-import elcom.ejbs.DataProvider;
-
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import elcom.ejbs.DataProvider;
+import javax.ejb.EJB;
 
 @ManagedBean
 @RequestScoped

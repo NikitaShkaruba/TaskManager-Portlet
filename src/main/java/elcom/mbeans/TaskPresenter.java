@@ -1,58 +1,55 @@
 package elcom.mbeans;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.model.User;
+import javax.servlet.http.HttpServletResponse;
 import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portal.util.PortalUtil;
-import elcom.entities.*;
-import elcom.ejbs.DataProvider;
-import elcom.jpa.TasksQueryBuilder;
-import elcom.tabs.*;
-import elcom.tabs.Tab;
-import org.apache.commons.io.IOUtils;
-import org.primefaces.component.tabview.*;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
-import org.primefaces.model.StreamedContent;
+import org.primefaces.component.tabview.*;
+import com.liferay.portal.util.PortalUtil;
 import org.primefaces.model.UploadedFile;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ManagedBean;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
-import javax.ejb.EJB;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.annotation.PostConstruct;
+import javax.faces.bean.SessionScoped;
+import com.liferay.portal.model.User;
+import org.apache.commons.io.IOUtils;
 import javax.faces.event.ActionEvent;
 import javax.portlet.PortletResponse;
-import javax.servlet.http.HttpServletResponse;
+import javax.faces.bean.ManagedBean;
+import elcom.jpa.TasksQueryBuilder;
+import java.nio.charset.Charset;
+import elcom.ejbs.DataProvider;
+import java.util.ArrayList;
+import elcom.entities.*;
+import java.util.Date;
+import java.util.List;
+import elcom.tabs.Tab;
+import javax.ejb.EJB;
+import elcom.tabs.*;
+import java.io.*;
 
-
-// This MBean handles selection table selection logic, provides menu item options
+// Handles task CRUD logic, provides proxy interface for dynamic tabView
 @ManagedBean(name = "TaskPresenter", eager=true)
 @SessionScoped
 public class TaskPresenter {
-    private Employee user;
-    private List<Tab> tabs;
+    private Employee currentUser;
     private int activeTabIndex;
+    private List<Tab> tabs;
 
     @EJB
     private DataProvider dp;
 
-    private Status statusFilter;
+    // Task search filters
     private Organisation organisationFilter;
-    private Vendor vendorFilter;
-    private Group groupFilter;
+    private String descriptionFilter;
     private Employee executorFilter;
     private Employee creatorFilter;
-    private String descriptionFilter;
+    private Status statusFilter;
+    private Vendor vendorFilter;
+    private Group groupFilter;
 
     public TaskPresenter() {
         statusFilter = null;
@@ -63,14 +60,15 @@ public class TaskPresenter {
         creatorFilter = null;
         descriptionFilter = "";
     }
-    // Cannot move tasks initialization to a constructor coz ejb injections occurs after constructor
+
+    // All dependecy injections are unavaiable in constructor, so we need this init() method
     @PostConstruct
     public void init() {
-        List<Task> firstHundredTasks = dp.getAllTasks();
+        List<Task> allTasks = dp.getAllTasks();
 
-        user = getCurrentUser();
+        currentUser = getCurrentUser();
         tabs = new ArrayList();
-        tabs.add(new ListTab(firstHundredTasks));
+        tabs.add(new ListTab(allTasks));
     }
 
     private TasksQueryBuilder.TasksQuery parseFilters() {
@@ -80,7 +78,7 @@ public class TaskPresenter {
             qb.setStatus(statusFilter);
         if (organisationFilter != null)
             qb.setOrganisation(organisationFilter);
-        //TODO: implement Vendor filter to Task???
+        // Todo: implement Vendor filter to Task???
         if (vendorFilter != null);
         if (groupFilter != null)
             qb.setExecutorGroup(groupFilter);
@@ -94,7 +92,6 @@ public class TaskPresenter {
         return qb.getQuery();
     }
 
-    // Main Logic
     public List<Tab> getTabs() {
         return tabs;
     }
@@ -120,12 +117,7 @@ public class TaskPresenter {
             return null;
         }
     }
-    public boolean isNewToUser(Task task) {
-        // TODO: 13.02.16 add liferay-bounded logic
-        return true;
-    }
 
-    // Getters
     public List<Comment> getTaskComments(Task task) {
         return dp.getTaskComments(task);
     }
@@ -154,7 +146,6 @@ public class TaskPresenter {
         return descriptionFilter;
     }
 
-    // Setters
     public void setStatusFilter(Status filter) {
         this.statusFilter = filter;
     }
@@ -177,7 +168,7 @@ public class TaskPresenter {
         this.descriptionFilter = descriptionFilter;
     }
 
-    // Lists for GUI MenuOptions
+    // Data for filter drop-downs
     public List<Employee> getEmployeeOptions() {
         return dp.getAllEmployees();
     }
@@ -203,7 +194,7 @@ public class TaskPresenter {
         return dp.getAllTasktypes();
     }
 
-    // Tabs logic
+    // Dynamic tabView tab logic
     public void onTabClose(TabCloseEvent event) {
         if (tabs.size() == 1) {
             tabs.remove(0);
@@ -226,10 +217,6 @@ public class TaskPresenter {
     public void addCreateTab() {
         tabs.add(new CreateTab());
     }
-    public void addCreateTab(Task task) {
-        // For creation inherited tasks
-        tabs.add(new CreateTab(task));
-    }
     public void addCorrectTab(Task content) {
         tabs.add(new CorrectTab(content));
     }
@@ -239,6 +226,8 @@ public class TaskPresenter {
     public void addListTabByFilters() {
         addListTab(dp.getTasks(parseFilters()));
     }
+
+    // Dynamic tabview proxy logic
     public String getNewActiveTabCommentary() {
         return (tabs.get(activeTabIndex) instanceof Commentable)? ((Commentable) tabs.get(activeTabIndex)).getNewCommentary().getContent() : null;
     }
@@ -248,15 +237,28 @@ public class TaskPresenter {
             ((Commentable) tabs.get(activeTabIndex)).setNewCommentary(new Comment());
         }
     }
+    public Task getSelectedTask() {
+        // Plug to prevent tabView crashing without tabs
+        if (activeTabIndex < 0)
+            activeTabIndex = 0;
 
-    // CRUD buttons
+        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
+            return ((TaskSelector)tabs.get(activeTabIndex)).getSelectedTask();
+        else
+            return null;
+    }
+    public void setSelectedTask(Task selectedTask) {
+        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
+            ((TaskSelector)tabs.get(activeTabIndex)).setSelectedTask(selectedTask);
+    }
+
+    // CRUD task operations
     public void createNewTask(Task task) {
-        // Fill missing properties
+        // Fill missing task properties
         Date currentDate = new Date();
-
-        // task.setCreator();
+        // task.setCreator(); Todo: take tis construction out to isolated method
         for (wfuser w : dp.getAllWfusers()) {
-            if (user.equals(w.employee)) {
+            if (currentUser.equals(w.employee)) {
                 task.setWfCreator(w);
                 break;
             }
@@ -268,7 +270,6 @@ public class TaskPresenter {
                 break;
             }
         }
-
         task.setCreationDate(currentDate);
         task.setModificationDate(currentDate);
 
@@ -279,25 +280,24 @@ public class TaskPresenter {
         }
     }
     public void updateTask(Task task) {
+        // Fill missing task properties
         for (wfuser w : dp.getAllWfusers()) {
             if (task.getExecutor().equals(w.employee)) {
                 task.setWfExecutor(w);
                 break;
             }
         }
-
         task.setModificationDate(new Date());
 
         try {
             dp.persist(task);
         } catch (Exception ex) {
             ex.printStackTrace();
-
         }
     }
     public void giveTaskToCurrentUser(Task task){
         for (wfuser w : dp.getAllWfusers()) {
-            if (user.equals(w.employee)) {
+            if (currentUser.equals(w.employee)) {
                 task.setWfExecutor(w);
                 break;
             }
@@ -314,16 +314,9 @@ public class TaskPresenter {
         task.setStatus(dp.getStatusEntityByName("закрыта"));
         updateTask(task);
     }
-    public void createChildTask(Task task) {
-        addCreateTab(task);
-    }
-    public void createTaskFromTemplate(Task task) {
-        // TODO: 19.02.16 add logic
-        throw new NotImplementedException();
-    }
     public void addComment(Task task, String content) {
         Comment comment = new Comment();
-        comment.setAuthor(user);
+        comment.setAuthor(currentUser);
         comment.setContent(content);
         comment.setTask(task);
         comment.setWriteDate(new Date());
@@ -344,66 +337,42 @@ public class TaskPresenter {
         taskFile.setType(file.getContentType());
         taskFile.setCreationDate(new Date());
 
+        // Convert bytes to string
         InputStream inputStream = file.getInputstream();
         StringWriter writer = new StringWriter();
         IOUtils.copy(inputStream, writer, "UTF-8");
         String theString = writer.toString();
         taskFile.setBytes(theString);
 
-        // For debug
-        descriptionFilter = theString;
         dp.persist(taskFile);
     }
     public StreamedContent downloadFile(TaskFile file) throws IOException {
+        // Make response
         PortletResponse portletResponse = (PortletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         HttpServletResponse res = PortalUtil.getHttpServletResponse(portletResponse);
-        res.setHeader("Content-Disposition", "attachment; filename=\"file.txt\"");
+        res.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
         res.setHeader("Content-Transfer-Encoding", "binary");
         res.setContentType("application/octet-stream");
         res.flushBuffer();
-
         OutputStream out = res.getOutputStream();
         out.write(file.getBytes().getBytes(Charset.forName("UTF-8")));
         out.close();
 
         return null;
     }
-    // Proxy logic
-    public Task getSelectedTask() {
-        // Plug to deny tabView without tabs
-        if (activeTabIndex < 0)
-            activeTabIndex = 0;
 
-        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
-            return ((TaskSelector)tabs.get(activeTabIndex)).getSelectedTask();
-        else
-            return null;
-    }
-    public void setSelectedTask(Task selectedTask) {
-        if (tabs.size() != 0 && tabs.get(activeTabIndex) instanceof TaskSelector)
-            ((TaskSelector)tabs.get(activeTabIndex)).setSelectedTask(selectedTask);
-    }
-
-    // Filter-pattern selection listeners
+    // Predefined task tabs
     public void selectMyTasksPattern(ActionEvent event) {
-        // my tasks: executor = user
-        addListTab(dp.getTasks(new TasksQueryBuilder().setExecutor(user).getQuery()));
+        List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setExecutor(currentUser).getQuery());
+        addListTab(tasks);
     }
     public void selectFreeTasksPattern(ActionEvent event) {
-        // free tasks: executor = null and status = opened
         List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("открыта")).getQuery());
-
-        // we can't ask for null values in query, so we have to filter through null executors here
-        //Iterator<Task> i = tasks.iterator();
-        //while (i.hasNext())
-        //    if (i.next().getExecutor() != null)
-        //        i.remove();
-
         addListTab(tasks);
     }
     public void selectClosedTasksPattern(ActionEvent event) {
-        //closed tasks: status = closed
-        addListTab(dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("закрыта")).getQuery()));
+        List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setStatus(dp.getStatusEntityByName("закрыта")).getQuery());
+        addListTab(tasks);
     }
     public void selectTrackedTasksPattern(ActionEvent event) {
         throw new NotImplementedException();
@@ -412,21 +381,21 @@ public class TaskPresenter {
         throw new NotImplementedException();
     }
     public void selectContractsTaskPattern(ActionEvent event) {
-        //contracts tasks: taskType = "договор" (contract);
-        addListTab(dp.getTasks(new TasksQueryBuilder().setType(dp.getTasktypeEntityByName("договор")).getQuery()));
+        List<Task> tasks = dp.getTasks(new TasksQueryBuilder().setType(dp.getTasktypeEntityByName("договор")).getQuery());
+        addListTab(tasks);
     }
 
-    // Filter-pattern task counts
-    public int getMyCount() {
-        return dp.countUserTasks(user);
+    // Predefined tasks counters
+    public int getMyTasksAmount() {
+        return dp.countUserTasks(currentUser);
     }
-    public int getOpenCount() {
+    public int getOpenTasksAmount() {
         return dp.countFreeTasks();
     }
-    public int getClosedCount() {
+    public int getClosedTasksAmount() {
         return dp.countClosedTasks();
     }
-    public int getContractsCount() {
+    public int getContractsAmount() {
         return dp.countContractTasks();
     }
 

@@ -10,10 +10,10 @@
     <h:form>
         <p:toolbar id="patternBar">
             <p:toolbarGroup>
-                <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Мои #{TaskPresenter.myTasksAmount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Открытые #{TaskPresenter.openTasksAmount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Закрытые #{TaskPresenter.closedTasksAmount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Договоры #{TaskPresenter.contractsAmount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
             </p:toolbarGroup>
         </p:toolbar>
     </h:form>
@@ -309,13 +309,9 @@
                 <h:form>
                     <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
                     <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"
-                              auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png|html)$/" />
+                              auto="true" sizeLimit="100000000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png|html)$/" />
                 </h:form>
 
-                <div id="download-container" style="display: inline-table; width: 2em; text-align: right;">
-                <h:form>
-                </h:form>
-            </div>
                 <h:form>
                     <p:dataList value="#{TaskPresenter.getTaskFiles(tab.tasks.get(0))}" var="file" type="ordered" >
                         <f:facet name="header">
