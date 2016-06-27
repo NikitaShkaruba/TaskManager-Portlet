@@ -3,28 +3,37 @@ package elcom.mbeans;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.User;
 import com.liferay.portal.theme.ThemeDisplay;
+import com.liferay.portal.util.PortalUtil;
 import elcom.entities.*;
 import elcom.ejbs.DataProvider;
 import elcom.jpa.TasksQueryBuilder;
 import elcom.tabs.*;
 import elcom.tabs.Tab;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.component.tabview.*;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.event.TabCloseEvent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ManagedBean;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.ejb.EJB;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.portlet.PortletResponse;
+import javax.servlet.http.HttpServletResponse;
+
 
 // This MBean handles selection table selection logic, provides menu item options
 @ManagedBean(name = "TaskPresenter", eager=true)
@@ -325,7 +334,7 @@ public class TaskPresenter {
             ex.printStackTrace();
         }
     }
-    public void attachNewFile(FileUploadEvent event) {
+    public void attachNewFile(FileUploadEvent event) throws IOException {
         UploadedFile file = event.getFile();
 
         TaskFile taskFile = new TaskFile();
@@ -335,14 +344,30 @@ public class TaskPresenter {
         taskFile.setType(file.getContentType());
         taskFile.setCreationDate(new Date());
 
-        try {
-            taskFile.setBytes(new String(file.getContents(), "UTF-8"));
-            dp.persist(taskFile);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
+        InputStream inputStream = file.getInputstream();
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(inputStream, writer, "UTF-8");
+        String theString = writer.toString();
+        taskFile.setBytes(theString);
 
+        // For debug
+        descriptionFilter = theString;
+        dp.persist(taskFile);
+    }
+    public StreamedContent downloadFile(TaskFile file) throws IOException {
+        PortletResponse portletResponse = (PortletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        HttpServletResponse res = PortalUtil.getHttpServletResponse(portletResponse);
+        res.setHeader("Content-Disposition", "attachment; filename=\"file.txt\"");
+        res.setHeader("Content-Transfer-Encoding", "binary");
+        res.setContentType("application/octet-stream");
+        res.flushBuffer();
+
+        OutputStream out = res.getOutputStream();
+        out.write(file.getBytes().getBytes(Charset.forName("UTF-8")));
+        out.close();
+
+        return null;
+    }
     // Proxy logic
     public Task getSelectedTask() {
         // Plug to deny tabView without tabs

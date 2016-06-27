@@ -4,7 +4,6 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <h:outputStylesheet name="css/custom.css"/>
 </h:head>
 
 <h:body>
@@ -312,21 +311,22 @@
                     <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"
                               auto="true" sizeLimit="100000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png|html)$/" />
                 </h:form>
+
+                <div id="download-container" style="display: inline-table; width: 2em; text-align: right;">
+                <h:form>
+                </h:form>
+            </div>
                 <h:form>
                     <p:dataList value="#{TaskPresenter.getTaskFiles(tab.tasks.get(0))}" var="file" type="ordered" >
                         <f:facet name="header">
                             Attachments
                         </f:facet>
                         <p:commandLink value="#{file.name}" ajax="false">
-                            <p:fileDownload value="#{file.stream}" />
+                            <p:fileDownload value="#{TaskPresenter.downloadFile(file)}" />
                         </p:commandLink>
                     </p:dataList>
                 </h:form>
                 <br/>
-
-                <!--p:commandButton value="#{file.name}" ajax="false" icon="ui-icon-arrowthick-1-s">
-                    <p:fileDownload value="#{file.stream}" />
-                </p:commandButton-->
 
                 <h:form>
                     <p:editor id="editor" widgetVar="editorWidget" value="#{TaskPresenter.newActiveTabCommentary}"/>
