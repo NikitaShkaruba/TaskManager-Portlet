@@ -29,9 +29,7 @@ public class DatabaseConnector {
         filters.put("wfExecutor.employee", query.getExecutor());
         filters.put("priority", query.getPriority());
         filters.put("status", query.getStatus());
-        filters.put("parentTask", query.getParentTask());
         filters.put("type", query.getType());
-        filters.put("privateTask", query.getPrivateTask());
 
         Set<Map.Entry<String, Object>> result = filters.entrySet();
 
