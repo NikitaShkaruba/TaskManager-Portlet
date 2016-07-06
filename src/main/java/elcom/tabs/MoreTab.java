@@ -4,7 +4,9 @@ import elcom.entities.Comment;
 import elcom.entities.Task;
 import java.util.ArrayList;
 
-public class MoreTab extends Tab implements Commentable {
+
+public class MoreTab extends Tab implements TaskSelector, Commentable {
+    private Task selectedTask;
     private Comment newComment;
 
     public MoreTab(Task task) {
@@ -20,6 +22,15 @@ public class MoreTab extends Tab implements Commentable {
         return "Заявка №" + tasks.get(0).getId();
     }
 
+    // Proxy logic for TaskPresenter
+    @Override
+    public Task getSelectedTask() {
+        return selectedTask;
+    }
+    @Override
+    public void setSelectedTask(Task selectedTask) {
+        this.selectedTask = selectedTask;
+    }
     @Override
     public Comment getNewCommentary() {
         return newComment;

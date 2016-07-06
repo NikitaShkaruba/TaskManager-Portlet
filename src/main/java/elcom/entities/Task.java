@@ -19,10 +19,7 @@ public class Task implements Serializable, Cloneable {
     private Group executorGroup;
     private Priority priority;
     private Status status;
-    private Task parentTask;
     private TaskType type;
-    private Boolean visible;
-    private Boolean privateTask;
     private wfuser wfCreator;
     private wfuser wfExecutor;
 
@@ -87,29 +84,14 @@ public class Task implements Serializable, Cloneable {
         return finishDate;
     }
     @OneToOne
-    @JoinColumn(name="parent_id")
-    public Task getParentTask() {
-        return parentTask;
-    }
-    @OneToOne
     @JoinColumn(name="type_id")
     public TaskType getType() {
         return type;
-    }
-    @Basic
-    @Column(name="visible")
-    public Boolean getVisible() {
-        return visible;
     }
     @OneToOne
     @JoinColumn(name="person_id")
     public ContactPerson getContactPerson() {
         return contactPerson;
-    }
-    @Basic
-    @Column(name="private_task")
-    public Boolean getPrivateTask() {
-        return privateTask;
     }
     @OneToOne
     @JoinColumn(name="owner_id")
@@ -122,9 +104,6 @@ public class Task implements Serializable, Cloneable {
         return wfExecutor;
     }
 
-    public void setPrivateTask(Boolean privateTask) {
-        this.privateTask = privateTask;
-    }
     public void setId(long id) {
         this.id = id;
     }
@@ -138,14 +117,14 @@ public class Task implements Serializable, Cloneable {
         this.executorGroup = executorGroup;
     }
     public void setCreator(Employee creator) {
-        // #!
+        // ?#!
         if (this.wfCreator == null)
             this.wfCreator = new wfuser();
 
         this.wfCreator.employee = creator;
     }
     public void setExecutor(Employee executor) {
-        // #!
+        // ?#!
         if (this.wfExecutor == null)
             this.wfExecutor = new wfuser();
 
@@ -166,17 +145,11 @@ public class Task implements Serializable, Cloneable {
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
-    public void setParentTask(Task parentTask) {
-        this.parentTask = parentTask;
-    }
     public void setType(TaskType type) {
         this.type = type;
     }
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
-    }
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
     }
     public void setContactPerson(ContactPerson person) {
         this.contactPerson = person;
@@ -209,10 +182,7 @@ public class Task implements Serializable, Cloneable {
             return false;
         if (priority != null ? !priority.equals(task.priority) : task.priority != null) return false;
         if (!status.equals(task.status)) return false;
-        if (parentTask != null ? !parentTask.equals(task.parentTask) : task.parentTask != null) return false;
         if (type != null ? !type.equals(task.type) : task.type != null) return false;
-        if (visible != null ? !visible.equals(task.visible) : task.visible != null) return false;
-        if (privateTask != null ? !privateTask.equals(task.privateTask) : task.privateTask != null) return false;
         if (wfCreator != null ? !wfCreator.equals(task.wfCreator) : task.wfCreator != null) return false;
         return wfExecutor != null ? wfExecutor.equals(task.wfExecutor) : task.wfExecutor == null;
 
@@ -230,10 +200,7 @@ public class Task implements Serializable, Cloneable {
         result = 31 * result + (executorGroup != null ? executorGroup.hashCode() : 0);
         result = 31 * result + (priority != null ? priority.hashCode() : 0);
         result = 31 * result + status.hashCode();
-        result = 31 * result + (parentTask != null ? parentTask.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (visible != null ? visible.hashCode() : 0);
-        result = 31 * result + (privateTask != null ? privateTask.hashCode() : 0);
         result = 31 * result + (wfCreator != null ? wfCreator.hashCode() : 0);
         result = 31 * result + (wfExecutor != null ? wfExecutor.hashCode() : 0);
         return result;

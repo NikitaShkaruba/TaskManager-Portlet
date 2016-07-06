@@ -1,7 +1,7 @@
 package elcom.entities;
 
-import javax.persistence.*;
 import java.io.Serializable;
+import javax.persistence.*;
 
 @Entity
 @Table(name="tasktemplates")

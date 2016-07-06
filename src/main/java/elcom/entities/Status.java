@@ -1,8 +1,8 @@
 package elcom.entities;
 
+import java.io.Serializable;
 import javax.persistence.*;
 import java.awt.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name="statuses")

@@ -7,7 +7,6 @@ import elcom.entities.*;
 import javax.ejb.Local;
 import java.util.*;
 
-// Handles database data retrieving
 @Singleton
 @Local(DataProvider.class)
 public class LocalDataProvider implements DataProvider {
@@ -209,6 +208,14 @@ public class LocalDataProvider implements DataProvider {
 
         return comments;
     }
+    public List<TaskFile> getTaskFiles(Task task) {
+        if (task == null)
+            throw new IllegalArgumentException();
+
+        List<TaskFile> files = dbc.getQueryResult("select f from TaskFile f where f.task.id = " + task.getId());
+
+        return files;
+    }
     public List<ContactPerson> getAllContactPersons() {
         return contactPersonsCache;
     }
@@ -247,10 +254,10 @@ public class LocalDataProvider implements DataProvider {
     }
 
     public int countAllTasks() {
-        return dbc.getTasksCountResult(new TasksQueryBuilder().getQuery());
+        return dbc.getTasksAmountResult(new TasksQueryBuilder().getQuery());
     }
     public int countUserTasks(Employee user) {
-        return dbc.getTasksCountResult(new TasksQueryBuilder().setExecutor(user).getQuery());
+        return dbc.getTasksAmountResult(new TasksQueryBuilder().setExecutor(user).getQuery());
     }
     public int countWatchedTasks(Employee user) {
         return -322;
@@ -270,9 +277,9 @@ public class LocalDataProvider implements DataProvider {
         return counter;
         }
     public int countClosedTasks() {
-        return dbc.getTasksCountResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("закрыта")).getQuery());
+        return dbc.getTasksAmountResult(new TasksQueryBuilder().setStatus(getStatusEntityByName("закрыта")).getQuery());
     }
     public int countContractTasks() {
-        return dbc.getTasksCountResult(new TasksQueryBuilder().setType(getTasktypeEntityByName("договор")).getQuery());
+        return dbc.getTasksAmountResult(new TasksQueryBuilder().setType(getTasktypeEntityByName("договор")).getQuery());
     }
 }

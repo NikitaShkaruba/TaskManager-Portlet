@@ -4,17 +4,16 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <h:outputStylesheet name="css/custom.css"/>
 </h:head>
 
 <h:body>
     <h:form>
         <p:toolbar id="patternBar">
             <p:toolbarGroup>
-                <p:commandButton value="Мои #{TaskPresenter.myCount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Открытые #{TaskPresenter.openCount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Закрытые #{TaskPresenter.closedCount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
-                <p:commandButton value="Договоры #{TaskPresenter.contractsCount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Мои #{TaskPresenter.myTasksAmount}" actionListener="#{TaskPresenter.selectMyTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Открытые #{TaskPresenter.openTasksAmount}" actionListener="#{TaskPresenter.selectFreeTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Закрытые #{TaskPresenter.closedTasksAmount}" actionListener="#{TaskPresenter.selectClosedTasksPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
+                <p:commandButton value="Договоры #{TaskPresenter.contractsAmount}" actionListener="#{TaskPresenter.selectContractsTaskPattern}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" />
             </p:toolbarGroup>
         </p:toolbar>
     </h:form>
@@ -306,10 +305,22 @@
                 </h:form>
                 <br/>
 
-                <!-- TODO: decide if we need Attachments -->
-                <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
-                <p:fileUpload fileUploadListener="#{TaskPresenter.handleFileAttachment}" mode="advanced" dragDropSupport="true"
-                              sizeLimit="1000000" allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+                <h:form>
+                    <h:outputText value="Прикреплённые фаилы:" style="font-weight: bold"/>
+                    <p:fileUpload fileUploadListener="#{TaskPresenter.attachNewFile}" mode="advanced" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView"
+                              auto="true" sizeLimit="100000000" allowTypes="/(\.|\/)(pdf|gif|jpe?g|png|html)$/" />
+                </h:form>
+
+                <h:form>
+                    <p:dataList value="#{TaskPresenter.getTaskFiles(tab.tasks.get(0))}" var="file" type="ordered" >
+                        <f:facet name="header">
+                            Attachments
+                        </f:facet>
+                        <p:commandLink value="#{file.name}" ajax="false">
+                            <p:fileDownload value="#{TaskPresenter.downloadFile(file)}" />
+                        </p:commandLink>
+                    </p:dataList>
+                </h:form>
                 <br/>
 
                 <h:form>
@@ -317,7 +328,6 @@
                     <p:commandButton value="Добавить комментарий" actionListener="#{TaskPresenter.addComment(tab.tasks.get(0), TaskPresenter.getNewActiveTabCommentary())}" update="_TaskManager_WAR_TaskManager10SNAPSHOT_:tabView" icon="ui-icon-disk" />
                 </h:form>
                 <br/>
-
                 <h:outputText value="Комментарии:" style="font-weight: bold"/>
                 <p:dataScroller value="#{TaskPresenter.getTaskComments(tab.tasks.get(0))}" var="comment" chunkSize="5" >
                     <p:outputPanel>
