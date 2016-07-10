@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-
-    <persistence-unit name="NewPersistenceUnit">
+    <persistence-unit name="MainPersistenceUnit">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>sample.SampleTableEntity</class>
+        <class>elcom.entities.Comment</class>
+        <class>elcom.entities.Contact</class>
+        <class>elcom.entities.Employee</class>
+        <class>elcom.entities.Group</class>
+        <class>elcom.entities.Priority</class>
+        <class>elcom.entities.Status</class>
+        <class>elcom.entities.Task</class>
+        <class>elcom.entities.TaskType</class>
+        <class>elcom.entities.TaskTemplate</class>
+        <class>elcom.entities.Vendor</class>
+        <class>elcom.entities.wfuser</class>
+        <class>elcom.entities.TaskFile</class>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:mysql://sql4.freemysqlhosting.net:3306/sql498356"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.username" value="sql498356"/>
-            <property name="hibernate.connection.password" value="Ttw1sTmjGt"/>
-            <property name="hibernate.archive.autodetection" value="class"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://sunshine.elcom.spb.ru:5432/wf"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL81Dialect"/>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.username" value="pgsql"/>
+            <property name="hibernate.connection.password" value="Lez.kDq1"/>
             <property name="hbm2ddl.auto" value="update"/>
+            <property name="hibernate.jdbc.use_streams_for_binary" value="false" />
         </properties>
     </persistence-unit>
 </persistence>
